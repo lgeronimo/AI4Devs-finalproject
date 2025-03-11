@@ -9,43 +9,119 @@ Easy Reader está dirigido a un público general, con especial énfasis en mejor
 - Modos de lectura con desplazamiento automático:
   - **Acelerómetro**: Control del scroll mediante la inclinación del dispositivo.
   - **Detección de rostro**: Identificación de patrones de movimiento del rostro para desplazamiento.
-  - **Gestos de manos** (futuro): Posible implementación de control por gestos para accesibilidad.
-- Configuración de la velocidad de desplazamiento con un valor predeterminado.
 - Uso sin registro con almacenamiento local y opción de registro para guardar PDFs y enlaces.
 
+### **Funcionalidades futuras**  
+1. **Modos de lectura con desplazamiento automático:**
+   - **Gestos de manos**: Posible implementación de control por gestos para accesibilidad.
+   - **Acelerómetro**: Posibilidad para configurar la velocidad de desplazamiento.
+1. **Modo oscuro y claro:** El usuario podrá cambiar entre un tema **dark** o **light**.  
+2. **Ajuste de brillo:** Se podrá modificar el brillo de la pantalla para mejorar la experiencia de lectura.  
+3. **Notas y subrayado:**  
+   - Los usuarios podrán **agregar notas** y **subrayar texto** en los documentos.  
+   - Estas notas se **almacenarán localmente** en primera instancia.  
+   - Para usuarios registrados, las notas y subrayados podrán **guardarse en la base de datos** para acceder a ellos en diferentes sesiones y dispositivos.  
+
+## 3. Requisitos del Producto  
+
+### 3.1. Requisitos Funcionales
+- El usuario podrá subir un archivo **PDF** o ingresar una **URL**.
+- El sistema le pedirá al usuario seleccionar un **modo de lectura automática**. 
+- Dependiendo del modo de lectura automático seleccionado, **el sistema detectará la inclinación del dispositivo o la orientación del rostro para mover el scroll de forma automática**.
+- **Usuarios no registrados:** Solo podrán visualizar archivos de forma local.  
+- **Usuarios registrados:** Podrán guardar y gestionar sus archivos y enlaces. 
 
 
-## 3. Requisitos Funcionales
-- El usuario podrá subir un archivo PDF o ingresar una URL.
-- La aplicación ofrecerá tres modos de lectura (acelerómetro, detección de rostro, gestos de manos en el futuro).
-- Opción de ajustar la velocidad de desplazamiento.
-- Almacenamiento local para usuarios sin cuenta y almacenamiento en la nube para usuarios registrados.
-- Interfaz responsiva optimizada para dispositivos móviles.
+### 3.2. Requisitos No Funcionales
+- **Responsividad:** La aplicación debe funcionar en distintos tamaños de pantalla.  
+- **Compatibilidad:** Soporte para navegadores modernos (Chrome, Firefox, Safari, Edge).  
+- **Privacidad:** Los archivos de usuarios no registrados no se almacenarán en el servidor.  
+- **Escalabilidad:** Arquitectura preparada para una futura conversión a **PWA**.  
 
-## 4. Requisitos No Funcionales
-- Debe funcionar en navegadores modernos en dispositivos móviles.
-- Debe garantizar un rendimiento fluido para evitar retrasos en el desplazamiento.
-- Seguridad en el almacenamiento de archivos para usuarios registrados.
-- Código modular y escalable para futuras mejoras (PWA en el futuro).
 
-## 5. Casos de Uso Principales
+
+
+## 4. Casos de Uso Principales  
+
+
 ### Caso de uso 1: Lectura sin registro
-**Actor:** Usuario sin cuenta
-**Flujo:**
-1. El usuario carga un PDF o ingresa una URL.
-2. Selecciona un modo de lectura.
-3. La aplicación inicia el desplazamiento automático.
-4. El usuario ajusta la velocidad si es necesario.
-5. Cierra la aplicación sin necesidad de guardar datos.
+**Actor:** Usuario sin cuenta.
+
+**Descripción:** Proceso de visualización y lectura automatizada de documentos PDF o contenido web mediante los modos de desplazamiento inteligente del sistema.
+
+**Precondiciones:** 
+- El usuario tiene acceso a la aplicación web
+- El usuario dispone de un archivo PDF o URL para cargar
+
+**Flujo principal:**
+1. El usuario abre la aplicación y selecciona la opción "Cargar PDF" o "Ingresar URL"
+2. El sistema valida el formato del archivo o accesibilidad de la URL
+3. El sistema solicita al usuario seleccionar un modo de lectura automática:
+   - Detección de rostro
+   - Acelerómetro 
+4. El usuario selecciona el modo deseado
+5. El sistema solicita los permisos necesarios según el modo elegido:
+   - Permiso de cámara (modo detección de rostro)
+   - Permiso de acelerómetro (modo acelerómetro)
+6. El sistema inicia el desplazamiento automático según:
+   - La inclinación del dispositivo (modo acelerómetro)
+   - La dirección de la mirada (modo detección de rostro)
+
+**Flujos alternativos:**
+1. Si el archivo no es un PDF válido o la URL no es accesible:
+   - El sistema muestra un mensaje de error
+   - Permite al usuario intentar nuevamente
+2. Si los permisos son denegados:
+   - El sistema notifica al usuario que no podrá usar ese modo
+   - Solicita seleccionar un modo alternativo
+3. Durante la lectura:
+   - El usuario puede pausar el desplazamiento automático
+   - El usuario puede ajustar la velocidad de desplazamiento
+   - El usuario puede cambiar entre modos de lectura
+
+**Postcondiciones:**
+- El documento o página web se visualiza correctamente
+- El desplazamiento automático funciona según el modo seleccionado
+- Los datos de lectura se mantienen solo en la sesión actual (session storage)
 
 ### Caso de uso 2: Lectura con cuenta registrada
 **Actor:** Usuario registrado
-**Flujo:**
-1. El usuario inicia sesión.
-2. Carga un PDF o ingresa una URL.
-3. Selecciona un modo de lectura.
-4. Configura la velocidad de desplazamiento.
-5. La aplicación guarda el archivo o enlace para futuras sesiones.
+
+**Descripción:** Proceso de lectura con funcionalidades adicionales para usuarios registrados, incluyendo guardado y gestión de documentos.
+
+**Precondiciones:**
+- El usuario tiene una cuenta registrada
+- El usuario ha iniciado sesión en la aplicación
+
+**Flujo principal:**
+1. El usuario inicia sesión en la aplicación
+2. El sistema muestra el dashboard con documentos guardados
+3. El usuario puede:
+
+   a. Seleccionar un documento guardado previamente
+
+   b. Cargar un nuevo PDF o ingresar URL
+
+4. El sistema procede con el flujo de lectura (similar al caso 1)
+5. La aplicación guarda automáticamente el progreso de lectura
+
+**Flujos alternativos:**
+1. Gestión de documentos:
+   - El usuario puede editar el nombre del documento
+   - El usuario puede eliminar documentos guardados
+   - El usuario puede compartir documentos (futuro)
+2. Gestión de cuenta:
+   - El usuario puede actualizar sus datos de perfil
+   - El usuario puede configurar preferencias de lectura
+3. Durante la lectura:
+   - El usuario puede agregar marcadores (futuro)
+   - El usuario puede hacer anotaciones (futuro)
+   - El sistema va guardando el progreso de lectura
+
+**Postcondiciones:**
+- Los documentos y configuraciones se guardan en la base de datos
+- El progreso de lectura se mantiene entre sesiones
+- Las preferencias del usuario se aplican automáticamente en futuras lecturas
 
 ## 6. Tecnologías y Arquitectura Inicial
 - **Frontend:** Angular.
