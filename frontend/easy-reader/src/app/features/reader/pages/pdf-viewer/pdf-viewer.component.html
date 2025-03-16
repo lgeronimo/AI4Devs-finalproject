@@ -1,116 +1,12 @@
 <div class="pdf-viewer-container">
   <!-- Sección de carga de PDF -->
-  <div class="upload-modal">
-    <div class="modal-header">
-      <div class="header-left">
-        <div class="cloud-icon-circle">
-          <i class="fas fa-cloud-upload-alt"></i>
-        </div>
-        <div class="header-text">
-          <h2>Upload files</h2>
-          <p>Select and upload the files of your choice</p>
-        </div>
-      </div>
-    </div>
+  <app-pdf-uploader *ngIf="!viewerState?.isLoaded"></app-pdf-uploader>
 
-    <div class="drop-zone" 
-         *ngIf="uploadedFiles.length === 0"
-         [class.dragging]="isDragging"
-         (dragenter)="onDragEnter($event)"
-         (dragleave)="onDragLeave($event)"
-         (dragover)="onDragOver($event)"
-         (drop)="onDrop($event)"
-         (click)="openFileDialog()">
-      <input #fileInput 
-             type="file" 
-             accept="application/pdf"
-             (change)="onFileInputChange($event)" 
-             hidden>
-      <div class="cloud-icon">
-        <i class="fas fa-cloud-upload-alt"></i>
-      </div>
-      <h3>Choose a file or drag & drop it here</h3>
-      <p>PDF files up to 5MB</p>
-      <button class="browse-button">Browse File</button>
-    </div>
-
-    <div class="file-list" *ngIf="uploadedFiles.length > 0">
-      <div class="file-item" 
-           *ngFor="let file of uploadedFiles; let i = index"
-           [class.uploading]="file.status === 'uploading'"
-           [class.completed]="file.status === 'completed'">
-        <div class="file-icon">PDF</div>
-        <div class="file-details">
-          <div class="file-info">
-            <div class="file-name-row">
-              <span class="filename">{{ file.name }}</span>
-              <button *ngIf="file.status === 'uploading'" 
-                      class="cancel-button"
-                      (click)="removeFile(i)">×</button>
-              <button *ngIf="file.status === 'completed'" 
-                      class="delete-button"
-                      (click)="removeFile(i)">
-                <i class="fas fa-trash"></i>
-              </button>
-            </div>
-            <div class="file-status-row">
-              <span class="file-size">{{ file.size }}</span>
-              <span class="bullet">•</span>
-              <span class="status">
-                {{ file.status === 'uploading' ? 'Uploading...' : 'Completed' }}
-              </span>
-            </div>
-          </div>
-          <div class="progress-bar" *ngIf="file.status === 'uploading'">
-            <div class="progress" [style.width.%]="file.progress"></div>
-          </div>
-        </div>
-      </div>
+  <!-- Sección del visor de PDF -->
+  <div class="pdf-viewer-content" *ngIf="viewerState?.isLoaded">
+    <!-- Aquí irá el contenido del visor de PDF -->
+    <div class="placeholder">
+      PDF Viewer coming soon...
     </div>
   </div>
-
-  <!-- Contenido del visor (solo visible cuando pdfLoaded es true) -->
-  <ng-container *ngIf="pdfLoaded">
-    <!-- Top toolbar -->
-    <div class="toolbar">
-      <div class="left-controls">
-        <button class="back-button">
-          <i class="fas fa-arrow-left"></i>
-        </button>
-        <h2>Document name</h2>
-      </div>
-
-      <div class="right-controls">
-        <div class="reading-mode-buttons">
-          <button [class.active]="currentReadingMode === 'faceDetection'">
-            Face control
-          </button>
-          <button [class.active]="currentReadingMode === 'accelerometer'">
-            Accelerometer
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- PDF viewing area -->
-    <div class="pdf-content">
-      <div class="pdf-placeholder">
-        PDF Content
-      </div>
-    </div>
-
-    <!-- Reading control panel -->
-    <div class="reading-controls" *ngIf="isReading">
-      <div class="speed-control">
-        <label>Speed: {{scrollSpeed}}x</label>
-        <input 
-          type="range" 
-          [value]="scrollSpeed" 
-          min="0.5" 
-          max="2" 
-          step="0.1"
-          (input)="onScrollSpeedChange($event)">
-      </div>
-    </div>
-  </ng-container>
 </div>

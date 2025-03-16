@@ -1,0 +1,44 @@
+<div class="reading-options">
+  <h3>Select Reading Mode</h3>
+  <div class="options-container">
+    <label class="option">
+      <input type="radio" 
+             name="readingMode" 
+             value="manual"
+             [(ngModel)]="selectedMode"
+             (change)="onModeChange()">
+      <div class="option-content">
+        <span class="radio-label">Manual</span>
+        <span class="description">Control the reading manually</span>
+      </div>
+    </label>
+
+    <label class="option">
+      <input type="radio" 
+             name="readingMode" 
+             value="faceDetection"
+             [(ngModel)]="selectedMode"
+             (change)="onModeChange()">
+      <div class="option-content">
+        <span class="radio-label">Face Detection</span>
+        <span class="description">Auto-scroll based on face position</span>
+      </div>
+    </label>
+
+    <label class="option" *ngIf="showAccelerometerOption">
+      <input type="radio" 
+             name="readingMode" 
+             value="accelerometer"
+             [(ngModel)]="selectedMode"
+             (change)="onModeChange()">
+      <div class="option-content">
+        <span class="radio-label">Accelerometer</span>
+        <span class="description">Control with device movement</span>
+      </div>
+    </label>
+
+    <div class="unsupported-message" *ngIf="showUnsupportedMessage">
+      <p>Accelerometer control is not available on this device</p>
+    </div>
+  </div>
+</div> 
