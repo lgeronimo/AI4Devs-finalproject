@@ -40,7 +40,8 @@ export class UrlReaderComponent implements OnInit {
     
     if (this.urlForm.valid && url) {
       try {
-        //this.validatedUrl = await this.webContentService.validateUrl(url);
+        this.validatedUrl = await this.webContentService.validateUrl(url);
+       
         this.showReadingOptions = true;
         this.errorMessage = null;
       } catch (error) {

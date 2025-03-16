@@ -1,6 +1,7 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { WebContentService } from '../../services/web-content.service';
 
 @Component({
   selector: 'app-url-viewer',
@@ -9,16 +10,12 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
   templateUrl: './url-viewer.component.html',
   styleUrls: ['./url-viewer.component.scss']
 })
-export class UrlViewerComponent implements OnChanges {
-  @Input() url: string = '';
-  safeUrl: SafeResourceUrl | null = null;
+export class UrlViewerComponent {
+  private webContentService = inject(WebContentService);
+  private sanitizer = inject(DomSanitizer);
   
-  constructor(private sanitizer: DomSanitizer) { }
-  
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['url'] && this.url) {
-      // Sanitizamos la URL para el iframe
-      this.safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.url);
-    }
+  get safeUrl(): SafeResourceUrl {
+    const url = this.webContentService.getCurrentUrl();
+    return this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }
 } 

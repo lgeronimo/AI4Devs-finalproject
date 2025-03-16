@@ -2,17 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ReadingMode } from '@shared/types/reading.types';
+import { WebViewerState, WebConfig } from '@shared/types/reading.types';
 
-interface WebViewerState {
-  isLoaded: boolean;
-  config: WebConfig;
-}
-
-interface WebConfig {
-  scrollSpeed: number;
-  readingMode: ReadingMode;
-  isReading: boolean;
-}
 
 const DEFAULT_WEB_CONFIG: WebConfig = {
   scrollSpeed: 1,
@@ -43,11 +34,11 @@ export class WebContentService {
    */
   async validateUrl(url: string): Promise<string> {
     try {
-      if (!url.startsWith('http://') && !url.startsWith('https://')) {
+     /* if (!url.startsWith('http://') && !url.startsWith('https://')) {
         url = 'https://' + url;
-      }
+      }*/
       
-      await this.checkUrlAccess(url);
+      // await this.checkUrlAccess(url);
       this.urlSubject.next(url);
       return url;
     } catch (error) {

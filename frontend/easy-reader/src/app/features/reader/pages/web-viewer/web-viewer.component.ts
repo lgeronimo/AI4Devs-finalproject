@@ -5,11 +5,8 @@ import { ReadingMode } from '../../types/reader.types';
 import { WebContentService } from '../../services/web-content.service';
 import { UrlReaderComponent } from '../../components/url-reader/url-reader.component';
 import { UrlViewerComponent } from '../../components/url-viewer/url-viewer.component';
+import  {WebViewerState} from '@shared/types/reading.types';
 
-interface WebViewerState {
-  isLoaded: boolean;
-  url: string | null;
-}
 
 @Component({
   selector: 'app-web-viewer',
@@ -32,16 +29,10 @@ export class WebViewerComponent {
   viewerState: WebViewerState | null = null;
 
   constructor() {
-    this.webContentService.url$
+    this.webContentService.viewerState$
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(url => {
-        if (url) {
-          this.webUrl = url;
-          this.viewerState = {
-            isLoaded: true,
-            url: url
-          };
-        }
+      .subscribe(state => {
+        this.viewerState = state;
       });
   }
 

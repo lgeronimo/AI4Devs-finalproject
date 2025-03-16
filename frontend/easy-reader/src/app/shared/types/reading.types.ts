@@ -23,3 +23,15 @@ export interface PdfViewerState {
   scale: number;
   config: PdfConfig;
 }
+
+
+export interface WebViewerState {
+  isLoaded: boolean;
+  config: WebConfig;
+}
+
+export interface WebConfig {
+  scrollSpeed: number;
+  readingMode: ReadingMode;
+  isReading: boolean;
+}
