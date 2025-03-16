@@ -217,9 +217,12 @@ easy-reader/
 │   │   │   │   │   │   ├── pdf-viewer/
 │   │   │   │   │   │   └── web-viewer/
 │   │   │   │   │   ├── components/
-│   │   │   │   │   │   ├── motion-controls/
+│   │   │   │   │   │   ├── acelerometer-detection/
+│   │   │   │   │   │   │   ├── acelerometer-detection.component.ts
 │   │   │   │   │   │   ├── face-detection/
+│   │   │   │   │   │   │   ├── face-detection.component.ts
 │   │   │   │   │   │   └── reader-settings/
+│   │   │   │   │   │   │   ├── reader-settings.component.ts
 │   │   │   │   │   ├── services/
 │   │   │   │   │   └── models/
 │   │   │   │   │
