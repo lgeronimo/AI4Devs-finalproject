@@ -1,0 +1,16 @@
+.web-viewer-container {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.web-viewer-content {
+  height: 100%;
+  width: 100%;
+  background-color: #FFFFFF;
+  overflow: auto;
+} 

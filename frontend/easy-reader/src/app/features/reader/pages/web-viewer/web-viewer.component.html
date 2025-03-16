@@ -1,0 +1,14 @@
+<div class="web-viewer-container">
+  <!-- Sección de carga de URL -->
+   <div class="url-reader-container">
+       <app-url-reader 
+         *ngIf="!viewerState?.isLoaded"
+         (urlValidated)="onUrlValidated($event)">
+       </app-url-reader>
+   </div>
+
+  <!-- Sección del visor de contenido web -->
+  <div class="web-viewer-content" *ngIf="viewerState?.isLoaded">
+    <app-url-viewer [url]="webUrl"></app-url-viewer>
+  </div>
+</div> 

@@ -7,13 +7,6 @@ import { PdfUploaderComponent } from '../../components/pdf-uploader/pdf-uploader
 import { PdfViewerState } from '@shared/types/reading.types';
 import { PdfContentComponent } from '../../components/pdf-content/pdf-content.component';
 
-interface UploadFile {
-  name: string;
-  size: string;
-  progress: number;
-  status: 'uploading' | 'completed';
-}
-
 @Component({
   selector: 'app-pdf-viewer',
   standalone: true,

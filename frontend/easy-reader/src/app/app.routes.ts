@@ -9,8 +9,14 @@ export const routes: Routes = [
         loadComponent: () => 
           import('./features/reader/pages/pdf-viewer/pdf-viewer.component')
             .then(m => m.PdfViewerComponent)
+      },
+      {
+        path: 'web',
+        loadComponent: () => 
+          import('./features/reader/pages/web-viewer/web-viewer.component')
+            .then(m => m.WebViewerComponent)
       }
     ]
   },
-  { path: '', redirectTo: '/reader/pdf', pathMatch: 'full' }
+  { path: '', redirectTo: '/reader/web', pathMatch: 'full' }
 ];

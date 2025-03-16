@@ -1,0 +1,33 @@
+<div class="container">
+  <div class="header">
+    <div class="icon">
+      <i class="fas fa-globe"></i>
+    </div>
+    <h3>Enter a website URL to start reading</h3>
+  </div>
+  
+  <form [formGroup]="urlForm" (ngSubmit)="loadUrl()">
+    <input 
+      type="url" 
+      formControlName="url" 
+      placeholder="https://example.com"
+      class="input"
+    >
+    
+    <div class="error" *ngIf="urlForm.get('url')?.invalid && urlForm.get('url')?.touched">
+      Please enter a valid URL
+    </div>
+    
+    <button 
+      type="submit" 
+      [disabled]="urlForm.invalid || isLoading"
+    >
+      {{ isLoading ? 'Loading...' : 'Load Website' }}
+    </button>
+  </form>
+  
+  <div class="info">
+    <i class="fas fa-info-circle"></i>
+    <p>This feature loads the website in an iframe so you can read it with auto-scroll functions.</p>
+  </div>
+</div> 
