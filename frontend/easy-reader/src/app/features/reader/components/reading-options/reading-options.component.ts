@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PdfService } from '../../services/pdf.service';
@@ -13,10 +13,13 @@ type ReadingMode = 'manual' | 'faceDetection' | 'accelerometer';
   styleUrls: ['./reading-options.component.scss']
 })
 export class ReadingOptionsComponent implements OnInit {
+  @Output() readingModeSelected = new EventEmitter<ReadingMode>();
+  
   private pdfService = inject(PdfService);
   selectedMode: ReadingMode = 'manual';
   hasAccelerometer = false;
   isMobileDevice = false;
+  accelerometerPermission: PermissionState | null = null;
 
   ngOnInit() {
     this.checkDeviceType();
@@ -51,5 +54,10 @@ export class ReadingOptionsComponent implements OnInit {
 
   get showUnsupportedMessage(): boolean {
     return this.isMobileDevice && !this.hasAccelerometer;
+  }
+
+  onContinue(): void {
+    this.readingModeSelected.emit(this.selectedMode);
+    this.pdfService.initializeViewer();
   }
 } 

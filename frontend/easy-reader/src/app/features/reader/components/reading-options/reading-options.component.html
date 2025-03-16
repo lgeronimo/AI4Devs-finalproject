@@ -40,5 +40,11 @@
     <div class="unsupported-message" *ngIf="showUnsupportedMessage">
       <p>Accelerometer control is not available on this device</p>
     </div>
+
+    <button class="continue-button" 
+            (click)="onContinue()"
+            [disabled]="!selectedMode">
+      Continue to Reader
+    </button>
   </div>
 </div> 

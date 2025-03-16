@@ -68,6 +68,14 @@ export class PdfService {
     this.updateConfig({ scrollSpeed: speed });
   }
 
+  initializeViewer(): void {
+    const currentState = this.viewerState.value;
+    this.viewerState.next({
+      ...currentState,
+      isLoaded: true
+    });
+  }
+
   // Métodos privados de utilidad
   private formatFileSize(bytes: number): string {
     if (bytes === 0) return '0 B';
@@ -91,14 +99,6 @@ export class PdfService {
         // this.initializeViewer(completedFile.file);
       }
     }, 500);
-  }
-
-  private initializeViewer(file: File): void {
-    // Aquí iría la lógica de inicialización del visor PDF
-    this.viewerState.next({
-      ...this.viewerState.value,
-      isLoaded: true
-    });
   }
 
   private resetState(): void {
