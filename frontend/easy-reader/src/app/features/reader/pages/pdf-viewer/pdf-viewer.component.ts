@@ -5,6 +5,7 @@ import { ReadingMode } from '../../types/reader.types';
 import { PdfService } from '../../services/pdf.service';
 import { PdfUploaderComponent } from '../../components/pdf-uploader/pdf-uploader.component';
 import { PdfViewerState } from '@shared/types/reading.types';
+import { PdfContentComponent } from '../../components/pdf-content/pdf-content.component';
 
 interface UploadFile {
   name: string;
@@ -18,7 +19,8 @@ interface UploadFile {
   standalone: true,
   imports: [
     CommonModule,
-    PdfUploaderComponent
+    PdfUploaderComponent,
+    PdfContentComponent
   ],
   templateUrl: './pdf-viewer.component.html',
   styleUrls: ['./pdf-viewer.component.scss']
@@ -27,17 +29,11 @@ export class PdfViewerComponent {
   private pdfService = inject(PdfService);
   private destroyRef = inject(DestroyRef);
 
-  currentReadingMode: ReadingMode = 'manual';
   isReading = false;
   scrollSpeed = 1;
   pdfLoaded = false;
-  pdfFile: File | null = null;
-  readonly MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB en bytes
-  uploadedFiles: UploadFile[] = [];
-  isDragging = false;
   viewerState: PdfViewerState | null = null;
 
-  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
 
   constructor() {
     this.pdfService.viewerState$
@@ -45,35 +41,21 @@ export class PdfViewerComponent {
       .subscribe(state => {
         this.viewerState = state;
       });
+
+    this.pdfService.pdfUrl$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(url => {
+        this.pdfLoaded = !!url;
+      });
   }
 
-  onFileSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files[0]) {
-      const file = input.files[0];
-      if (file.type === 'application/pdf') {
-        this.pdfFile = file;
-        this.pdfLoaded = true;
-      } else {
-        // TODO: Agregar un servicio de notificaciones para mostrar errores
-        alert('Por favor, selecciona un archivo PDF válido');
-      }
-    }
-  }
-
+ 
   onReadingModeChange(mode: ReadingMode): void {
-    this.currentReadingMode = mode;
-    this.isReading = mode !== 'manual';
+  
   }
 
   onScrollSpeedChange(event: Event): void {
     const input = event.target as HTMLInputElement;
     this.scrollSpeed = +input.value;
-  }
-
-
-  removeFile(index: number) {
-    this.uploadedFiles = [];
-    this.fileInput.nativeElement.value = ''; // Limpiar el input file
   }
 }

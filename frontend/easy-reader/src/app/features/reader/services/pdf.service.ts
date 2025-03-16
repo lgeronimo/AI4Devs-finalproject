@@ -22,15 +22,20 @@ const INITIAL_STATE: PdfViewerState = {
 export class PdfService {
   private currentFile = new BehaviorSubject<UploadFile | null>(null);
   private viewerState = new BehaviorSubject<PdfViewerState>(INITIAL_STATE);
+  private pdfUrlSubject = new BehaviorSubject<string | null>(null);
 
   // Observables públicos
   currentFile$ = this.currentFile.asObservable();
   viewerState$ = this.viewerState.asObservable();
+  pdfUrl$ = this.pdfUrlSubject.asObservable();
 
   constructor() {}
 
   // Métodos para el manejo de archivos
   uploadFile(file: File): void {
+    const url = URL.createObjectURL(file);
+    this.pdfUrlSubject.next(url);
+
     const uploadFile: UploadFile = {
       name: file.name,
       size: this.formatFileSize(file.size),
@@ -43,7 +48,15 @@ export class PdfService {
     this.simulateUpload(uploadFile);
   }
 
+  getCurrentUrl(): string | null {
+    return this.pdfUrlSubject.value;
+  }
+
   removeFile(): void {
+    const currentUrl = this.pdfUrlSubject.value;
+    if (currentUrl) {
+      URL.revokeObjectURL(currentUrl);
+    }
     this.currentFile.next(null);
     this.resetState();
   }
