@@ -45,13 +45,6 @@ export class WebViewerComponent {
       });
   }
 
-  onUrlValidated(url: string): void {
-    this.webUrl = url;
-    this.viewerState = {
-      isLoaded: true,
-      url: url
-    };
-  }
 
   onReadingModeChange(mode: ReadingMode): void {
     // Implementar lógica para cambio de modo de lectura

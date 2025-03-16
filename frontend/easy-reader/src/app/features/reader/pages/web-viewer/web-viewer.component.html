@@ -2,8 +2,7 @@
   <!-- Sección de carga de URL -->
    <div class="url-reader-container">
        <app-url-reader 
-         *ngIf="!viewerState?.isLoaded"
-         (urlValidated)="onUrlValidated($event)">
+         *ngIf="!viewerState?.isLoaded">
        </app-url-reader>
    </div>
 

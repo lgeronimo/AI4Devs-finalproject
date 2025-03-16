@@ -2,6 +2,7 @@ import { Component, inject, OnInit, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PdfService } from '../../services/pdf.service';
+import { WebContentService } from '../../services/web-content.service';
 
 type ReadingMode = 'manual' | 'faceDetection' | 'accelerometer';
 
@@ -16,6 +17,7 @@ export class ReadingOptionsComponent implements OnInit {
   @Output() readingModeSelected = new EventEmitter<ReadingMode>();
   
   private pdfService = inject(PdfService);
+  private webContentService = inject(WebContentService);
   selectedMode: ReadingMode = 'manual';
   isMobileDevice = false;
   hasAccelerometer = false;
@@ -52,6 +54,10 @@ export class ReadingOptionsComponent implements OnInit {
   onContinue(): void {
     // Emitimos el modo seleccionado e inicializamos el visor
     this.readingModeSelected.emit(this.selectedMode);
-    this.pdfService.initializeViewer();
+   
+      this.pdfService.initializeViewer();
+      this.webContentService.initializeViewer(); 
+  
+
   }
 } 
