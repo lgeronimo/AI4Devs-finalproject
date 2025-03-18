@@ -1,5 +1,21 @@
 <div class="voice-reader-container">
   <div class="voice-reader-controls">
+    <div class="status-indicator" 
+         [ngClass]="{
+           'active': isReading,
+           'reading': isReading && !isPaused,
+           'paused': isReading && isPaused,
+           'inactive': !isReading
+         }">
+      <div class="status-icon">
+        <i class="fas" 
+           [class.fa-volume-up]="isReading && !isPaused" 
+           [class.fa-volume-mute]="!isReading || isPaused"></i>
+      </div>
+      <div class="status-text">
+        {{ isReading ? (isPaused ? 'Reading paused' : 'Reading...') : 'Voice reader inactive' }}
+      </div>
+    </div> 
     <div class="control-section">
       <div class="button-group">
         <button 
@@ -23,26 +39,11 @@
       </div>
     </div>
     
-    <div class="status-indicator" 
-         [ngClass]="{
-           'active': isReading,
-           'reading': isReading && !isPaused,
-           'paused': isReading && isPaused,
-           'inactive': !isReading
-         }">
-      <div class="status-icon">
-        <i class="fas" 
-           [class.fa-volume-up]="isReading && !isPaused" 
-           [class.fa-volume-mute]="!isReading || isPaused"></i>
-      </div>
-      <div class="status-text">
-        {{ isReading ? (isPaused ? 'Reading paused' : 'Reading...') : 'Voice reader inactive' }}
-      </div>
-    </div>
+
     
     <!--div class="auto-page-info">
       <p>When the reading is finished, it will automatically change to the next page</p>
-    </div-->
+    </div>
   </div>
 
   <!-- Modal for voice settings -->
