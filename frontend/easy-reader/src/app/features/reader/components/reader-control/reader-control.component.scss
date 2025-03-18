@@ -1,19 +1,39 @@
 .reader-control {
   position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%) translateX(calc(100% - 40px));
   display: flex;
-  flex-direction: row;
-  gap: 20px;
-  background-color: transparent;
-  padding: 10px;
-  transition: opacity 0.2s ease;
-  opacity: 1;
+  flex-direction: column;
+  background-color: white;
+  padding: 15px;
+  border-radius: 10px 0 0 10px;
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+  z-index: 100;
   
   &:hover {
-    opacity: 1;
+    transform: translateY(-50%) translateX(0);
   }
+  
+  .voice-reader-container {
+    min-width: 250px;
+  }
+}
+
+// Añadir un indicador de despliegue
+.reader-control::before {
+  content: '«';
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 20px;
+  color: #6366F1;
+}
+
+.reader-control:hover::before {
+  content: '»';
 }
 
 .control-button {
