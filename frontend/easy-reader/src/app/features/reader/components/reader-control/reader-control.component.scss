@@ -1,0 +1,36 @@
+.reader-control {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  background-color: transparent;
+  padding: 10px;
+  transition: opacity 0.2s ease;
+  opacity: 0.5;
+  
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.control-button {
+  width: 50px;
+  height: 50px;
+  background-color: #6366F1; /* Color de fondo */
+  border-radius: 50%;
+  border: none;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+
+  &:hover {
+    background-color: #4F46E5; /* Color más oscuro al pasar el mouse */
+    transform: scale(1.1); /* Aumenta ligeramente el tamaño */
+  }
+} 

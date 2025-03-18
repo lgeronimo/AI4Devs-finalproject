@@ -5,20 +5,23 @@ import { ReadingMode, WebViewerState } from '@shared/types/reading.types';
 import { WebContentService } from '../../services/web-content.service';
 import { UrlReaderComponent } from '../../components/url-reader/url-reader.component';
 import { UrlViewerComponent } from '../../components/url-viewer/url-viewer.component';
-
+import { ReaderControlComponent } from '../../components/reader-control/reader-control.component';
+import { ReaderModeService } from '@shared/services/reader-mode.service';
 @Component({
   selector: 'app-web-viewer',
   standalone: true,
   imports: [
     CommonModule,
     UrlReaderComponent,
-    UrlViewerComponent
+    UrlViewerComponent,
+    ReaderControlComponent
   ],
   templateUrl: './web-viewer.component.html',
   styleUrls: ['./web-viewer.component.scss']
 })
 export class WebViewerComponent {
   private webContentService = inject(WebContentService);
+  private readerModeService = inject(ReaderModeService);
   private destroyRef = inject(DestroyRef);
 
   isReading = false;
@@ -27,16 +30,20 @@ export class WebViewerComponent {
   viewerState: WebViewerState | null = null;
 
   constructor() {
+
+    this.readerModeService.setMode('web');
+
     this.webContentService.viewerState$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(state => {
         this.viewerState = state;
       });
+
+
   }
 
-
   onReadingModeChange(mode: ReadingMode): void {
-    // Implementar lógica para cambio de modo de lectura
+    console.log('Modo de lectura cambiado a:', mode);
   }
 
   onScrollSpeedChange(event: Event): void {

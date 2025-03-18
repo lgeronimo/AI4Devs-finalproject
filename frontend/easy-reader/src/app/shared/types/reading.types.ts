@@ -1,3 +1,4 @@
+export type ReaderMode = 'pdf' | 'web';
 export type ReadingMode = 'voice' | 'faceDetection' | 'accelerometer' | 'manual';
 
 export interface UploadFile {

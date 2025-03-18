@@ -7,7 +7,8 @@ import { PdfUploaderComponent } from '../../components/pdf-uploader/pdf-uploader
 import { PdfViewerState } from '@shared/types/reading.types';
 import { PdfContentComponent } from '../../components/pdf-content/pdf-content.component';
 import { VoiceReaderComponent } from '../../components/voice-reader/voice-reader.component';
-
+import { ReaderControlComponent } from '../../components/reader-control/reader-control.component';
+import { ReaderModeService } from '@shared/services/reader-mode.service';
 @Component({
   selector: 'app-pdf-viewer',
   standalone: true,
@@ -15,7 +16,8 @@ import { VoiceReaderComponent } from '../../components/voice-reader/voice-reader
     CommonModule,
     PdfUploaderComponent,
     PdfContentComponent,
-    VoiceReaderComponent
+    VoiceReaderComponent,
+    ReaderControlComponent
   ],
   templateUrl: './pdf-viewer.component.html',
   styleUrls: ['./pdf-viewer.component.scss']
@@ -23,14 +25,17 @@ import { VoiceReaderComponent } from '../../components/voice-reader/voice-reader
 export class PdfViewerComponent {
   private pdfService = inject(PdfService);
   private destroyRef = inject(DestroyRef);
+  private readerModeService = inject(ReaderModeService);
+
 
   isReading = false;
   scrollSpeed = 1;
   pdfLoaded = false;
   viewerState: PdfViewerState | null = null;
 
-
   constructor() {
+    this.readerModeService.setMode('pdf');
+    
     this.pdfService.viewerState$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(state => {
@@ -44,9 +49,8 @@ export class PdfViewerComponent {
       });
   }
 
- 
   onReadingModeChange(mode: ReadingMode): void {
-  
+    console.log('Modo de lectura cambiado a:', mode);
   }
 
   onScrollSpeedChange(event: Event): void {

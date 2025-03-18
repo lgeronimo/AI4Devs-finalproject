@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { PdfService } from '../../services/pdf.service';
 import { WebContentService } from '../../services/web-content.service';
 import { ReadingMode } from '@shared/types/reading.types';
-
+import { ReaderModeService } from '@shared/services/reader-mode.service';
 @Component({
   selector: 'app-reading-options',
   standalone: true,
@@ -17,6 +17,7 @@ export class ReadingOptionsComponent implements OnInit {
   
   private pdfService = inject(PdfService);
   private webContentService = inject(WebContentService);
+  private readerModeService = inject(ReaderModeService);
   selectedMode: ReadingMode = 'voice';
   isMobileDevice = false;
   hasAccelerometer = false;
@@ -37,10 +38,6 @@ export class ReadingOptionsComponent implements OnInit {
     this.hasAccelerometer = 'DeviceMotionEvent' in window;
   }
 
-  onModeChange(): void {
-    // Guardamos la opción seleccionada
-    this.pdfService.setReadingMode(this.selectedMode);
-  }
 
   get showAccelerometerOption(): boolean {
     return this.isMobileDevice && this.hasAccelerometer;
@@ -51,12 +48,13 @@ export class ReadingOptionsComponent implements OnInit {
   }
 
   onContinue(): void {
-    // Emitimos el modo seleccionado e inicializamos el visor
-    this.readingModeSelected.emit(this.selectedMode);
-   
-      this.pdfService.initializeViewer();
-      this.webContentService.initializeViewer(); 
-  
 
+    if (this.readerModeService.getMode() === 'pdf') {
+      this.pdfService.setReadingMode(this.selectedMode);
+      this.pdfService.initializeViewer();
+    } else {
+      this.webContentService.setReadingMode(this.selectedMode);
+      this.webContentService.initializeViewer(); 
+    }
   }
 } 

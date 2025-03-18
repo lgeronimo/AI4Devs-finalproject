@@ -6,7 +6,6 @@
              name="readingMode" 
              value="voice"
              [(ngModel)]="selectedMode"
-             (change)="onModeChange()"
              checked>
       <div class="option-content">
         <span class="radio-label">Voice</span>
@@ -18,8 +17,7 @@
       <input type="radio" 
              name="readingMode" 
              value="faceDetection"
-             [(ngModel)]="selectedMode"
-             (change)="onModeChange()">
+             [(ngModel)]="selectedMode">
       <div class="option-content">
         <span class="radio-label">Face Detection</span>
         <span class="description">Auto-scroll based on face position</span>
@@ -30,8 +28,7 @@
       <input type="radio" 
              name="readingMode" 
              value="accelerometer"
-             [(ngModel)]="selectedMode"
-             (change)="onModeChange()">
+             [(ngModel)]="selectedMode">
       <div class="option-content">
         <span class="radio-label">Accelerometer</span>
         <span class="description">Control with device movement</span>
@@ -42,8 +39,7 @@
       <input type="radio" 
              name="readingMode" 
              value="manual"
-             [(ngModel)]="selectedMode"
-             (change)="onModeChange()">
+             [(ngModel)]="selectedMode">
       <div class="option-content">
         <span class="radio-label">Manual</span>
         <span class="description">Control the reading manually</span>
