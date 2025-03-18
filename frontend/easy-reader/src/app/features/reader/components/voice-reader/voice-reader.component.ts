@@ -2,6 +2,8 @@ import { Component, OnInit, OnDestroy, Input, inject, ChangeDetectorRef } from '
 import { CommonModule } from '@angular/common';
 import { PdfService } from '../../services/pdf.service';
 import { Subscription } from 'rxjs';
+import { Router, NavigationStart } from '@angular/router';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-voice-reader',
@@ -13,6 +15,7 @@ import { Subscription } from 'rxjs';
 export class VoiceReaderComponent implements OnInit, OnDestroy {
   
   private pdfService = inject(PdfService);
+  private router = inject(Router);
   private subscription: Subscription = new Subscription();
   
   // Propiedades para la síntesis de voz
@@ -79,23 +82,48 @@ export class VoiceReaderComponent implements OnInit, OnDestroy {
       })
     );
 
+    // Suscribirse a los eventos de navegación para detener el audio
+    this.subscription.add(
+      this.router.events.pipe(
+        filter(event => event instanceof NavigationStart)
+      ).subscribe(() => {
+        // Detener la lectura cuando comienza la navegación
+        this.stopReading();
+      })
+    );
+
     // Manejar cuando las voces se cargan de forma asíncrona
     if (window.speechSynthesis) {
       speechSynthesis.onvoiceschanged = () => {
         this.loadVoices();
       };
     }
+
+    // Manejar el evento beforeunload para detener el audio cuando se recarga la página
+    window.addEventListener('beforeunload', this.handleBeforeUnload);
   }
+
+  private handleBeforeUnload = () => {
+    // Detener la síntesis de voz cuando se recarga la página
+    if (this.speechSynthesis) {
+      this.speechSynthesis.cancel();
+    }
+  };
 
   ngOnDestroy() {
     // Limpiar suscripciones al destruir el componente
     this.subscription.unsubscribe();
     
+    // Eliminar el event listener de beforeunload
+    window.removeEventListener('beforeunload', this.handleBeforeUnload);
+    
     // Detener cualquier lectura en curso
-    debugger
-    if (this.isReading) {
-      this.stopReading();
+    if (this.speechSynthesis) {
+      this.speechSynthesis.cancel();
     }
+    
+    this.isReading = false;
+    this.isPaused = false;
   }
 
   startReading() {
