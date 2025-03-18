@@ -1,8 +1,16 @@
 <div class="pdf-viewer">
   <div class="pdf-controls">
-    <button (click)="previousPage()">Previous</button>
-    <button (click)="nextPage()">Next</button>
-    <span>Page: {{ currentPage }} / {{ totalPages }}</span>
+    <div class="controls-wrapper">
+      <button class="control-btn" (click)="previousPage()">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+      <div class="page-info">
+        <span>{{ currentPage }} / {{ totalPages }}</span>
+      </div>
+      <button class="control-btn" (click)="nextPage()">
+        <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
   </div>
 
   <div class="pdf-container">
