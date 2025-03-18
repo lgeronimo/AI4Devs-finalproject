@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { ReadingMode } from '@shared/types/reading.types';
-import { WebViewerState, WebConfig } from '@shared/types/reading.types';
+import { ReadingMode, WebViewerState, WebConfig } from '../../../shared/types/reading.types';
 
 
 const DEFAULT_WEB_CONFIG: WebConfig = {

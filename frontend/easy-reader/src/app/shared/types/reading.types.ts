@@ -1,4 +1,4 @@
-export type ReadingMode = 'faceDetection' | 'accelerometer' | 'manual';
+export type ReadingMode = 'voice' | 'faceDetection' | 'accelerometer' | 'manual';
 
 export interface UploadFile {
   name: string;

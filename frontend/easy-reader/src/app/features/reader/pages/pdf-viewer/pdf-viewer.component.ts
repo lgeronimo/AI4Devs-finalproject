@@ -1,7 +1,7 @@
 import { Component, ViewChild, ElementRef, DestroyRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ReadingMode } from '../../types/reader.types';
+import { ReadingMode } from '@shared/types/reading.types';
 import { PdfService } from '../../services/pdf.service';
 import { PdfUploaderComponent } from '../../components/pdf-uploader/pdf-uploader.component';
 import { PdfViewerState } from '@shared/types/reading.types';

@@ -4,12 +4,13 @@
     <label class="option">
       <input type="radio" 
              name="readingMode" 
-             value="manual"
+             value="voice"
              [(ngModel)]="selectedMode"
-             (change)="onModeChange()">
+             (change)="onModeChange()"
+             checked>
       <div class="option-content">
-        <span class="radio-label">Manual</span>
-        <span class="description">Control the reading manually</span>
+        <span class="radio-label">Voice</span>
+        <span class="description">Automatic text-to-speech reading</span>
       </div>
     </label>
 
@@ -34,6 +35,18 @@
       <div class="option-content">
         <span class="radio-label">Accelerometer</span>
         <span class="description">Control with device movement</span>
+      </div>
+    </label>
+
+    <label class="option">
+      <input type="radio" 
+             name="readingMode" 
+             value="manual"
+             [(ngModel)]="selectedMode"
+             (change)="onModeChange()">
+      <div class="option-content">
+        <span class="radio-label">Manual</span>
+        <span class="description">Control the reading manually</span>
       </div>
     </label>
 

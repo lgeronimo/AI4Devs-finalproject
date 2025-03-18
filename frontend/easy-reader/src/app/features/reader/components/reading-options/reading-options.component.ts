@@ -3,8 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PdfService } from '../../services/pdf.service';
 import { WebContentService } from '../../services/web-content.service';
-
-type ReadingMode = 'manual' | 'faceDetection' | 'accelerometer';
+import { ReadingMode } from '@shared/types/reading.types';
 
 @Component({
   selector: 'app-reading-options',
@@ -18,7 +17,7 @@ export class ReadingOptionsComponent implements OnInit {
   
   private pdfService = inject(PdfService);
   private webContentService = inject(WebContentService);
-  selectedMode: ReadingMode = 'manual';
+  selectedMode: ReadingMode = 'voice';
   isMobileDevice = false;
   hasAccelerometer = false;
 

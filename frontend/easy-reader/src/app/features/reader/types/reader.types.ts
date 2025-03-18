@@ -1,1 +1,0 @@
-export type ReadingMode = 'faceDetection' | 'accelerometer' | 'manual';
