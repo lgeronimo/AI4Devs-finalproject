@@ -2,6 +2,8 @@ import { Component, ElementRef, ViewChild, OnInit, AfterViewInit, inject } from 
 import { CommonModule } from '@angular/common';
 import { PdfService } from '../../services/pdf.service';
 import { Router } from '@angular/router';
+import { ReadingMode } from '@shared/types/reading.types';
+import { map } from 'rxjs';
 declare const pdfjsLib: any;
 
 @Component({
@@ -25,10 +27,16 @@ export class PdfContentComponent implements OnInit, AfterViewInit {
   currentPage = 1;
   totalPages = 0;
   documentTitle: string = 'Documento PDF';
-
+  currentPageText: string = '';
+  readingMode: ReadingMode | null = null;
   constructor(private router: Router) {
     // Configurar el worker de PDF.js
     // pdfjsLib.GlobalWorkerOptions.workerSrc = 'assets/pdf.worker.mjs';
+
+    this.pdfService.viewerState$.pipe(
+      map(state => state.config.readingMode)
+    ).subscribe(mode => this.readingMode = mode);
+
   }
 
   ngOnInit(): void {
@@ -70,6 +78,18 @@ export class PdfContentComponent implements OnInit, AfterViewInit {
 
       const renderTask = page.render(renderContext);
       await renderTask.promise;
+      
+
+      if (this.readingMode === 'voice') {
+        const textContent = await page.getTextContent();
+        this.currentPageText = textContent.items
+          .map((item: any) => item.str)
+          .join(' ');
+        
+        // Actualizar el servicio con el texto actual
+        this.pdfService.setCurrentPageText(this.currentPageText);
+      }
+      // Extraer el texto de la página actual
 
       this.pageRendering = false;
       

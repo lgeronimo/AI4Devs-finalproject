@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, Input, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PdfService } from '../../services/pdf.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-voice-reader',
@@ -9,9 +10,10 @@ import { PdfService } from '../../services/pdf.service';
   templateUrl: './voice-reader.component.html',
   styleUrls: ['./voice-reader.component.scss']
 })
-export class VoiceReaderComponent implements OnInit {
+export class VoiceReaderComponent implements OnInit, OnDestroy {
   
   private pdfService = inject(PdfService);
+  private subscription: Subscription = new Subscription();
   
   // Propiedades para la síntesis de voz
   speechSynthesis: SpeechSynthesis = window.speechSynthesis;
@@ -20,7 +22,7 @@ export class VoiceReaderComponent implements OnInit {
   isPaused: boolean = false;
 
   // Propiedades de configuración
-  text: string = 'Un texto de prueba para la lectura';
+  text: string = '';
   rate: number = 1;
   pitch: number = 1;
   volume: number = 1;
@@ -48,12 +50,33 @@ export class VoiceReaderComponent implements OnInit {
       // Puedes mostrar un mensaje al usuario aquí
     }
     
+    // Suscribirse a los cambios de texto de la página actual
+    this.subscription.add(
+      this.pdfService.currentPageText$.subscribe(text => {
+        this.text = text;
+        // Si estaba leyendo, detener la lectura actual y comenzar con el nuevo texto
+        if (this.isReading && !this.isPaused) {
+          this.stopReading();
+          //this.startReading();
+        }
+      })
+    );
 
     // Manejar cuando las voces se cargan de forma asíncrona
     if (window.speechSynthesis) {
       speechSynthesis.onvoiceschanged = () => {
         this.loadVoices();
       };
+    }
+  }
+
+  ngOnDestroy() {
+    // Limpiar suscripciones al destruir el componente
+    this.subscription.unsubscribe();
+    
+    // Detener cualquier lectura en curso
+    if (this.isReading) {
+      this.stopReading();
     }
   }
 
@@ -65,8 +88,7 @@ export class VoiceReaderComponent implements OnInit {
     
     // Verificar si hay texto para leer
     if (!this.text || this.text.trim() === '') {
-      console.warn('No hay texto para leer');
-      return;
+      this.text= 'There is no text to read on this page';
     }
     
     // Crear una nueva instancia de SpeechSynthesisUtterance
@@ -77,6 +99,11 @@ export class VoiceReaderComponent implements OnInit {
     this.speechUtterance.rate = this.rate || 1; // Velocidad de lectura
     this.speechUtterance.pitch = this.pitch || 1; // Tono de voz
     this.speechUtterance.volume = this.volume || 1; // Volumen
+    
+    // Asignar la voz seleccionada si existe
+    if (this.currentVoice) {
+      this.speechUtterance.voice = this.currentVoice;
+    }
     
     // Asignar eventos para controlar el progreso de la lectura
     this.speechUtterance.onstart = () => {

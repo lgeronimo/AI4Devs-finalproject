@@ -25,11 +25,13 @@ export class PdfService {
   private currentFile = new BehaviorSubject<UploadFile | null>(null);
   private viewerState = new BehaviorSubject<PdfViewerState>(INITIAL_STATE);
   private pdfUrlSubject = new BehaviorSubject<string | null>(null);
+  private currentPageTextSubject = new BehaviorSubject<string>('');
 
   // Observables públicos
   currentFile$ = this.currentFile.asObservable();
   viewerState$ = this.viewerState.asObservable();
   pdfUrl$ = this.pdfUrlSubject.asObservable();
+  currentPageText$ = this.currentPageTextSubject.asObservable();
 
   constructor() {}
 
@@ -153,5 +155,13 @@ export class PdfService {
     this.pdfUrlSubject.next(null);
     this.currentFile.next(null);
     this.resetState();
+  }
+
+  setCurrentPageText(text: string): void {
+    this.currentPageTextSubject.next(text);
+  }
+
+  getCurrentPageText(): string {
+    return this.currentPageTextSubject.value;
   }
 } 
