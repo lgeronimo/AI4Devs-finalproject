@@ -6,6 +6,7 @@ import { PdfService } from '../../services/pdf.service';
 import { PdfUploaderComponent } from '../../components/pdf-uploader/pdf-uploader.component';
 import { PdfViewerState } from '@shared/types/reading.types';
 import { PdfContentComponent } from '../../components/pdf-content/pdf-content.component';
+import { VoiceReaderComponent } from '../../components/voice-reader/voice-reader.component';
 
 @Component({
   selector: 'app-pdf-viewer',
@@ -13,7 +14,8 @@ import { PdfContentComponent } from '../../components/pdf-content/pdf-content.co
   imports: [
     CommonModule,
     PdfUploaderComponent,
-    PdfContentComponent
+    PdfContentComponent,
+    VoiceReaderComponent
   ],
   templateUrl: './pdf-viewer.component.html',
   styleUrls: ['./pdf-viewer.component.scss']

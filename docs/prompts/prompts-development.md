@@ -23,9 +23,40 @@ Vamos a ir pasos a paso, conforme te lo vaya indicando.
 
 ## Prompt 4
 
-Vamos a emepzar a generar el contenido de @pdf-viewer.component.ts @pdf-viewer.component.html @pdf-viewer.component.scss , por ahora no vamos a conectarnos con servicios, solamente las funcionalidades correspondientes a este componente, las caracteristicas marcadas como futuras, esas las omitiremos por el momento,recuerda que todos las caractirísticas las tenemos en @PRD.md @template.md 
+Vamos a emepzar a generar el contenido de @pdf-viewer.component.ts @pdf-viewer.component.html @pdf-viewer.component.scss , por ahora no vamos a conectarnos con servicios, solamente las funcionalidades correspondientes a este componente, las caracteristicas marcadas como futuras, esas las omitiremos por el momento,recuerda que todas las caractirísticas las tenemos en @PRD.md @template.md 
 
 ## Prompt 5
 
-Vamos a iniciar por pedir el archivo pdf, para esto puse una imagen @upload-pdf.png, vamos a generar el componente de carga de archivo pdf, para esto vamos a usar el componente de carga de archivos de angular, el cual se llama FileUploadComponent, vamos a usarlo para cargar el archivo pdf.
+Vamos a iniciar por pedir el archivo pdf, para esto puse una imagen @upload-pdf.png, apégate a la imagen lo más que puedas, para que se vea lo más similar posible a la imagen.
 
+## Prompt 6
+
+Vamos a separar todo la lógica en pequeños componentes para no tener toda la lógica en un solo componente, dentro de @pdf-viewer únicamente vamos a tener la referencia a los componentes que vamos a crear.
+
+## Prompt 7
+
+Ahora vamos a crear la página web-viewer, la de este componente es pedir una url y mostrar el contenido de la url en un iframe, el componente se llamará web-viewer.component.ts @web-viewer.component.html @web-viewer.component.scss.
+
+Toma como referencia la page @pdf-viewer para que se vea lo más similar posible en cuanto a la estructura de la página, estilos y funcionalidades.
+
+Recuerdo apaegarte a las buenas prácticas de desarrollo de software, para que el código sea lo más limpio y fácil de entender posible.
+
+## Prompt 8
+
+Vamos a crear el componente de upload-pdf, el cual se encargará de subir el archivo pdf a la aplicación, el componente se llamará upload-pdf.component.ts @upload-pdf.component.html @upload-pdf.component.scss.
+
+
+## Prompt 9
+
+Vamos a crear la página principal dentro de @reader, el objetivo de esta página es darle la opción al usuario de seleccionar entre un pdf o una URL para después redireccionar a @pdf-viewer o @web-viewer.
+
+El contenido de la página será el siguiente:
+
+1. Título de la página "Easy reader" en una fuente que sea facíl de leer y que rasalte, ya sea con algún efecto de sombra o brillo.
+2. Un pequeño eslogan de la aplicación, algo como "The easiest way to...."
+3. Dos opciones para seleccionar:
+   - Leer desde PDF
+   - Ingresar un URL Web
+4. Un botón para iniciar la lectura.
+
+Todo esto en inglés y recuerda seguir usanndo buenas prácticas, antes de crear código dame la estructura de carpetas que propones y en cuanto a estilos, básate en los componente que ya hicimos dentro de  @reader 

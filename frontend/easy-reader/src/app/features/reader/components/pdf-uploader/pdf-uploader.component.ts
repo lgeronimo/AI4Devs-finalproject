@@ -13,7 +13,7 @@ import { ReadingOptionsComponent } from '../reading-options/reading-options.comp
   styleUrls: ['./pdf-uploader.component.scss']
 })
 export class PdfUploaderComponent {
-  private readonly MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB en bytes
+  private readonly MAX_FILE_SIZE = 10 * 1024 * 1024; // 5MB en bytes
   private destroyRef = inject(DestroyRef);
   private pdfService = inject(PdfService);
 

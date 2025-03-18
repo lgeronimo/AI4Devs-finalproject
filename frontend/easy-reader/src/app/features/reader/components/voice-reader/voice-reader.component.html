@@ -1,0 +1,97 @@
+<div class="voice-reader-container">
+  <div class="voice-reader-controls">
+    <div class="control-section">
+      <h3>Controles de lectura</h3>
+      <div class="button-group">
+        <button 
+          class="control-button" 
+          [class.active]="isReading && !isPaused"
+          (click)="startReading()"
+          [disabled]="isReading && !isPaused">
+          <i class="fas fa-play"></i>
+          <span>Reproducir</span>
+        </button>
+        
+        <button 
+          class="control-button" 
+          [class.active]="isPaused"
+          (click)="pauseReading()"
+          [disabled]="!isReading || isPaused">
+          <i class="fas fa-pause"></i>
+          <span>Pausar</span>
+        </button>
+        
+        <button 
+          class="control-button" 
+          (click)="stopReading()"
+          [disabled]="!isReading">
+          <i class="fas fa-stop"></i>
+          <span>Detener</span>
+        </button>
+      </div>
+    </div>
+    
+    <div class="control-section">
+      <h3>Configuración de voz</h3>
+      
+      <div class="voice-selector">
+        <label for="voice-select">Voz:</label>
+        <select 
+          id="voice-select" 
+          [disabled]="availableVoices.length === 0"
+          [value]="currentVoice?.name"
+          (change)="onVoiceChange($event)">
+          <option *ngFor="let voice of availableVoices" 
+                  [value]="voice.name">
+            {{ voice.name }}
+          </option>
+        </select>
+      </div>
+      
+      <div class="slider-control">
+        <label for="volume-slider">Volumen: {{ volume }}</label>
+        <input 
+          type="range" 
+          id="volume-slider" 
+          min="0" 
+          max="1" 
+          step="0.1" 
+          [value]="volume"
+          (input)="onVolumeChange($event)">
+      </div>
+      
+      <div class="slider-control">
+        <label for="rate-slider">Velocidad: {{ rate }}</label>
+        <input 
+          type="range" 
+          id="rate-slider" 
+          min="0.5" 
+          max="2" 
+          step="0.1" 
+          [value]="rate"
+          (input)="onRateChange($event)">
+      </div>
+      
+      <div class="slider-control">
+        <label for="pitch-slider">Tono: {{ pitch }}</label>
+        <input 
+          type="range" 
+          id="pitch-slider" 
+          min="0" 
+          max="2" 
+          step="0.1" 
+          [value]="pitch"
+          (input)="onPitchChange($event)">
+      </div>
+    </div>
+  </div>
+  
+  <div class="status-indicator" [class.active]="isReading">
+    <div class="status-icon">
+      <i class="fas" [class.fa-volume-up]="isReading && !isPaused" [class.fa-volume-mute]="!isReading || isPaused"></i>
+    </div>
+    <div class="status-text">
+      {{ isReading ? (isPaused ? 'Lectura pausada' : 'Leyendo...') : 'Lector de voz inactivo' }}
+    </div>
+  </div>
+</div> 

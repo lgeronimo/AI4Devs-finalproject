@@ -31,9 +31,10 @@ export class UrlReaderComponent implements OnInit {
 
   ngOnInit(): void {
     this.urlForm = this.fb.group({
-      url: ['', [Validators.required, Validators.pattern('(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})[/\\w .-]*/?')]]
+      url: ['https://es.wikipedia.org/wiki', [Validators.required, Validators.pattern('(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})[/\\w .-]*/?')]]
     });
   }
+
 
   async onInputChange(): Promise<void> {
     const url = this.urlForm.get('url')?.value;

@@ -1,5 +1,11 @@
-<div class="pdf-container" #pdfContainer>
-  <div class="page" *ngFor="let pageNum of pageNumbers">
-    <canvas [id]="'page-' + pageNum"></canvas>
+<div class="pdf-viewer">
+  <div class="pdf-controls">
+    <button (click)="previousPage()">Previous</button>
+    <button (click)="nextPage()">Next</button>
+    <span>Page: {{ currentPage }} / {{ totalPages }}</span>
+  </div>
+
+  <div class="pdf-container">
+    <canvas #pdfCanvas></canvas>
   </div>
 </div> 

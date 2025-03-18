@@ -1,7 +1,6 @@
-import { Component, ElementRef, ViewChild, AfterViewInit, inject } from '@angular/core';
+import { Component, ElementRef, ViewChild, OnInit, AfterViewInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PdfService } from '../../services/pdf.service';
-
 declare const pdfjsLib: any;
 
 @Component({
@@ -11,67 +10,96 @@ declare const pdfjsLib: any;
   templateUrl: './pdf-content.component.html',
   styleUrls: ['./pdf-content.component.scss']
 })
-export class PdfContentComponent implements AfterViewInit {
+export class PdfContentComponent implements OnInit, AfterViewInit {
   @ViewChild('pdfContainer') containerRef!: ElementRef<HTMLDivElement>;
+  @ViewChild('pdfCanvas') private canvasRef!: ElementRef<HTMLCanvasElement>;
 
   private pdfService = inject(PdfService);
-  private pdfDoc: any;
-  private scale = 1.5;
-  pageNumbers: number[] = [];
+  private pdfDoc: any = null;
+  private pageRendering = false;
+  private pageNumPending: number | null = null;
+  private scale = 3.0;
+  private ctx!: CanvasRenderingContext2D;
 
-  ngAfterViewInit() {
+  currentPage = 1;
+  totalPages = 0;
+
+  constructor() {
+    // Configurar el worker de PDF.js
+    // pdfjsLib.GlobalWorkerOptions.workerSrc = 'assets/pdf.worker.mjs';
+  }
+
+  ngOnInit(): void {
     const currentUrl = this.pdfService.getCurrentUrl();
     if (currentUrl) {
       this.loadPdf(currentUrl);
     }
   }
 
-  private async loadPdf(url: string) {
+  ngAfterViewInit(): void {
+    this.ctx = this.canvasRef.nativeElement.getContext('2d')!;
+  }
+
+  private async loadPdf(url: string): Promise<void> {
     try {
       this.pdfDoc = await pdfjsLib.getDocument(url).promise;
-      this.pageNumbers = Array.from({ length: this.pdfDoc.numPages }, (_, i) => i + 1);
-      
-      // Esperar a que Angular actualice la vista con los elementos canvas
-      setTimeout(() => {
-        this.renderAllPages();
-      }, 100);
+      this.totalPages = this.pdfDoc.numPages;
+      await this.renderPage(this.currentPage);
     } catch (error) {
       console.error('Error loading PDF:', error);
     }
   }
 
-  private async renderAllPages() {
-    for (const pageNum of this.pageNumbers) {
-      try {
-        const page = await this.pdfDoc.getPage(pageNum);
-        const viewport = page.getViewport({ scale: this.scale });
-        
-        const canvas = document.getElementById('page-' + pageNum) as HTMLCanvasElement;
-        if (!canvas) {
-          console.error(`Canvas element for page ${pageNum} not found`);
-          continue;
-        }
-        
-        const context = canvas.getContext('2d');
-        if (!context) {
-          console.error(`Could not get 2D context for canvas on page ${pageNum}`);
-          continue;
-        }
-        
-        canvas.height = viewport.height;
-        canvas.width = viewport.width;
-        
-        await page.render({
-          canvasContext: context,
-          viewport: viewport
-        }).promise;
-      } catch (error) {
-        console.error(`Error rendering page ${pageNum}:`, error);
+  private async renderPage(pageNumber: number): Promise<void> {
+    this.pageRendering = true;
+
+    try {
+      const page = await this.pdfDoc.getPage(pageNumber);
+      const viewport = page.getViewport({ scale: this.scale });
+
+      const canvas = this.canvasRef.nativeElement;
+      canvas.height = viewport.height;
+      canvas.width = viewport.width;
+
+      const renderContext = {
+        canvasContext: this.ctx,
+        viewport: viewport
+      };
+
+      const renderTask = page.render(renderContext);
+      await renderTask.promise;
+
+      this.pageRendering = false;
+      
+      if (this.pageNumPending !== null) {
+        await this.renderPage(this.pageNumPending);
+        this.pageNumPending = null;
       }
+    } catch (error) {
+      console.error('Error rendering page:', error);
+      this.pageRendering = false;
     }
   }
 
-  getContainer(): HTMLElement {
-    return this.containerRef.nativeElement;
+  private async queueRenderPage(pageNumber: number): Promise<void> {
+    if (this.pageRendering) {
+      this.pageNumPending = pageNumber;
+    } else {
+      await this.renderPage(pageNumber);
+    }
+  }
+
+  async previousPage(): Promise<void> {
+    if (this.currentPage <= 1) return;
+    
+    this.currentPage--;
+    await this.queueRenderPage(this.currentPage);
+  }
+
+  async nextPage(): Promise<void> {
+    if (this.currentPage >= this.totalPages) return;
+    
+    this.currentPage++;
+    await this.queueRenderPage(this.currentPage);
   }
 }

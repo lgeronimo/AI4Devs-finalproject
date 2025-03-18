@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { UploadFile, PdfViewerState, PdfConfig, ReadingMode } from '@shared/types/reading.types';
 
+declare const pdfjsLib: any;
+
 const DEFAULT_PDF_CONFIG: PdfConfig = {
   scrollSpeed: 1,
   readingMode: 'manual',
@@ -111,10 +113,39 @@ export class PdfService {
         this.currentFile.next(completedFile);
         // this.initializeViewer(completedFile.file);
       }
-    }, 500);
+    }, 50);
   }
 
   private resetState(): void {
     this.viewerState.next(INITIAL_STATE);
+  }
+
+  async extractTextFromPdf(): Promise<string> {
+    try {
+      const currentFile = this.currentFile.value;
+      if (!currentFile?.file) {
+        throw new Error('No hay archivo PDF cargado');
+      }
+
+      const arrayBuffer = await currentFile.file.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
+      let fullText = '';
+
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const textContent = await page.getTextContent();
+        const pageText = textContent.items
+          .map((item: any) => 'str' in item ? item.str : '')
+          .join(' ');
+        
+        fullText += pageText + '\n';
+        console.log(fullText);
+      }
+
+      return fullText.trim();
+    } catch (error) {
+      console.error('Error al extraer texto del PDF:', error);
+      throw error;
+    }
   }
 } 
