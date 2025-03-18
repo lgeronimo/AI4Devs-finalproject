@@ -5,6 +5,12 @@ export const routes: Routes = [
     path: 'reader',
     children: [
       {
+        path: '',
+        loadComponent: () => 
+          import('./features/reader/pages/home/home.component')
+            .then(m => m.HomeComponent)
+      },
+      {
         path: 'pdf',
         loadComponent: () => 
           import('./features/reader/pages/pdf-viewer/pdf-viewer.component')
@@ -18,5 +24,6 @@ export const routes: Routes = [
       }
     ]
   },
-  { path: '', redirectTo: '/reader/web', pathMatch: 'full' }
+  { path: '', redirectTo: '/reader', pathMatch: 'full' },
+  { path: '**', redirectTo: '/reader' }
 ];
