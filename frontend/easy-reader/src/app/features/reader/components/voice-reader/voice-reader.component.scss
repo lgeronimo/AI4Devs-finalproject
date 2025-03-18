@@ -62,6 +62,18 @@
   }
 }
 
+.play-pause-button {
+  &.active {
+    background-color: white !important;
+    color: #6366F1 !important;
+    border: 1px solid #6366F1 !important;
+    
+    i {
+      color: #6366F1 !important;
+    }
+  }
+}
+
 .voice-selector {
   display: flex;
   align-items: center;
@@ -102,63 +114,39 @@
 .status-indicator {
   display: flex;
   align-items: center;
-  justify-content: center;
-  margin-top: 16px;
-  padding: 5px;
-  border-radius: 8px;
-  background-color: #F3F4F6;
-  width: auto;
+  padding: 8px 12px;
+  border-radius: 20px;
+  transition: background-color 0.3s ease;
+  margin-top: 15px;
+  
+  &.inactive {
+    background-color: #ef4444;
+    color: white;
+  }
   
   &.active {
-    background-color: #EEF2FF;
+    &.reading {
+      background-color: #10b981;
+      color: white;
+    }
+    
+    &.paused {
+      background-color: #fbbf24;
+      color: #1f2937;
+    }
   }
   
   .status-icon {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background-color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    margin-right: 8px;
     
     i {
-      color: #9CA3AF;
       font-size: 16px;
     }
   }
   
-  &.active .status-icon i {
-    color: #6366F1;
-    animation: pulse 1.5s infinite;
-  }
-  
   .status-text {
     font-size: 14px;
-    color: #4B5563;
-  }
-  
-  &.active .status-text {
-    color: #6366F1;
     font-weight: 500;
-  }
-  
-  @media (max-width: 480px) {
-    margin-top: 16px;
-    padding: 10px;
-    
-    .status-icon {
-      width: 28px;
-      height: 28px;
-      
-      i {
-        font-size: 14px;
-      }
-    }
-    
-    .status-text {
-      font-size: 13px;
-    }
   }
 }
 

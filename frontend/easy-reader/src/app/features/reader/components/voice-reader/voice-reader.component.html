@@ -3,11 +3,11 @@
     <div class="control-section">
       <div class="button-group">
         <button 
-          class="control-button" 
-          [class.active]="isReading && !isPaused"
+          class="control-button play-pause-button" 
+          [ngClass]="{'active': isReading && !isPaused}"
           (click)="playPause()"
           title="Play/Pause">
-          <i class="fas" [class.fa-play]="!isReading || isPaused" [class.fa-pause]="isReading && !isPaused"></i>
+          <i class="fas" [ngClass]="{'fa-play': !isReading || isPaused, 'fa-pause': isReading && !isPaused}"></i>
         </button>
         
         <button 
@@ -23,22 +23,30 @@
       </div>
     </div>
     
-    <div class="status-indicator" [class.active]="isReading">
+    <div class="status-indicator" 
+         [ngClass]="{
+           'active': isReading,
+           'reading': isReading && !isPaused,
+           'paused': isReading && isPaused,
+           'inactive': !isReading
+         }">
       <div class="status-icon">
-        <i class="fas" [class.fa-volume-up]="isReading && !isPaused" [class.fa-volume-mute]="!isReading || isPaused"></i>
+        <i class="fas" 
+           [class.fa-volume-up]="isReading && !isPaused" 
+           [class.fa-volume-mute]="!isReading || isPaused"></i>
       </div>
       <div class="status-text">
-        {{ isReading ? (isPaused ? 'Lectura pausada' : 'Leyendo...') : 'Lector de voz inactivo' }}
+        {{ isReading ? (isPaused ? 'Reading paused' : 'Reading...') : 'Voice reader inactive' }}
       </div>
     </div>
   </div>
 
-  <!-- Modal para configuración de voz -->
+  <!-- Modal for voice settings -->
   <div class="modal" *ngIf="isModalOpen">
     <div class="modal-content">
-      <h3>Configuración de voz</h3>
+      <h3>Voice Settings</h3>
       <div class="voice-selector">
-        <label for="voice-select">Voz:</label>
+        <label for="voice-select">Voice:</label>
         <select 
           id="voice-select" 
           [disabled]="availableVoices.length === 0"
@@ -50,7 +58,7 @@
           </option>
         </select>
       </div>
-      <button class="close-button">Cerrar</button>
+      <button class="close-button">Close</button>
     </div>
   </div>
 </div> 
