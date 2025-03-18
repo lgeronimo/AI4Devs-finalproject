@@ -1,6 +1,7 @@
 import { Component, ElementRef, ViewChild, OnInit, AfterViewInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PdfService } from '../../services/pdf.service';
+import { Router } from '@angular/router';
 declare const pdfjsLib: any;
 
 @Component({
@@ -23,8 +24,9 @@ export class PdfContentComponent implements OnInit, AfterViewInit {
 
   currentPage = 1;
   totalPages = 0;
+  documentTitle: string = 'Documento PDF';
 
-  constructor() {
+  constructor(private router: Router) {
     // Configurar el worker de PDF.js
     // pdfjsLib.GlobalWorkerOptions.workerSrc = 'assets/pdf.worker.mjs';
   }
@@ -101,5 +103,10 @@ export class PdfContentComponent implements OnInit, AfterViewInit {
     
     this.currentPage++;
     await this.queueRenderPage(this.currentPage);
+  }
+
+  closeDocument() {
+    // Navegar de regreso a la página de inicio
+    this.router.navigate(['/reader']);
   }
 }
