@@ -94,7 +94,7 @@
 
 .control-btn {
   background-color: white;
-  border: 1px solid #ddd;
+  border: 1px solid #E2E8F0;
   border-radius: 50%;
   width: 36px;
   height: 36px;
@@ -103,25 +103,35 @@
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s ease;
+  color: #6366F1;
   
   &:hover {
-    background-color: #f0f0f0;
+    background-color: #EEF2FF;
+    border-color: #6366F1;
+  }
+  
+  &:active {
+    background-color: #C7D2FE;
   }
 }
 
 .page-info {
   font-size: 14px;
-  color: #333;
+  color: #4B5563;
   padding: 0 12px;
   min-width: 70px;
   text-align: center;
 }
 
 .close-btn {
-  color: #333;
+  color: #E53E3E;
+  background-color: white;
+  border: 2px solid #E53E3E;
+  font-weight: bold;
   
   &:hover {
-    background-color: #f0f0f0;
+    color: white;
+    background-color: #E53E3E;
   }
 }
 

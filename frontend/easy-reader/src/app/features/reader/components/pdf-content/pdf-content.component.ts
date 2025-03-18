@@ -106,6 +106,8 @@ export class PdfContentComponent implements OnInit, AfterViewInit {
   }
 
   closeDocument() {
+    // Limpiar el PDF del servicio
+    this.pdfService.clearPdf();
     // Navegar de regreso a la página de inicio
     this.router.navigate(['/reader']);
   }

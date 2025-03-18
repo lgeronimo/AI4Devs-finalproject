@@ -148,4 +148,10 @@ export class PdfService {
       throw error;
     }
   }
+
+  clearPdf() {
+    this.pdfUrlSubject.next(null);
+    this.currentFile.next(null);
+    this.resetState();
+  }
 } 
