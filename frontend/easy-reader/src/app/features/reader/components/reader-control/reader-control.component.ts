@@ -5,12 +5,12 @@ import { ReaderModeService } from '@shared/services/reader-mode.service';
 import { PdfService } from '../../services/pdf.service';
 import { WebContentService } from '../../services/web-content.service';
 import { map } from 'rxjs/operators';
-import { log } from 'console';
+import { VoiceReaderComponent } from '../voice-reader/voice-reader.component';
 
 @Component({
   selector: 'app-reader-control',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, VoiceReaderComponent],
   templateUrl: './reader-control.component.html',
   styleUrls: ['./reader-control.component.scss']
 })

@@ -1,7 +1,6 @@
-import { Component, OnInit, OnDestroy, Input, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PdfService } from '../../services/pdf.service';
-import { WebContentService } from '../../services/web-content.service';
 
 @Component({
   selector: 'app-voice-reader',
@@ -10,277 +9,210 @@ import { WebContentService } from '../../services/web-content.service';
   templateUrl: './voice-reader.component.html',
   styleUrls: ['./voice-reader.component.scss']
 })
-export class VoiceReaderComponent implements OnInit, OnDestroy {
-  @Input() contentType: 'pdf' | 'web' = 'pdf';
+export class VoiceReaderComponent implements OnInit {
   
   private pdfService = inject(PdfService);
-  private webContentService = inject(WebContentService);
   
   // Propiedades para la síntesis de voz
-  private speechSynthesis: SpeechSynthesis;
-  private speechUtterance: SpeechSynthesisUtterance | null = null;
-  
-  // Estado del lector
+  speechSynthesis: SpeechSynthesis = window.speechSynthesis;
+  speechUtterance: SpeechSynthesisUtterance | null = null;
   isReading: boolean = false;
   isPaused: boolean = false;
-  currentVoice: SpeechSynthesisVoice | null = null;
+
+  // Propiedades de configuración
+  text: string = 'Un texto de prueba para la lectura';
+  rate: number = 1;
+  pitch: number = 1;
+  volume: number = 1;
+
+  // Callbacks opcionales
+  onReadingStarted?: () => void;
+  onReadingEnded?: () => void;
+  onReadingStopped?: () => void;
+  onReadingPaused?: () => void;
+  onReadingResumed?: () => void;
+  onReadingError?: (event: SpeechSynthesisErrorEvent) => void;
+
   availableVoices: SpeechSynthesisVoice[] = [];
+  currentVoice: SpeechSynthesisVoice | null = null;
+  isModalOpen: boolean = false;
   
-  // Configuración
-  volume: number = 1.0;
-  rate: number = 1.0;
-  pitch: number = 1.0;
-  
-  constructor() {
-    this.speechSynthesis = window.speechSynthesis;
-  }
-  
-  ngOnInit(): void {
-    // Cargar las voces disponibles
+  constructor(private cdr: ChangeDetectorRef) {
     this.loadVoices();
-    
-    // Agregar un listener para cuando las voces estén disponibles
-    if (this.speechSynthesis.onvoiceschanged !== undefined) {
-      this.speechSynthesis.onvoiceschanged = this.loadVoices.bind(this);
+  }
+
+  ngOnInit() {
+    // Verificar que la API esté disponible en el navegador
+    if (!('speechSynthesis' in window)) {
+      console.error('La API de síntesis de voz no está disponible en este navegador');
+      // Puedes mostrar un mensaje al usuario aquí
     }
-  }
-  
-  ngOnDestroy(): void {
-    this.stopReading();
-  }
-  
-  private loadVoices(): void {
-    this.availableVoices = this.speechSynthesis.getVoices();
-    
-    // Seleccionar una voz predeterminada (preferiblemente en español)
-    if (this.availableVoices.length > 0) {
-      const spanishVoice = this.availableVoices.find(voice => 
-        voice.lang.includes('es') || voice.name.includes('Spanish')
-      );
-      
-      this.currentVoice = spanishVoice || this.availableVoices[0];
-    }
-  }
-  
-  private async extractTextFromPdf(): Promise<string> {
-    debugger
     
 
-    try {
-      // Obtener el texto del PDF actual
-      const text = await this.pdfService.extractTextFromPdf();
-      return text || "El PDF no contiene texto extraíble.";
-    } catch (error) {
-      console.error('Error al extraer texto del PDF:', error);
-      return "Error al extraer el texto del PDF.";
+    // Manejar cuando las voces se cargan de forma asíncrona
+    if (window.speechSynthesis) {
+      speechSynthesis.onvoiceschanged = () => {
+        this.loadVoices();
+      };
     }
   }
-  
-  async startReading(): Promise<void> {
-    if (this.isReading && !this.isPaused) {
+
+  startReading() {
+    // Cancelar cualquier lectura previa si existe
+    if (this.speechSynthesis) {
+      this.speechSynthesis.cancel();
+    }
+    
+    // Verificar si hay texto para leer
+    if (!this.text || this.text.trim() === '') {
+      console.warn('No hay texto para leer');
       return;
     }
     
-    if (this.isPaused) {
-      this.resumeReading();
-      return;
-    }
+    // Crear una nueva instancia de SpeechSynthesisUtterance
+    this.speechUtterance = new SpeechSynthesisUtterance(this.text);
     
-    try {
-      // Obtener el texto a leer según el tipo de contenido
-      let textToRead = '';
-      if (this.contentType === 'pdf') {
-        textToRead = await this.extractTextFromPdf();
+    // Configurar propiedades de la voz
+    this.speechUtterance.lang = 'es-ES'; // Idioma español
+    this.speechUtterance.rate = this.rate || 1; // Velocidad de lectura
+    this.speechUtterance.pitch = this.pitch || 1; // Tono de voz
+    this.speechUtterance.volume = this.volume || 1; // Volumen
+    
+    // Asignar eventos para controlar el progreso de la lectura
+    this.speechUtterance.onstart = () => {
+      this.isReading = true;
+      // Opcional: notificar que comenzó la lectura
+      console.log('Comenzó la lectura');
+      if (this.onReadingStarted) {
+        this.onReadingStarted();
+      }
+    };
+    
+    this.speechUtterance.onend = () => {
+      // Las funciones flecha mantienen el contexto 'this'
+      this.isReading = false;
+      this.isPaused = false;
+      
+      // Opcional: notificar que terminó la lectura
+      console.log('Terminó la lectura');
+      if (this.onReadingEnded) {
+        this.onReadingEnded();
+      }
+      
+      // Forzar la detección de cambios
+      this.cdr.detectChanges();
+    };
+    
+    this.speechUtterance.onerror = (event) => {
+      if (event.error === 'interrupted') {
+        console.log('La síntesis de voz fue interrumpida, esto es normal al detenerla manualmente');
+        // No es necesario hacer nada más, ya que stopReading() ya actualiza los estados
       } else {
-        textToRead = this.extractTextFromWeb();
-      }
-      
-      if (!textToRead) {
-        console.error('No se pudo extraer texto para leer');
-        return;
-      }
-      
-      // Configurar la síntesis de voz
-      this.speechUtterance = new SpeechSynthesisUtterance(textToRead);
-      
-      if (this.currentVoice) {
-        this.speechUtterance.voice = this.currentVoice;
-      }
-      
-      this.speechUtterance.volume = this.volume;
-      this.speechUtterance.rate = this.rate;
-      this.speechUtterance.pitch = this.pitch;
-      
-      // Eventos de la síntesis de voz
-      this.speechUtterance.onstart = () => {
-        this.isReading = true;
-        this.isPaused = false;
-      };
-      
-      this.speechUtterance.onend = () => {
-        this.isReading = false;
-        this.isPaused = false;
-      };
-      
-      this.speechUtterance.onerror = (event) => {
+        // Para otros errores, mantener el comportamiento original
         console.error('Error en la síntesis de voz:', event);
         this.isReading = false;
         this.isPaused = false;
-      };
-      
-      // Iniciar la lectura
-      this.speechSynthesis.speak(this.speechUtterance);
-    } catch (error) {
-      console.error('Error al iniciar la lectura:', error);
-    }
-  }
-  
-  pauseReading(): void {
-    if (this.isReading && !this.isPaused) {
-      this.speechSynthesis.pause();
-      this.isPaused = true;
-    }
-  }
-  
-  resumeReading(): void {
-    if (this.isReading && this.isPaused) {
-      this.speechSynthesis.resume();
-      this.isPaused = false;
-    }
-  }
-  
-  stopReading(): void {
-    this.speechSynthesis.cancel();
-    this.isReading = false;
-    this.isPaused = false;
-  }
-  
-  changeVoice(voice: SpeechSynthesisVoice): void {
-    this.currentVoice = voice;
-    
-    // Si está leyendo, reiniciar la lectura con la nueva voz
-    if (this.isReading) {
-      const wasPaused = this.isPaused;
-      this.stopReading();
-      this.startReading();
-      
-      if (wasPaused) {
-        this.pauseReading();
-      }
-    }
-  }
-  
-  setVolume(value: number): void {
-    this.volume = Math.max(0, Math.min(1, value));
-    this.updateSpeechSettings();
-  }
-  
-  setRate(value: number): void {
-    this.rate = Math.max(0.5, Math.min(2, value));
-    this.updateSpeechSettings();
-  }
-  
-  setPitch(value: number): void {
-    this.pitch = Math.max(0, Math.min(2, value));
-    this.updateSpeechSettings();
-  }
-  
-  private updateSpeechSettings(): void {
-    if (this.speechUtterance) {
-      this.speechUtterance.volume = this.volume;
-      this.speechUtterance.rate = this.rate;
-      this.speechUtterance.pitch = this.pitch;
-      
-      // Si está leyendo, reiniciar la lectura con la nueva configuración
-      if (this.isReading) {
-        const wasPaused = this.isPaused;
-        const currentPosition = this.speechSynthesis.speaking ? 
-          this.speechUtterance.text.length / 2 : 0; // Estimación aproximada
         
-        this.stopReading();
-        this.startReading();
-        
-        if (wasPaused) {
-          this.pauseReading();
+        // Opcional: notificar que hubo un error en la lectura
+        if (this.onReadingError) {
+          this.onReadingError(event);
         }
       }
-    }
-  }
-  
-  private extractTextFromWeb(): string {
-    // Intentar obtener el texto de la página web a través del iframe
-    const iframe = document.getElementById('web-content-iframe') as HTMLIFrameElement;
-    debugger
-    if (!iframe || !iframe.contentDocument) {
-      return "No se pudo acceder al contenido de la página web.";
-    }
-    
-    // Extraer texto del cuerpo del documento
-    const body = iframe.contentDocument.body;
-    if (!body) {
-      return "No se pudo encontrar el contenido de la página web.";
-    }
-    
-    // Función recursiva para extraer texto de los nodos
-    const extractTextFromNode = (node: Node): string => {
-      if (node.nodeType === Node.TEXT_NODE) {
-        return node.textContent?.trim() || '';
-      }
       
-      if (node.nodeType === Node.ELEMENT_NODE) {
-        const element = node as HTMLElement;
-        
-        // Ignorar elementos ocultos o de navegación
-        const style = window.getComputedStyle(element);
-        if (style.display === 'none' || style.visibility === 'hidden') {
-          return '';
-        }
-        
-        // Ignorar ciertos elementos que no suelen contener texto relevante
-        const tagName = element.tagName.toLowerCase();
-        if (['script', 'style', 'noscript', 'iframe', 'svg'].includes(tagName)) {
-          return '';
-        }
-        
-        // Extraer texto de los nodos hijos
-        let text = '';
-        for (let i = 0; i < node.childNodes.length; i++) {
-          text += ' ' + extractTextFromNode(node.childNodes[i]);
-        }
-        
-        return text;
+      // Asegurarse de que los cambios de estado se detecten
+      if (this.cdr) {
+        this.cdr.detectChanges();
       }
-      
-      return '';
     };
     
-    const extractedText = extractTextFromNode(body).replace(/\s+/g, ' ').trim();
-    return extractedText || "No se pudo extraer texto de la página web.";
-  }
-
-  onVolumeChange(event: Event): void {
-    const value = (event.target as HTMLInputElement).value;
-    // this.setVolume(value);
-  }
-
-  onRateChange(event: Event): void {
-    const value = (event.target as HTMLInputElement).value;
-    // this.setRate(value);
-  }
-
-  onPitchChange(event: Event): void {
-    const value = (event.target as HTMLInputElement).value;
-    // this.setPitch(value);
-  }
-
-  onVoiceChange(event: Event): void {
-    const selectElement = event.target as HTMLSelectElement;
-    const selectedVoice = this.availableVoices.find(
-      voice => voice.name === selectElement.value
-    );
-    
-    if (selectedVoice) {
-      this.changeVoice(selectedVoice);
+    // Iniciar la lectura
+    if (this.speechSynthesis && this.speechUtterance) {
+      this.speechSynthesis.speak(this.speechUtterance);
     }
   }
+
+ 
+  playPause() {
+    if (this.isReading && !this.isPaused) {
+      // Si está leyendo y no está pausado, pausar la lectura
+      this.isPaused = true;
+      
+      // Pausar la síntesis de voz
+      if (this.speechSynthesis) {
+        this.speechSynthesis.pause();
+        console.log('Lectura pausada');
+        
+        // Opcional: notificar que se pausó la lectura
+        if (this.onReadingPaused) {
+          this.onReadingPaused();
+        }
+      }
+    } else if (this.isReading && this.isPaused) {
+      // Si está pausado, reanudar la lectura
+      this.isPaused = false;
+      
+      // Reanudar la síntesis de voz
+      if (this.speechSynthesis) {
+        this.speechSynthesis.resume();
+        console.log('Lectura reanudada');
+        
+        // Opcional: notificar que se reanudó la lectura
+        if (this.onReadingResumed) {
+          this.onReadingResumed();
+        }
+      }
+    } else {
+      // Si no está leyendo, iniciar la lectura
+      this.isReading = true;
+      this.isPaused = false;
+      this.startReading();
+    }
+    
+    // Asegurarse de que los cambios de estado se detecten
+    if (this.cdr) {
+      this.cdr.detectChanges();
+    }
+  }
+
+  pauseReading() {
+    this.speechSynthesis.pause();
+  }
+
+  stopReading() {
+    if (this.speechSynthesis) {
+      // Cancelar la síntesis de voz actual
+      this.speechSynthesis.cancel();
+      
+      // Actualizar estados
+      this.isReading = false;
+      this.isPaused = false;
+      
+      console.log('Lectura detenida manualmente');
+      
+      // Opcional: notificar que se detuvo la lectura
+      if (this.onReadingStopped) {
+        this.onReadingStopped();
+      }
+    }
+  }
+
+
+  private loadVoices() {
+    if (window.speechSynthesis) {
+      this.availableVoices = window.speechSynthesis.getVoices();
+      // Seleccionar voz en español por defecto si está disponible
+      this.currentVoice = this.availableVoices.find(voice => voice.lang.startsWith('es')) || this.availableVoices[0];
+      
+    }
+  }
+
+  toggleModal() {
+    this.isModalOpen = !this.isModalOpen;
+  }
+
+  onVoiceChange(event: Event) {
+    const select = event.target as HTMLSelectElement;
+    this.currentVoice = this.availableVoices.find(voice => voice.name === select.value) || null;
+  }
+
 } 

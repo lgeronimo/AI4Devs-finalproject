@@ -1,8 +1,7 @@
 <div class="reader-control">
-  <button class="control-button" >
-    <i class="fas fa-volume-up"></i>
-    Modo: {{ readingMode }}
-  </button>
+  <div class="voice-reader-container" *ngIf="readingMode === 'voice'">
+      <app-voice-reader></app-voice-reader>
+  </div>
   <button class="control-button" (click)="changeReadingMode()">
     <i class="fas fa-exchange-alt"></i>
   </button>
