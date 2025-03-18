@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { UploadFile, PdfViewerState, PdfConfig, ReadingMode } from '@shared/types/reading.types';
 
 declare const pdfjsLib: any;
@@ -18,6 +18,11 @@ const INITIAL_STATE: PdfViewerState = {
   config: DEFAULT_PDF_CONFIG
 };
 
+interface PageText {
+  text: string;
+  detonationManual: boolean;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -25,13 +30,19 @@ export class PdfService {
   private currentFile = new BehaviorSubject<UploadFile | null>(null);
   private viewerState = new BehaviorSubject<PdfViewerState>(INITIAL_STATE);
   private pdfUrlSubject = new BehaviorSubject<string | null>(null);
-  private currentPageTextSubject = new BehaviorSubject<string>('');
 
+
+  private currentPageTextSubject = new BehaviorSubject<PageText>({text: '', detonationManual: true});
+  private nextPageSubject = new Subject<void>();
+
+
+  
   // Observables públicos
   currentFile$ = this.currentFile.asObservable();
   viewerState$ = this.viewerState.asObservable();
   pdfUrl$ = this.pdfUrlSubject.asObservable();
   currentPageText$ = this.currentPageTextSubject.asObservable();
+  nextPage$ = this.nextPageSubject.asObservable();
 
   constructor() {}
 
@@ -157,11 +168,15 @@ export class PdfService {
     this.resetState();
   }
 
-  setCurrentPageText(text: string): void {
-    this.currentPageTextSubject.next(text);
+  setCurrentPageText(text: string, detonationManual: boolean = true): void {
+    this.currentPageTextSubject.next({text, detonationManual});
   }
 
-  getCurrentPageText(): string {
+  getCurrentPageText(): PageText {
     return this.currentPageTextSubject.value;
+  }
+
+  requestNextPage(): void {
+    this.nextPageSubject.next();
   }
 } 

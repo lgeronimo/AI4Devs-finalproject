@@ -52,13 +52,30 @@ export class VoiceReaderComponent implements OnInit, OnDestroy {
     
     // Suscribirse a los cambios de texto de la página actual
     this.subscription.add(
-      this.pdfService.currentPageText$.subscribe(text => {
-        this.text = text;
-        // Si estaba leyendo, detener la lectura actual y comenzar con el nuevo texto
-        if (this.isReading && !this.isPaused) {
-          this.stopReading();
-          //this.startReading();
+      this.pdfService.currentPageText$.subscribe(pageText => {
+        this.text = pageText.text;
+        console.log('text', this.text);
+        
+
+
+        if (this.speechSynthesis) {
+          // Cancelar la síntesis de voz actual
+          this.speechSynthesis.cancel();
+        
         }
+
+        if (pageText.detonationManual) {
+          this.stopReading();
+        } else {
+          setTimeout(() => { 
+            this.startReading();
+          }, 1000);
+        }
+
+
+      /* if (this.isReading && !this.isPaused) {
+          this.startReading();
+       } */
       })
     );
 
@@ -75,6 +92,7 @@ export class VoiceReaderComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
     
     // Detener cualquier lectura en curso
+    debugger
     if (this.isReading) {
       this.stopReading();
     }
@@ -82,13 +100,20 @@ export class VoiceReaderComponent implements OnInit, OnDestroy {
 
   startReading() {
     // Cancelar cualquier lectura previa si existe
+
+
+    this.isReading = true;
+    this.isPaused = false;
+
+    this.cdr.detectChanges();
+
     if (this.speechSynthesis) {
       this.speechSynthesis.cancel();
     }
     
     // Verificar si hay texto para leer
     if (!this.text || this.text.trim() === '') {
-      this.text= 'There is no text to read on this page';
+      this.text= 'La página no tiene texto para leer';
     }
     
     // Crear una nueva instancia de SpeechSynthesisUtterance
@@ -121,10 +146,13 @@ export class VoiceReaderComponent implements OnInit, OnDestroy {
       this.isPaused = false;
       
       // Opcional: notificar que terminó la lectura
-      console.log('Terminó la lectura');
+      console.log('Terminó la lectura: ', this.text);
       if (this.onReadingEnded) {
         this.onReadingEnded();
       }
+      
+      // Solicitar cambio a la siguiente página cuando termine la lectura
+      this.pdfService.requestNextPage();
       
       // Forzar la detección de cambios
       this.cdr.detectChanges();
@@ -160,6 +188,7 @@ export class VoiceReaderComponent implements OnInit, OnDestroy {
 
  
   playPause() {
+    debugger
     if (this.isReading && !this.isPaused) {
       // Si está leyendo y no está pausado, pausar la lectura
       this.isPaused = true;
@@ -190,8 +219,6 @@ export class VoiceReaderComponent implements OnInit, OnDestroy {
       }
     } else {
       // Si no está leyendo, iniciar la lectura
-      this.isReading = true;
-      this.isPaused = false;
       this.startReading();
     }
     
@@ -199,10 +226,6 @@ export class VoiceReaderComponent implements OnInit, OnDestroy {
     if (this.cdr) {
       this.cdr.detectChanges();
     }
-  }
-
-  pauseReading() {
-    this.speechSynthesis.pause();
   }
 
   stopReading() {

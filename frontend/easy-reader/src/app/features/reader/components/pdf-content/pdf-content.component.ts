@@ -1,9 +1,9 @@
-import { Component, ElementRef, ViewChild, OnInit, AfterViewInit, inject } from '@angular/core';
+import { Component, ElementRef, ViewChild, OnInit, AfterViewInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PdfService } from '../../services/pdf.service';
 import { Router } from '@angular/router';
 import { ReadingMode } from '@shared/types/reading.types';
-import { map } from 'rxjs';
+import { map, Subject, takeUntil } from 'rxjs';
 declare const pdfjsLib: any;
 
 @Component({
@@ -23,17 +23,19 @@ export class PdfContentComponent implements OnInit, AfterViewInit {
   private pageNumPending: number | null = null;
   private scale = 3.0;
   private ctx!: CanvasRenderingContext2D;
+  private destroy$ = new Subject<void>();
 
   currentPage = 1;
   totalPages = 0;
   documentTitle: string = 'Documento PDF';
   currentPageText: string = '';
   readingMode: ReadingMode | null = null;
-  constructor(private router: Router) {
+  constructor(private router: Router, private cdr: ChangeDetectorRef) {
     // Configurar el worker de PDF.js
     // pdfjsLib.GlobalWorkerOptions.workerSrc = 'assets/pdf.worker.mjs';
 
     this.pdfService.viewerState$.pipe(
+      takeUntil(this.destroy$),
       map(state => state.config.readingMode)
     ).subscribe(mode => this.readingMode = mode);
 
@@ -44,10 +46,27 @@ export class PdfContentComponent implements OnInit, AfterViewInit {
     if (currentUrl) {
       this.loadPdf(currentUrl);
     }
+    
+    // Suscribirse a las solicitudes de cambio de página
+    this.pdfService.nextPage$.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(() => {
+      console.log('nextPage Automatic');
+      // Solo cambiar de página si estamos en modo de lectura por voz
+      // y no hemos llegado al final del documento
+      if (this.readingMode === 'voice' && this.currentPage < this.totalPages) {
+        this.nextPage(false);
+      }
+    });
   }
 
   ngAfterViewInit(): void {
     this.ctx = this.canvasRef.nativeElement.getContext('2d')!;
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   private async loadPdf(url: string): Promise<void> {
@@ -60,7 +79,7 @@ export class PdfContentComponent implements OnInit, AfterViewInit {
     }
   }
 
-  private async renderPage(pageNumber: number): Promise<void> {
+  private async renderPage(pageNumber: number, detonationManual: boolean = true): Promise<void> {
     this.pageRendering = true;
 
     try {
@@ -81,15 +100,15 @@ export class PdfContentComponent implements OnInit, AfterViewInit {
       
 
       if (this.readingMode === 'voice') {
+        // Extraer el texto de la página actual
         const textContent = await page.getTextContent();
         this.currentPageText = textContent.items
           .map((item: any) => item.str)
           .join(' ');
         
         // Actualizar el servicio con el texto actual
-        this.pdfService.setCurrentPageText(this.currentPageText);
+        this.pdfService.setCurrentPageText(this.currentPageText, detonationManual);
       }
-      // Extraer el texto de la página actual
 
       this.pageRendering = false;
       
@@ -103,11 +122,11 @@ export class PdfContentComponent implements OnInit, AfterViewInit {
     }
   }
 
-  private async queueRenderPage(pageNumber: number): Promise<void> {
+  private async queueRenderPage(pageNumber: number, detonationManual: boolean = true): Promise<void> {
     if (this.pageRendering) {
       this.pageNumPending = pageNumber;
     } else {
-      await this.renderPage(pageNumber);
+      await this.renderPage(pageNumber, detonationManual);
     }
   }
 
@@ -118,11 +137,15 @@ export class PdfContentComponent implements OnInit, AfterViewInit {
     await this.queueRenderPage(this.currentPage);
   }
 
-  async nextPage(): Promise<void> {
+  async nextPage(detonationManual: boolean = true): Promise<void> {
     if (this.currentPage >= this.totalPages) return;
-    
     this.currentPage++;
-    await this.queueRenderPage(this.currentPage);
+
+    if (this.cdr) {
+      this.cdr.detectChanges();
+    }
+
+    await this.queueRenderPage(this.currentPage, detonationManual);
   }
 
   closeDocument() {
