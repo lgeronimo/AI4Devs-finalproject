@@ -1,5 +1,7 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { PdfService } from '../../services/pdf.service';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-voice-command',
@@ -11,7 +13,9 @@ import { CommonModule } from '@angular/common';
 export class VoiceCommandComponent implements OnInit, OnDestroy {
   private recognition: any;
   isListening: boolean = false;
-  private commands: Set<string> = new Set(['next', 'back', 'down', 'up', 'top', 'bottom']);
+  private commands: Set<string> = new Set(['next', 'down', 'up', 'top', 'bottom']);
+  private destroy$ = new Subject<void>()
+  private pdfService = inject(PdfService);
 
   ngOnInit(): void {
     if ('webkitSpeechRecognition' in window) {
@@ -57,10 +61,7 @@ export class VoiceCommandComponent implements OnInit, OnDestroy {
   handleCommand(command: string): void {
     switch (command) {
       case 'next':
-        console.log('next');
-        break;
-      case 'back':
-        console.log('back');
+        this.pdfService.requestNextPage();
         break;
       case 'down':
         console.log('down');
@@ -81,5 +82,7 @@ export class VoiceCommandComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.stopListening();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 } 

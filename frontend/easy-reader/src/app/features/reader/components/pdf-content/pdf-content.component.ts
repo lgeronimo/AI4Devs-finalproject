@@ -58,6 +58,8 @@ export class PdfContentComponent implements OnInit, AfterViewInit {
       console.log('nextPage Automatic');
       if (this.readingMode === 'textToSpeech' && this.currentPage < this.totalPages) {
         this.nextPage(false);
+      } else if (this.readingMode === 'voiceCommands') {
+        this.nextPage(false);
       }
     });
   }
