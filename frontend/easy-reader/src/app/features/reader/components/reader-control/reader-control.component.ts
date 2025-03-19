@@ -6,11 +6,12 @@ import { PdfService } from '../../services/pdf.service';
 import { WebContentService } from '../../services/web-content.service';
 import { map } from 'rxjs/operators';
 import { VoiceReaderComponent } from '../voice-reader/voice-reader.component';
+import { VoiceCommandComponent } from '../voice-command/voice-command.component';
 
 @Component({
   selector: 'app-reader-control',
   standalone: true,
-  imports: [CommonModule, VoiceReaderComponent],
+  imports: [CommonModule, VoiceReaderComponent, VoiceCommandComponent],
   templateUrl: './reader-control.component.html',
   styleUrls: ['./reader-control.component.scss']
 })

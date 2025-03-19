@@ -9,7 +9,18 @@
              checked>
       <div class="option-content">
         <span class="radio-label">Text to Speech</span>
-        <span class="description">Automatic text-to-speech reading</span>
+        <span class="description">Convert text to spoken words</span>
+      </div>
+    </label>
+
+    <label class="option">
+      <input type="radio" 
+             name="readingMode" 
+             value="voiceCommands"
+             [(ngModel)]="selectedMode">
+      <div class="option-content">
+        <span class="radio-label">Voice Commands</span>
+        <span class="description">Control the reader with voice commands</span>
       </div>
     </label>
 

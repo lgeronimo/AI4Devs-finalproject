@@ -1,0 +1,8 @@
+<div class="voice-command">
+  <button (click)="isListening ? stopListening() : startListening()">
+    <i class="fas" [class.fa-microphone]="!isListening" [class.fa-microphone-slash]="isListening"></i>
+  </button>
+  <div *ngIf="isListening" class="listening-indicator">
+    Listening...
+  </div>
+</div> 

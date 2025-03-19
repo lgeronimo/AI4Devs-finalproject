@@ -2,6 +2,9 @@
   <div class="voice-reader-container" *ngIf="readingMode === 'textToSpeech'">
       <app-voice-reader></app-voice-reader>
   </div>
+  <div class="voice-reader-container" *ngIf="readingMode === 'voiceCommands'">
+      <app-voice-command></app-voice-command>
+  </div>
   <!--button class="control-button" (click)="changeReadingMode()">
     <i class="fas fa-exchange-alt"></i>
   </button-->
