@@ -27,7 +27,7 @@ export class PdfContentComponent implements OnInit, AfterViewInit {
 
   currentPage = 1;
   totalPages = 0;
-  documentTitle: string = 'Documento PDF';
+  documentTitle: string = '';
   currentPageText: string = '';
   readingMode: ReadingMode | null = null;
   constructor(private router: Router, private cdr: ChangeDetectorRef) {
@@ -39,6 +39,10 @@ export class PdfContentComponent implements OnInit, AfterViewInit {
       map(state => state.config.readingMode)
     ).subscribe(mode => this.readingMode = mode);
 
+    this.pdfService.viewerState$.pipe(
+      takeUntil(this.destroy$),
+      map(state => state.title)
+    ).subscribe(title => this.documentTitle = title);
   }
 
   ngOnInit(): void {

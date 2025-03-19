@@ -21,6 +21,7 @@ export interface PdfViewerState {
   isLoaded: boolean;
   currentPage: number;
   totalPages: number;
+  title: string;
   scale: number;
   config: PdfConfig;
 }

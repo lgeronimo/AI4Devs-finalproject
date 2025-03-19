@@ -15,6 +15,7 @@ const INITIAL_STATE: PdfViewerState = {
   currentPage: 1,
   totalPages: 0,
   scale: 1,
+  title: '',
   config: DEFAULT_PDF_CONFIG
 };
 
@@ -51,6 +52,7 @@ export class PdfService {
     const url = URL.createObjectURL(file);
     this.pdfUrlSubject.next(url);
 
+
     const uploadFile: UploadFile = {
       name: file.name,
       size: this.formatFileSize(file.size),
@@ -58,6 +60,13 @@ export class PdfService {
       status: 'uploading',
       file: file
     };
+
+    // Actualizar el título del PDF en el estado
+    const currentState = this.viewerState.value;
+    this.viewerState.next({
+      ...currentState,
+      title: file.name
+    });
     
     this.currentFile.next(uploadFile);
     this.simulateUpload(uploadFile);
