@@ -62,7 +62,7 @@
             <label for="language-select">Language:</label>
             <select 
               id="language-select" 
-              [value]="currentLanguage"
+              [(ngModel)]="currentLanguage"
               (change)="onLanguageChange($event)">
               <option *ngFor="let lang of availableLanguages" 
                       [value]="lang.code">
@@ -77,10 +77,10 @@
             <select 
               id="voice-select" 
               [disabled]="filteredVoices.length === 0"
-              [value]="currentVoice?.name"
-              (change)="onVoiceChange($event)">
+              [(ngModel)]="currentVoice"
+              [compareWith]="compareVoices">
               <option *ngFor="let voice of filteredVoices" 
-                      [value]="voice.name">
+                      [ngValue]="voice">
                 {{ voice.name }} 
                 <span *ngIf="isPreferredVoice(voice)">⭐</span>
               </option>

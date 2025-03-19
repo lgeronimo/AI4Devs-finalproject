@@ -46,6 +46,8 @@ export class VoiceReaderComponent implements OnInit, OnDestroy {
 
   availableVoices: SpeechSynthesisVoice[] = [];
   currentVoice: SpeechSynthesisVoice | null = null;
+  oldVoice: SpeechSynthesisVoice | null = null;
+
   isModalOpen: boolean = false;
   voiceSpeed = 1.0;
   
@@ -63,15 +65,8 @@ export class VoiceReaderComponent implements OnInit, OnDestroy {
   ];
 
   currentLanguage: LanguageCode = 'es-MX';
+  oldLanguage: LanguageCode;
   
-  /**
-   * Voces preferidas por idioma, ordenadas por calidad y naturalidad.
-   * Incluye voces optimizadas tanto para Desktop como para Mobile.
-   * Las voces están ordenadas por:
-   * 1. Voces Premium (Google, Microsoft Desktop)
-   * 2. Voces Mobile optimizadas
-   * 3. Voces estándar del sistema
-   */
   preferredVoices: Record<LanguageCode, string[]> = {
     'es-ES': [
       // Premium voices
@@ -250,12 +245,8 @@ export class VoiceReaderComponent implements OnInit, OnDestroy {
     return bestVoice || (voices.length > 0 ? voices[0] : null);
   }
 
-  onLanguageChange(event: Event): void {
-    const select = event.target as HTMLSelectElement;
-    this.currentLanguage = select.value as LanguageCode;
-    
-    // Seleccionar la mejor voz disponible para el idioma
-    this.currentVoice = this.getBestVoiceForLanguage(this.currentLanguage);
+  compareVoices(voice1: SpeechSynthesisVoice, voice2: SpeechSynthesisVoice): boolean {
+    return voice1 && voice2 ? voice1.name === voice2.name : voice1 === voice2;
   }
 
   constructor(
@@ -263,10 +254,11 @@ export class VoiceReaderComponent implements OnInit, OnDestroy {
     private overlay: Overlay,
     private viewContainerRef: ViewContainerRef
   ) {
-    this.loadVoices();
+    this.oldLanguage = this.currentLanguage;
   }
 
   ngOnInit() {
+
     // Verificar que la API esté disponible en el navegador
     if (!('speechSynthesis' in window)) {
       console.error('La API de síntesis de voz no está disponible en este navegador');
@@ -278,13 +270,10 @@ export class VoiceReaderComponent implements OnInit, OnDestroy {
       this.pdfService.currentPageText$.subscribe(pageText => {
         this.text = pageText.text;
         console.log('text', this.text);
-        
-
 
         if (this.speechSynthesis) {
           // Cancelar la síntesis de voz actual
           this.speechSynthesis.cancel();
-        
         }
 
         if (pageText.detonationManual) {
@@ -294,11 +283,6 @@ export class VoiceReaderComponent implements OnInit, OnDestroy {
             this.startReading();
           }, 1000);
         }
-
-
-      /* if (this.isReading && !this.isPaused) {
-          this.startReading();
-       } */
       })
     );
 
@@ -312,15 +296,18 @@ export class VoiceReaderComponent implements OnInit, OnDestroy {
       })
     );
 
-    // Manejar cuando las voces se cargan de forma asíncrona
+    // Manejar el evento beforeunload para detener el audio cuando se recarga la página
+    window.addEventListener('beforeunload', this.handleBeforeUnload);
+
+    // Inicializar las voces
     if (window.speechSynthesis) {
+      if (speechSynthesis.getVoices().length > 0) {
+        this.loadVoices();
+      }
       speechSynthesis.onvoiceschanged = () => {
         this.loadVoices();
       };
     }
-
-    // Manejar el evento beforeunload para detener el audio cuando se recarga la página
-    window.addEventListener('beforeunload', this.handleBeforeUnload);
   }
 
   private handleBeforeUnload = () => {
@@ -350,7 +337,6 @@ export class VoiceReaderComponent implements OnInit, OnDestroy {
   startReading() {
     // Cancelar cualquier lectura previa si existe
 
-
     this.isReading = true;
     this.isPaused = false;
 
@@ -374,9 +360,9 @@ export class VoiceReaderComponent implements OnInit, OnDestroy {
     this.speechUtterance.pitch = this.pitch || 1; // Tono de voz
     this.speechUtterance.volume = this.volume || 1; // Volumen
     
-    // Asignar la voz seleccionada si existe
-    if (this.currentVoice) {
-      this.speechUtterance.voice = this.currentVoice;
+    // Asegúrate de que this.speechUtterance no sea null antes de asignar la voz
+    if (this.speechUtterance && this.currentVoice) {
+        this.speechUtterance.voice = this.currentVoice;
     }
     
     // Asignar eventos para controlar el progreso de la lectura
@@ -437,7 +423,7 @@ export class VoiceReaderComponent implements OnInit, OnDestroy {
 
  
   playPause() {
-    debugger
+
     if (this.isReading && !this.isPaused) {
       // Si está leyendo y no está pausado, pausar la lectura
       this.isPaused = true;
@@ -508,7 +494,13 @@ export class VoiceReaderComponent implements OnInit, OnDestroy {
         this.currentVoice = this.availableVoices[0];
       }
       
+      this.oldVoice = this.currentVoice;
+
+      console.log('Idioma actual:', this.currentLanguage);
       console.log('Voz seleccionada:', this.currentVoice?.name);
+      
+      // Forzar la detección de cambios
+      this.cdr.detectChanges();
     }
   }
 
@@ -521,6 +513,7 @@ export class VoiceReaderComponent implements OnInit, OnDestroy {
   }
 
   openModal() {
+    this.stopReading();
     const positionStrategy = this.overlay.position()
       .global()
       .centerHorizontally()
@@ -547,19 +540,37 @@ export class VoiceReaderComponent implements OnInit, OnDestroy {
       this.overlayRef.dispose();
       this.overlayRef = null;
     }
+    this.currentLanguage = this.oldLanguage;
+    this.currentVoice = this.oldVoice;
   }
 
-  onVoiceChange(event: Event) {
+  onLanguageChange(event: Event): void {
     const select = event.target as HTMLSelectElement;
-    const selectedVoiceName = select.value;
-    this.currentVoice = this.availableVoices.find(voice => voice.name === selectedVoiceName) || null;
+    this.currentVoice = this.getBestVoiceForLanguage(this.currentLanguage);
+      
+      // Si no se encuentra una voz, usar la primera disponible
+      if (!this.currentVoice && this.availableVoices.length > 0) {
+        this.currentVoice = this.availableVoices[0];
+      }
   }
-
+  
   applyVoiceSettings() {
+  
+    this.oldLanguage = this.currentLanguage;
+    this.oldVoice = this.currentVoice;
+  
+    //this.currentLanguage =  this.currentLanguage;
     console.log('Aplicando configuración:', {
+      language: this.currentLanguage,
       voice: this.currentVoice?.name,
       speed: this.voiceSpeed
     });
+
+       // Asegúrate de que this.speechUtterance no sea null antes de asignar la voz
+    if (this.speechUtterance && this.currentVoice) {
+        this.speechUtterance.voice = this.currentVoice;
+    }
+
     this.closeModal();
   }
 
