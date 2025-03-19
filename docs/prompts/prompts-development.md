@@ -60,3 +60,23 @@ El contenido de la página será el siguiente:
 4. Un botón para iniciar la lectura.
 
 Todo esto en inglés y recuerda seguir usanndo buenas prácticas, antes de crear código dame la estructura de carpetas que propones y en cuanto a estilos, básate en los componente que ya hicimos dentro de  @reader 
+
+## Prompt 10
+
+Vamos a crear el componente de voice-reader, el cual se encargará de leer el contenido de un pdf o una URL en voz, el componente se llamará voice-reader.component.ts @voice-reader.component.html @voice-reader.component.scss.
+
+## Prompt 11
+
+Vamos a crear los controles para los modos de lectura, inicaindo por el control general que va a ser relativamente discreto en las vistas @pdf-viewer y @web-viewer, vamos a iniciar por ese componente, el cual se llamará reader-control, este componente se ubicará en la carpeta @reader/components/reader-control.
+
+Este componente tendrá dos objetivos:
+
+1. Mostrar las opciones dependiendo del modo de lectura que se esté utilizando.
+2. Permitir al usuario cambiar al modo de lectura que desee.
+
+En cuanto a estilos, básate en los componentes que ya hicimos dentro de  @reader. Pero este tiene que ser discreto y no tan obvio como los que ya tenemos. Podemos probar con un botón transparente o con un icono y al pasarle el cursor se vera el botón. 
+
+## Prompt 12
+
+Vamos a crear el componente de voice-reader, el cual se encargará de leer el contenido de un pdf o una URL en voz, el componente se llamará voice-reader.component.ts @voice-reader.component.html @voice-reader.component.scss.
+
