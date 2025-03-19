@@ -18,7 +18,7 @@ export class ReadingOptionsComponent implements OnInit {
   private pdfService = inject(PdfService);
   private webContentService = inject(WebContentService);
   private readerModeService = inject(ReaderModeService);
-  selectedMode: ReadingMode = 'voice';
+  selectedMode: ReadingMode = 'textToSpeech';
   isMobileDevice = false;
   hasAccelerometer = false;
 

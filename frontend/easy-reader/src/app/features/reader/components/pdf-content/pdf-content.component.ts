@@ -56,9 +56,7 @@ export class PdfContentComponent implements OnInit, AfterViewInit {
       takeUntil(this.destroy$)
     ).subscribe(() => {
       console.log('nextPage Automatic');
-      // Solo cambiar de página si estamos en modo de lectura por voz
-      // y no hemos llegado al final del documento
-      if (this.readingMode === 'voice' && this.currentPage < this.totalPages) {
+      if (this.readingMode === 'textToSpeech' && this.currentPage < this.totalPages) {
         this.nextPage(false);
       }
     });
@@ -103,7 +101,7 @@ export class PdfContentComponent implements OnInit, AfterViewInit {
       await renderTask.promise;
       
 
-      if (this.readingMode === 'voice') {
+      if (this.readingMode === 'textToSpeech') {
         // Extraer el texto de la página actual
         const textContent = await page.getTextContent();
         this.currentPageText = textContent.items
