@@ -7,13 +7,38 @@ Haz un análisis de toda la documentación @PRD.md @template.md, avísame cuando
 
 ## Prompt 2
 
-Vamos a generar la estructura del proyecto frontend, para esto asume el rol de arquitecto de software y desarrollador frontend, con basto conocimiento de angular, typescript, html, css, scss y que se apega en todo momento a las buenas prácticas de desarrollo de software. 
+Asume el rol de arquitecto de software y desarrollador frontend experto en Angular, TypeScript, HTML, CSS/SCSS y buenas prácticas de desarrollo.
 
-El proyecto ya lo generé ocupando angular CLI y este proyecto sigue la arquitectura clean architecture y por ahora únicamente es el cascarón del proyecto, no tiene funcionalidades.
+El proyecto fue generado con Angular CLI siguiendo los principios de Clean Architecture. Actualmente es solo la estructura base sin funcionalidades.
 
-Sabiendo eso, vamos a generar  las carpetas principales (core, features y shared) junto con sus carpetas internas tal cual están en archivo @template.md, en la sección 2.3  Descripción de alto nivel del proyecto y estructura de ficheros.
+Vamos a generar las carpetas principales y su estructura interna según la sección 2.3 del archivo @template.md sobre la descripción de alto nivel y estructura de ficheros:
 
-Recueda, unicamente vamos a generar las carpetas principales y sus carpetas internas, no vamos a generar los archivos de cada carpeta, eso lo vamos a hacer en pasos posteriores.
+- core/
+  - guards/
+  - interceptors/
+  - services/
+  - models/
+  - constants/
+  - enums/
+  - interfaces/
+  - utils/
+
+- features/
+  - reader/
+    - pages/
+    - components/ 
+    - services/
+    - models/
+
+- shared/
+  - components/
+  - directives/
+  - pipes/
+  - models/
+  - services/
+  - utils/
+
+Nota: Solo crearemos la estructura de carpetas. La implementación de los archivos se realizará en pasos posteriores.
 
 ## Prompt 3
 
@@ -23,8 +48,27 @@ Vamos a ir pasos a paso, conforme te lo vaya indicando.
 
 ## Prompt 4
 
-Vamos a emepzar a generar el contenido de @pdf-viewer.component.ts @pdf-viewer.component.html @pdf-viewer.component.scss , por ahora no vamos a conectarnos con servicios, solamente las funcionalidades correspondientes a este componente, las caracteristicas marcadas como futuras, esas las omitiremos por el momento,recuerda que todas las caractirísticas las tenemos en @PRD.md @template.md 
+Vamos a crear el componente de pdf-viewer, el cual se encargará de mostrar y controlar la visualización del archivo PDF en la aplicación. El componente se llamará pdf-viewer.component.ts @pdf-viewer.component.html @pdf-viewer.component.scss.
 
+El componente debe tener las siguientes características:
+
+1. Funcionalidades principales:
+   - Visualización del PDF
+   - Controles de navegación (siguiente/anterior página)
+
+2. Estructura del componente:
+   - pdf-viewer.component.ts: Lógica de manejo del PDF
+   - pdf-viewer.component.html: Layout y controles
+   - pdf-viewer.component.scss: Estilos del visor
+
+3. Consideraciones técnicas:
+   - Responsive design
+   - Accesibilidad
+   - Manejo de errores
+
+Por ahora nos enfocaremos solo en la funcionalidad básica del visor, sin integración con servicios. Las características marcadas como futuras en @PRD.md y @template.md serán implementadas posteriormente.
+
+Vamos a ir paso a paso, conforme te lo vaya indicando.
 ## Prompt 5
 
 Vamos a iniciar por pedir el archivo pdf, para esto puse una imagen @upload-pdf.png, apégate a la imagen lo más que puedas, para que se vea lo más similar posible a la imagen.
@@ -35,18 +79,31 @@ Vamos a separar todo la lógica en pequeños componentes para no tener toda la l
 
 ## Prompt 7
 
-Ahora vamos a crear la página web-viewer, la de este componente es pedir una url y mostrar el contenido de la url en un iframe, el componente se llamará web-viewer.component.ts @web-viewer.component.html @web-viewer.component.scss.
+Vamos a crear la página web-viewer para mostrar contenido web. Este componente debe tener las siguientes características:
 
-Toma como referencia la page @pdf-viewer para que se vea lo más similar posible en cuanto a la estructura de la página, estilos y funcionalidades.
+1. Funcionalidades principales:
+   - Campo de entrada para la URL con validación
+   - Visualización del contenido web en un iframe
 
-Recuerdo apaegarte a las buenas prácticas de desarrollo de software, para que el código sea lo más limpio y fácil de entender posible.
+2. Estructura del componente:
+   - web-viewer.component.ts: Lógica de manejo de URL e iframe
+   - web-viewer.component.html: Layout y controles
+   - web-viewer.component.scss: Estilos consistentes con pdf-viewer
+
+3. Integración con componentes existentes:
+   - Mantener consistencia visual con pdf-viewer
+   - Usar los mismos controles de lectura
+
+4. Consideraciones técnicas:
+   - Gestión de errores de carga
+   - Responsive design
+   - Accesibilidad web
+
+Tomar como base la estructura y estilos de pdf-viewer para mantener consistencia en la aplicación.
+
+Vamos a ir paso a paso, conforme te lo vaya indicando.
 
 ## Prompt 8
-
-Vamos a crear el componente de upload-pdf, el cual se encargará de subir el archivo pdf a la aplicación, el componente se llamará upload-pdf.component.ts @upload-pdf.component.html @upload-pdf.component.scss.
-
-
-## Prompt 9
 
 Vamos a crear la página principal dentro de @reader, el objetivo de esta página es darle la opción al usuario de seleccionar entre un pdf o una URL para después redireccionar a @pdf-viewer o @web-viewer.
 
@@ -61,11 +118,9 @@ El contenido de la página será el siguiente:
 
 Todo esto en inglés y recuerda seguir usanndo buenas prácticas, antes de crear código dame la estructura de carpetas que propones y en cuanto a estilos, básate en los componente que ya hicimos dentro de  @reader 
 
-## Prompt 10
+Vamos a ir paso a paso, conforme te lo vaya indicando.
 
-Vamos a crear el componente de voice-reader, el cual se encargará de leer el contenido de un pdf o una URL en voz, el componente se llamará voice-reader.component.ts @voice-reader.component.html @voice-reader.component.scss.
-
-## Prompt 11
+## Prompt 9
 
 Vamos a crear los controles para los modos de lectura, inicaindo por el control general que va a ser relativamente discreto en las vistas @pdf-viewer y @web-viewer, vamos a iniciar por ese componente, el cual se llamará reader-control, este componente se ubicará en la carpeta @reader/components/reader-control.
 
@@ -74,9 +129,78 @@ Este componente tendrá dos objetivos:
 1. Mostrar las opciones dependiendo del modo de lectura que se esté utilizando.
 2. Permitir al usuario cambiar al modo de lectura que desee.
 
-En cuanto a estilos, básate en los componentes que ya hicimos dentro de  @reader. Pero este tiene que ser discreto y no tan obvio como los que ya tenemos. Podemos probar con un botón transparente o con un icono y al pasarle el cursor se vera el botón. 
+En cuanto a estilos, básate en los componentes que ya hicimos dentro de  @reader. Pero este tiene que ser discreto. Podemos probar con un botón transparente o con un icono y al pasarle el cursor se vera el botón. 
 
-## Prompt 12
+## Prompt 10
 
-Vamos a crear el componente de voice-reader, el cual se encargará de leer el contenido de un pdf o una URL en voz, el componente se llamará voice-reader.component.ts @voice-reader.component.html @voice-reader.component.scss.
+Vamos a crear el componente voice-reader que se encargará de la síntesis de voz para leer el contenido de PDFs. El componente debe tener las siguientes características:
 
+1. Funcionalidades principales:
+   - Leer el texto en voz alta usando la Web Speech API
+   - Controles para reproducir/pausar/detener la lectura
+   - Soporte para múltiples idiomas y voces
+
+2. Estructura del componente:
+   - voice-reader.component.ts: Lógica principal y manejo de la síntesis de voz
+   - voice-reader.component.html: Controles de reproducción y modal de configuración
+   - voice-reader.component.scss: Estilos para los controles y modal
+
+3. Integración:
+   - Debe poder recibir texto desde el componente pdf-viewer.
+   - Debe detener la lectura al navegar fuera del componente.
+
+4. Consideraciones técnicas:
+   - Usar Angular CDK para el modal de configuración
+   - Implementar manejo de errores y fallbacks
+   - Seguir buenas prácticas de Angular
+   - Mantener el código limpio y modular
+
+5. UI/UX:
+   - Controles intuitivos y accesibles
+   - Feedback visual del estado de lectura
+   - Modal de configuración con opciones claras
+   - Diseño consistente con el resto de la aplicación
+
+El componente debe ser reutilizable y fácil de mantener, siguiendo los principios SOLID y las mejores prácticas de desarrollo de Angular.
+
+Vamos a ir paso a paso, conforme te lo vaya indicando.
+
+## Prompt 11
+
+Vamos a crear el componente voice-command dentro de @reader/components/voice-command, que se encargará del reconocimiento de voz para controlar la navegación del documento. El componente debe tener las siguientes características:
+
+1. Funcionalidades principales:
+   - Reconocimiento de comandos de voz usando la Web Speech API (SpeechRecognition)
+   - Soporte para 6 comandos básicos:
+     * "next": Avanzar a la siguiente página
+     * "back": Retroceder a la página anterior  
+     * "down": Desplazarse hacia abajo
+     * "up": Desplazarse hacia arriba
+     * "top": Ir al inicio del documento
+     * "bottom": Ir al final del documento
+   - Feedback visual al reconocer comandos
+   - Debe tener un icono para indicar que está escuchando y cuando no este escuchando debe tener un icono diferente. Este mismo botón servira para iniciar y detener el reconocimiento de voz.
+
+2. Estructura del componente:
+   - voice-command.component.ts: Lógica principal y manejo del reconocimiento de voz
+   - voice-command.component.html: Interfaz de usuario y feedback visual
+   - voice-command.component.scss: Estilos del componente
+
+3. Integración:
+   - Debe integrarse con pdf-viewer y web-viewer
+   - Detener el reconocimiento al salir del componente
+   - Manejar conflictos con otros modos de lectura
+   - Debe integrarse dentro de @reader/components/reader-control
+
+4. Consideraciones técnicas:
+   - Detección de navegadores no compatibles
+   - Optimizar el consumo de recursos
+   - Seguir buenas prácticas de Angular
+
+5. UI/UX:
+   - Indicador visual del estado de escucha
+   - Feedback claro al reconocer comandos
+   - Consistencia con el diseño general
+   - Diseño responsivo
+
+Vamos a ir paso a paso, conforme te lo vaya indicando.
