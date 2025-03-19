@@ -11,37 +11,47 @@
   transition: transform 0.3s ease, opacity 0.3s ease;
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
   transform: translateY(57%);
+  overflow: visible;
   border: 1px solid transparent;
   background: linear-gradient(to right, rgba(255, 255, 255, 0.95), rgba(239, 246, 255, 0.95), rgba(255, 255, 255, 0.95));
   
+  // Flecha minimalista integrada que desaparece al expandir
+  &::before {
+    content: '\f077'; /* Código Unicode para el icono de flecha hacia arriba (Font Awesome) */
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #6366F1;
+    font-size: 16px;
+    background-color: transparent;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+  
   &:hover {
     transform: translateY(0);
+  }
+  
+  &:hover::before {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-5px);
   }
   
   .voice-reader-container {
     width: 100%;
     max-width: 600px;
   }
-}
-
-// Flecha minimalista integrada que desaparece al expandir
-.reader-control::before {
-  content: '\f077'; /* Código Unicode para el icono de flecha hacia arriba (Font Awesome) */
-  font-family: 'Font Awesome 5 Free';
-  font-weight: 900;
-  position: absolute;
-  top: -20px;
-  left: 50%;
-  transform: translateX(-50%);
-  color: #6366F1;
-  font-size: 16px;
-  background-color: transparent;
-  transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-.reader-control:hover::before {
-  opacity: 0;
-  transform: translateX(-50%) translateY(-5px);
+  
+  // Siempre expandido en dispositivos móviles
+  @media (max-width: 768px) {
+    transform: translateY(0);
+    
+    &::before {
+      display: none;
+    }
+  }
 }
 
 .control-button {
