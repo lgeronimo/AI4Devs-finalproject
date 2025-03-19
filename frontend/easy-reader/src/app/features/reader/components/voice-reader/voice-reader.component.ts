@@ -1,14 +1,20 @@
-import { Component, OnInit, OnDestroy, Input, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, inject, ChangeDetectorRef, ViewChild, TemplateRef, ViewContainerRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PdfService } from '../../services/pdf.service';
 import { Subscription } from 'rxjs';
 import { Router, NavigationStart } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { Overlay, OverlayRef } from '@angular/cdk/overlay';
+import { TemplatePortal } from '@angular/cdk/portal';
+import { FormsModule } from '@angular/forms';
+import { OverlayModule } from '@angular/cdk/overlay';
+
+type LanguageCode = 'es-ES' | 'es-MX' | 'en-US' | 'fr-FR' | 'de-DE' | 'it-IT' | 'pt-BR';
 
 @Component({
   selector: 'app-voice-reader',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule, OverlayModule],
   templateUrl: './voice-reader.component.html',
   styleUrls: ['./voice-reader.component.scss']
 })
@@ -41,8 +47,222 @@ export class VoiceReaderComponent implements OnInit, OnDestroy {
   availableVoices: SpeechSynthesisVoice[] = [];
   currentVoice: SpeechSynthesisVoice | null = null;
   isModalOpen: boolean = false;
+  voiceSpeed = 1.0;
   
-  constructor(private cdr: ChangeDetectorRef) {
+  @ViewChild('voiceSettingsModal') voiceSettingsModal!: TemplateRef<any>;
+  private overlayRef: OverlayRef | null = null;
+  
+  availableLanguages = [
+    { code: 'en-US', name: 'English (US)' },
+    { code: 'es-ES', name: 'Spanish (Spain)' },
+    { code: 'es-MX', name: 'Spanish (Mexico)' },
+    { code: 'fr-FR', name: 'French' },
+    { code: 'de-DE', name: 'German' },
+    { code: 'it-IT', name: 'Italian' },
+    { code: 'pt-BR', name: 'Portuguese (Brazil)' }
+  ];
+
+  currentLanguage: LanguageCode = 'es-MX';
+  
+  /**
+   * Voces preferidas por idioma, ordenadas por calidad y naturalidad.
+   * Incluye voces optimizadas tanto para Desktop como para Mobile.
+   * Las voces están ordenadas por:
+   * 1. Voces Premium (Google, Microsoft Desktop)
+   * 2. Voces Mobile optimizadas
+   * 3. Voces estándar del sistema
+   */
+  preferredVoices: Record<LanguageCode, string[]> = {
+    'es-ES': [
+      // Premium voices
+      'Google español', 
+      'Microsoft Helena Desktop',
+      'Microsoft Elvira Desktop',
+      // Mobile optimized
+      'Microsoft Helena Mobile',
+      'Microsoft Elvira Mobile',
+      // Standard voices
+      'Helena',
+      'Elvira',
+      'Mónica',
+      'Paulina',
+      'Jorge',
+      'Diego',
+      // iOS voices
+      'Mónica (Enhanced)',
+      'Jorge (Enhanced)',
+      // Android voices
+      'Spanish Female',
+      'Spanish Male'
+    ],
+    'es-MX': [
+      // Premium voices
+      'Google español mexicano',
+      'Microsoft Sabina Desktop',
+      'Microsoft Raul Desktop',
+      // Mobile optimized
+      'Microsoft Sabina Mobile',
+      'Microsoft Raul Mobile',
+      // Standard voices
+      'Sabina',
+      'Raul',
+      'Paulina',
+      'Juan',
+      'Carlos',
+      // iOS voices
+      'Paulina (Enhanced)',
+      'Juan (Enhanced)',
+      // Android voices
+      'Mexican Spanish Female',
+      'Mexican Spanish Male'
+    ],
+    'en-US': [
+      // Premium voices
+      'Google US English',
+      'Microsoft David Desktop',
+      'Microsoft Mark Desktop',
+      'Microsoft Zira Desktop',
+      // Mobile optimized
+      'Microsoft David Mobile',
+      'Microsoft Mark Mobile',
+      'Microsoft Zira Mobile',
+      // Standard voices
+      'Samantha',
+      'Alex',
+      'Karen',
+      'Daniel',
+      // iOS voices
+      'Samantha (Enhanced)',
+      'Alex (Enhanced)',
+      // Android voices
+      'US English Female',
+      'US English Male'
+    ],
+    'fr-FR': [
+      // Premium voices
+      'Google français',
+      'Microsoft Julie Desktop',
+      'Microsoft Paul Desktop',
+      'Microsoft Hortense Desktop',
+      // Mobile optimized
+      'Microsoft Julie Mobile',
+      'Microsoft Paul Mobile',
+      // Standard voices
+      'Thomas',
+      'Amelie',
+      // iOS voices
+      'Thomas (Enhanced)',
+      'Amelie (Enhanced)',
+      // Android voices
+      'French Female',
+      'French Male'
+    ],
+    'de-DE': [
+      // Premium voices
+      'Google Deutsch',
+      'Microsoft Hedda Desktop',
+      'Microsoft Stefan Desktop',
+      'Microsoft Katja Desktop',
+      // Mobile optimized
+      'Microsoft Hedda Mobile',
+      'Microsoft Stefan Mobile',
+      // Standard voices
+      'Anna',
+      'Klaus',
+      // iOS voices
+      'Anna (Enhanced)',
+      'Klaus (Enhanced)',
+      // Android voices
+      'German Female',
+      'German Male'
+    ],
+    'it-IT': [
+      // Premium voices
+      'Google italiano',
+      'Microsoft Elsa Desktop',
+      'Microsoft Cosimo Desktop',
+      // Mobile optimized
+      'Microsoft Elsa Mobile',
+      'Microsoft Cosimo Mobile',
+      // Standard voices
+      'Alice',
+      'Luca',
+      'Federica',
+      // iOS voices
+      'Alice (Enhanced)',
+      'Luca (Enhanced)',
+      // Android voices
+      'Italian Female',
+      'Italian Male'
+    ],
+    'pt-BR': [
+      // Premium voices
+      'Google português do Brasil',
+      'Microsoft Maria Desktop',
+      'Microsoft Daniel Desktop',
+      'Microsoft Heloisa Desktop',
+      // Mobile optimized
+      'Microsoft Maria Mobile',
+      'Microsoft Daniel Mobile',
+      // Standard voices
+      'Luciana',
+      'Felipe',
+      // iOS voices
+      'Luciana (Enhanced)',
+      'Felipe (Enhanced)',
+      // Android voices
+      'Brazilian Portuguese Female',
+      'Brazilian Portuguese Male'
+    ]
+  };
+
+  get filteredVoices(): SpeechSynthesisVoice[] {
+    const allVoicesForLanguage = this.availableVoices.filter(voice => 
+      voice.lang.toLowerCase().includes(this.currentLanguage.toLowerCase())
+    );
+
+    // Ordenar voces poniendo las preferidas primero
+    return allVoicesForLanguage.sort((a, b) => {
+      const isAPreferred = this.isPreferredVoice(a);
+      const isBPreferred = this.isPreferredVoice(b);
+      
+      if (isAPreferred && !isBPreferred) return -1;
+      if (!isAPreferred && isBPreferred) return 1;
+      return 0;
+    });
+  }
+
+  isPreferredVoice(voice: SpeechSynthesisVoice): boolean {
+    const preferredNames = this.preferredVoices[this.currentLanguage as LanguageCode] || [];
+    return preferredNames.some((name: string) => voice.name.includes(name));
+  }
+
+  getBestVoiceForLanguage(lang: LanguageCode): SpeechSynthesisVoice | null {
+    const voices = this.filteredVoices;
+    const preferredNames = this.preferredVoices[lang] || [];
+    
+    // Buscar la primera voz preferida disponible
+    const bestVoice = voices.find(voice => 
+      preferredNames.some((name: string) => voice.name.includes(name))
+    );
+    
+    // Si no hay voz preferida, usar la primera disponible
+    return bestVoice || (voices.length > 0 ? voices[0] : null);
+  }
+
+  onLanguageChange(event: Event): void {
+    const select = event.target as HTMLSelectElement;
+    this.currentLanguage = select.value as LanguageCode;
+    
+    // Seleccionar la mejor voz disponible para el idioma
+    this.currentVoice = this.getBestVoiceForLanguage(this.currentLanguage);
+  }
+
+  constructor(
+    private cdr: ChangeDetectorRef,
+    private overlay: Overlay,
+    private viewContainerRef: ViewContainerRef
+  ) {
     this.loadVoices();
   }
 
@@ -124,6 +344,7 @@ export class VoiceReaderComponent implements OnInit, OnDestroy {
     
     this.isReading = false;
     this.isPaused = false;
+    this.closeModal();
   }
 
   startReading() {
@@ -278,19 +499,68 @@ export class VoiceReaderComponent implements OnInit, OnDestroy {
   private loadVoices() {
     if (window.speechSynthesis) {
       this.availableVoices = window.speechSynthesis.getVoices();
-      // Seleccionar voz en español por defecto si está disponible
-      this.currentVoice = this.availableVoices.find(voice => voice.lang.startsWith('es')) || this.availableVoices[0];
       
+      // Obtener la mejor voz para el idioma actual
+      this.currentVoice = this.getBestVoiceForLanguage(this.currentLanguage);
+      
+      // Si no se encuentra una voz, usar la primera disponible
+      if (!this.currentVoice && this.availableVoices.length > 0) {
+        this.currentVoice = this.availableVoices[0];
+      }
+      
+      console.log('Voz seleccionada:', this.currentVoice?.name);
     }
   }
 
   toggleModal() {
-    this.isModalOpen = !this.isModalOpen;
+    if (this.overlayRef) {
+      this.closeModal();
+    } else {
+      this.openModal();
+    }
+  }
+
+  openModal() {
+    const positionStrategy = this.overlay.position()
+      .global()
+      .centerHorizontally()
+      .centerVertically();
+    
+    this.overlayRef = this.overlay.create({
+      positionStrategy,
+      hasBackdrop: true,
+      backdropClass: 'cdk-overlay-dark-backdrop',
+      scrollStrategy: this.overlay.scrollStrategies.block()
+    });
+    
+    const portal = new TemplatePortal(
+      this.voiceSettingsModal,
+      this.viewContainerRef
+    );
+    
+    this.overlayRef.attach(portal);
+  }
+
+  closeModal() {
+    if (this.overlayRef) {
+      this.overlayRef.detach();
+      this.overlayRef.dispose();
+      this.overlayRef = null;
+    }
   }
 
   onVoiceChange(event: Event) {
     const select = event.target as HTMLSelectElement;
-    this.currentVoice = this.availableVoices.find(voice => voice.name === select.value) || null;
+    const selectedVoiceName = select.value;
+    this.currentVoice = this.availableVoices.find(voice => voice.name === selectedVoiceName) || null;
+  }
+
+  applyVoiceSettings() {
+    console.log('Aplicando configuración:', {
+      voice: this.currentVoice?.name,
+      speed: this.voiceSpeed
+    });
+    this.closeModal();
   }
 
 } 
