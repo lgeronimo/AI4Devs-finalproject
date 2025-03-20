@@ -48,6 +48,24 @@
         opacity: 1;
       }
     }
+
+    &.onstart-state {
+      animation: listening-pulse 1s infinite;
+    }
   }
 }
+
+@keyframes listening-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+}
+
+
+
 

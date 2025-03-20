@@ -6,7 +6,7 @@
   </div>
   <button 
     class="control-button" 
-    [ngClass]="{'default-state': micState === micStates['default']}" 
+    [ngClass]="{'default-state': micState === micStates['default'], 'onstart-state': micState === micStates['onstart']}" 
     [style.backgroundColor]="micState.iconBackgroundColor" 
     (click)="isListening ? abortListening() : startListening()">
     <i [ngClass]="'fas ' + micState.iconClass" [style.color]="micState.iconColor"></i>
