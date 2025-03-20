@@ -1,8 +1,14 @@
 <div class="control-section">
-  <div class="control-section-message">
+  <div 
+    class="control-section-message" 
+    [ngClass]="{'onstart-state': micState === micStates['onstart']}">
     {{ micState.message }}
   </div>
-  <button class="control-button" [style.backgroundColor]="micState.iconBackgroundColor" (click)="isListening ? abortListening() : startListening()">
+  <button 
+    class="control-button" 
+    [ngClass]="{'default-state': micState === micStates['default']}" 
+    [style.backgroundColor]="micState.iconBackgroundColor" 
+    (click)="isListening ? abortListening() : startListening()">
     <i [ngClass]="'fas ' + micState.iconClass" [style.color]="micState.iconColor"></i>
   </button>
 </div>

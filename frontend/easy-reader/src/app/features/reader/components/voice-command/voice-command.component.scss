@@ -11,6 +11,10 @@
     margin: 10px;
     text-align: center;
     width: 100%;
+
+    &.onstart-state {
+      color: #0d9366;
+    }
   }
 
   @media (max-width: 480px) {
@@ -29,8 +33,21 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: background-color 0.2s ease, transform 0.2s ease;
     font-size: 25px;
+    transition: background-color 0.2s ease, transform 0.2s ease, opacity 0.2s ease;
+
+    &:hover {
+      transform: scale(1.01);
+      opacity: 1;
+    }
+
+    &.default-state {
+      opacity: 0.8;
+      &:hover {
+        transform: scale(1.05);
+        opacity: 1;
+      }
+    }
   }
 }
 

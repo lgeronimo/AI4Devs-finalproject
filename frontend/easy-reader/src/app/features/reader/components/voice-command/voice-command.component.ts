@@ -36,7 +36,7 @@ export class VoiceCommandComponent implements OnInit, OnDestroy {
   micStates: Record<string, MicState> = {
     default: this.micState,
     onstart: {
-      message: 'Listening...',
+      message: 'Listening',
       iconClass: 'fa-microphone',
       iconColor: 'white',
       iconBackgroundColor: '#10B981'
