@@ -40,6 +40,10 @@ export class ReaderControlComponent implements OnInit {
     }
   }
 
+  get isHidden(): boolean {
+    return this.readingMode !== 'voiceCommands';
+  }
+
   changeReadingMode() {
     // this.readergModeService.setMode(mode);
   }
