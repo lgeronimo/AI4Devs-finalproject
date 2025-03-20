@@ -1,8 +1,10 @@
 <div class="control-section">
-  <div 
-    class="control-section-message" 
-    [ngClass]="{'onstart-state': micState === micStates['onstart']}">
+  <div class="control-section-message" *ngIf="micState !== micStates['onstart']">
     {{ micState.message }}
+  </div>
+  <div class="control-section-message" *ngIf="isListening">
+    {{ feedbackState.message ? '' : micState.message }}
+    <span [style.color]="feedbackState.colorMessageLabel">{{ feedbackState.messageLabel }}</span> <span [style.color]="feedbackState.colorMessage">{{ feedbackState.message | uppercase }}</span>
   </div>
   <button 
     class="control-button" 
