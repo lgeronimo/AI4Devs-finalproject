@@ -1,8 +1,8 @@
 <div class="control-section">
-  <div class="button-group">
-    <button class="control-button play-pause-button" title="Press to start"
-      (click)="isListening ? stopListening() : startListening()">
-      <i class="fas" [class.fa-microphone]="!isListening" [class.fa-microphone-slash]="isListening"></i>
-    </button>
+  <div class="control-section-message">
+    {{ micState.message }}
   </div>
+  <button class="control-button" [style.backgroundColor]="micState.iconBackgroundColor" (click)="isListening ? abortListening() : startListening()">
+    <i [ngClass]="'fas ' + micState.iconClass" [style.color]="micState.iconColor"></i>
+  </button>
 </div>
