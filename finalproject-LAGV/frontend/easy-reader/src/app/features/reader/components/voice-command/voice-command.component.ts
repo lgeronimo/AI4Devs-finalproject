@@ -17,6 +17,37 @@ interface FeedbackState {
   colorMessage: string;
 }
 
+interface CommandGroups {
+    next: Set<string>;
+    previous: Set<string>;
+    top: Set<string>;
+    bottom: Set<string>;
+    up: Set<string>;
+    down: Set<string>;
+}
+
+interface LanguageCommands {
+    [key: string]: CommandGroups;
+}
+
+const commandsByLanguage: LanguageCommands = {
+    'es-MX': {
+        next: new Set(['adelante', 'siguiente']),
+        previous: new Set(['atrás', 'regresa']),
+        top: new Set(['inicio']),
+        bottom: new Set(['fin', 'final']),
+        up: new Set(['sube', 'arriba']),
+        down: new Set(['baja', 'abajo'])
+    },
+    'en-US': {
+        next: new Set(['next', 'forward']),
+        previous: new Set(['previous', 'back']),
+        top: new Set(['top']),
+        bottom: new Set(['bottom']),
+        up: new Set(['up']),
+        down: new Set(['down'])
+    }
+};
 
 @Component({
   selector: 'app-voice-command',
@@ -29,7 +60,7 @@ export class VoiceCommandComponent implements OnInit, OnDestroy {
   private recognition: any;
   private speechGrammarList: any;
   isListening: boolean = false;
-  private commands: Set<string> = new Set(['sube', 'baja', 'inicio', 'final', 'siguiente', 'atrás']);
+  private commands: Set<string> = new Set();
   private destroy$ = new Subject<void>();
   private pdfService = inject(PdfService);
   private cdr = inject(ChangeDetectorRef);
@@ -91,6 +122,15 @@ export class VoiceCommandComponent implements OnInit, OnDestroy {
     }
   };
 
+  private readonly commandActions = {
+    next: () => this.pdfService.requestNextPage(),
+    previous: () => this.pdfService.requestPreviousPage(),
+    up: () => { /* Lógica para subir */ },
+    down: () => { /* Lógica para bajar */ },
+    top: () => { /* Lógica para ir al inicio */ },
+    bottom: () => { /* Lógica para ir al final */ }
+  };
+
   ngOnInit(): void {
     if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
       const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
@@ -101,10 +141,13 @@ export class VoiceCommandComponent implements OnInit, OnDestroy {
       this.recognition.interimResults = false;
       this.recognition.maxAlternatives = 1;
 
+      const { grammar, commands } = this.initializeCommandsAndGrammar();
+      this.commands = commands;
+
       // Intentar usar gramática solo si está disponible
       if (SpeechGrammarList) {
         try {
-          const grammar = `#JSGF V1.0; grammar commands; public <command> = ${Array.from(this.commands).join(' | ')} ;`;
+          console.log('grammar:', grammar);
           this.speechGrammarList = new SpeechGrammarList();
           this.speechGrammarList.addFromString(grammar, 1);
           this.recognition.grammars = this.speechGrammarList;
@@ -176,23 +219,11 @@ export class VoiceCommandComponent implements OnInit, OnDestroy {
   }
 
   handleCommand(command: string): void {
-    switch (command) {
-      case 'siguiente':
-        this.pdfService.requestNextPage();
-        break;
-      case 'atrás':
-        this.pdfService.requestPreviousPage();
-        break;
-      case 'up':
-        console.log('up');
-        break;
-      case 'top':
-        console.log('top');
-        break;
-      case 'bottom':
-        console.log('bottom');
-        break;
-      default:
+    const languageCommands = commandsByLanguage[this.recognition.lang];
+    const actionType = Object.entries(languageCommands).find(([_, commands]) => commands.has(command))?.[0] as keyof typeof this.commandActions;
+    if (actionType && this.commandActions[actionType]) {
+        this.commandActions[actionType]();
+    } else {
         console.log(`Comando no reconocido: ${command}`);
     }
   }
@@ -231,5 +262,21 @@ export class VoiceCommandComponent implements OnInit, OnDestroy {
     this.abortListening();
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  private initializeCommandsAndGrammar(): { grammar: string, commands: Set<string> } {
+    const currentLanguage = this.recognition.lang;
+    const languageCommands = commandsByLanguage[currentLanguage];
+    if (!languageCommands) {
+        console.warn(`No commands defined for language: ${currentLanguage}`);
+        return { grammar: '', commands: new Set() };
+    }
+    const allCommands = Object.values(languageCommands)
+        .reduce<string[]>((acc, commandSet) => {
+            return [...acc, ...Array.from<string>(commandSet)];
+        }, []);
+    const commands = new Set<string>(allCommands);
+    const grammar = `#JSGF V1.0; grammar commands; public <command> = ${allCommands.join(' | ')} ;`;
+    return { grammar, commands };
   }
 } 
