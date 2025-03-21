@@ -185,7 +185,6 @@ export class VoiceCommandComponent implements OnInit, OnDestroy {
   abortListening(): void {
     if (this.recognition && this.isListening) {
       this.recognition.abort();
-      this.updateMicState('stopped');
     }
   }
 
@@ -194,7 +193,7 @@ export class VoiceCommandComponent implements OnInit, OnDestroy {
       case 'siguiente':
         this.pdfService.requestNextPage();
         break;
-      case 'anterior':
+      case 'atrás':
         console.log('down');
         break;
       case 'up':

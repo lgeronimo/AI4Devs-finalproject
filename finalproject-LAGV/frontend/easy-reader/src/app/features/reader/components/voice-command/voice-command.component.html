@@ -1,16 +1,27 @@
 <div class="control-section">
-  <div class="control-section-message" *ngIf="micState !== micStates['onstart']">
-    {{ micState.message }}
+  <div class="configuration-section">
   </div>
-  <div class="control-section-message" *ngIf="isListening">
-    {{ feedbackState.message ? '' : micState.message }}
-    <span [style.color]="feedbackState.colorMessageLabel">{{ feedbackState.messageLabel }}</span> <span [style.color]="feedbackState.colorMessage">{{ feedbackState.message | uppercase }}</span>
+  <div class="control-section-voice-command">
+    <div class="control-section-message" *ngIf="micState !== micStates['onstart']">
+      {{ micState.message }}
+    </div>
+    <div class="control-section-message" *ngIf="isListening">
+      {{ feedbackState.message ? '' : micState.message }}
+      <span [style.color]="feedbackState.colorMessageLabel">{{ feedbackState.messageLabel }}</span> <span [style.color]="feedbackState.colorMessage">{{ feedbackState.message | uppercase }}</span>
+    </div>
+    <button 
+      class="control-button" 
+      [ngClass]="{'default-state': micState === micStates['default'], 'onstart-state': micState === micStates['onstart']}" 
+      [style.backgroundColor]="micState.iconBackgroundColor" 
+      (click)="isListening ? abortListening() : startListening()">
+      <i [ngClass]="'fas ' + micState.iconClass" [style.color]="micState.iconColor"></i>
+    </button>
   </div>
-  <button 
-    class="control-button" 
-    [ngClass]="{'default-state': micState === micStates['default'], 'onstart-state': micState === micStates['onstart']}" 
-    [style.backgroundColor]="micState.iconBackgroundColor" 
-    (click)="isListening ? abortListening() : startListening()">
-    <i [ngClass]="'fas ' + micState.iconClass" [style.color]="micState.iconColor"></i>
-  </button>
+  <div class="help-section">
+    <div>
+      <button class="control-button help-button">
+        <i class="fas fa-question"></i>
+      </button>
+    </div>
+  </div>
 </div>
