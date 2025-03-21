@@ -86,52 +86,51 @@
   justify-self: center;
 }
 
-.close-button {
-  grid-column: 3;
-  justify-self: end;
-}
+
 
 .control-btn {
-  background-color: white;
-  border: 1px solid #E2E8F0;
-  border-radius: 50%;
-  width: 36px;
-  height: 36px;
+  background-color: transparent;
+  color: #6B7280;
+  font-size: 25px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s ease;
-  color: #6366F1;
-  
+  border: none;
+  height: 30px;
   &:hover {
-    background-color: #EEF2FF;
+    background-color: #E5E7EB;
   }
-  
-  &:active {
-    background-color: #C7D2FE;
-  }
+
 }
 
 .page-info {
-  font-size: 14px;
-  color: #4B5563;
-  padding: 0 12px;
-  min-width: 70px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #6366F1;
+  padding: 8px 16px;
+  min-width: 80px;
   text-align: center;
 }
 
-.close-btn {
-  color: #E53E3E;
-  background-color: white;
-  border: 2px solid #E53E3E;
-  font-weight: bold;
+.close-button {
+  grid-column: 3;
+  justify-self: end;
   
-  &:hover {
-    color: white;
-    background-color: #E53E3E;
+  .close-btn {
+    color: #6B7280;
+    font-weight: bold;
+    font-size: 25px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    &:hover {
+      background-color: #E5E7EB;
+    }
   }
 }
+
 
 .pdf-container {
   flex: 1;
@@ -191,4 +190,19 @@
   .pdf-controls {
     grid-template-columns: auto auto auto;
   }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-2px); }
+  20%, 40%, 60%, 80% { transform: translateX(2px); }
+  
+}
+
+.shake-animation {
+  background-color: rgba(99, 102, 241, 0.8);
+  color: #EFF6FF;
+  animation: shake 1s cubic-bezier(.36,.07,.19,.97) both;
+  box-shadow: 0 0 15px rgba(99, 102, 241, 0.3);
+  backdrop-filter: blur(7px);
 }

@@ -14,7 +14,7 @@
         <button class="control-btn" (click)="previousPage()">
           <i class="fas fa-chevron-left"></i>
         </button>
-        <div class="page-info">
+        <div #pageInfo class="page-info">
           <span>{{ currentPage }} / {{ totalPages }}</span>
         </div>
         <button class="control-btn" (click)="nextPage()">
@@ -25,8 +25,8 @@
     
     <div class="control-section right">
       <div class="close-button">
-        <button class="control-btn close-btn" (click)="closeDocument()">
-          <i class="fas fa-times"></i>
+        <button class="close-btn" (click)="closeDocument()">
+          <i class="fas fa-xmark"></i>
         </button>
       </div>
     </div>

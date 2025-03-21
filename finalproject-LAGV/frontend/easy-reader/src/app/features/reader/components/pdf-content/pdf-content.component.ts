@@ -16,6 +16,7 @@ declare const pdfjsLib: any;
 export class PdfContentComponent implements OnInit, AfterViewInit {
   @ViewChild('pdfContainer') containerRef!: ElementRef<HTMLDivElement>;
   @ViewChild('pdfCanvas') private canvasRef!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('pageInfo') pageInfo!: ElementRef;
 
   private pdfService = inject(PdfService);
   private pdfDoc: any = null;
@@ -196,7 +197,25 @@ export class PdfContentComponent implements OnInit, AfterViewInit {
   }
 
   async firstPage(detonationManual: boolean = true): Promise<void> {
-    if (this.currentPage === 1) return;
+    if (this.currentPage === 1) {
+      // Aplicar efecto de vibración
+      const pageInfoElement = this.pageInfo.nativeElement;
+      pageInfoElement.classList.add('shake-animation');
+      if (this.cdr) {
+        this.cdr.detectChanges();
+      }
+      
+      // Remover la clase después de que termine la animación
+      setTimeout(() => {
+        pageInfoElement.classList.remove('shake-animation');
+        if (this.cdr) {
+          this.cdr.detectChanges();
+        }
+      }, 1000); // 500ms es la duración de la animación
+      
+      return;
+    }
+    
     this.currentPage = 1;
 
     if (this.cdr) {
