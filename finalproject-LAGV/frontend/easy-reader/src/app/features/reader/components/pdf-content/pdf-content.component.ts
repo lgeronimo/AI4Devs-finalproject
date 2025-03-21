@@ -66,7 +66,7 @@ export class PdfContentComponent implements OnInit, AfterViewInit {
       takeUntil(this.destroy$)
     ).subscribe(() => {
       console.log('previousPage Automatic');
-      if (this.readingMode === 'voiceCommands' && this.currentPage > 1) {
+      if (this.readingMode === 'voiceCommands') {
         this.previousPage(false);
       }
     });
@@ -163,7 +163,24 @@ export class PdfContentComponent implements OnInit, AfterViewInit {
   }
 
   async previousPage(detonationManual: boolean = true): Promise<void> {
-    if (this.currentPage <= 1) return;
+    if (this.currentPage <= 1) {
+      // Aplicar efecto de vibración
+      const pageInfoElement = this.pageInfo.nativeElement;
+      pageInfoElement.classList.add('shake-animation');
+      if (this.cdr) {
+        this.cdr.detectChanges();
+      }
+      
+      // Remover la clase después de que termine la animación
+      setTimeout(() => {
+        pageInfoElement.classList.remove('shake-animation');
+        if (this.cdr) {
+          this.cdr.detectChanges();
+        }
+      }, 500); // 500ms es la duración de la animación
+      
+      return;
+    }
     
     this.currentPage--;
 
@@ -175,7 +192,25 @@ export class PdfContentComponent implements OnInit, AfterViewInit {
   }
 
   async nextPage(detonationManual: boolean = true): Promise<void> {
-    if (this.currentPage >= this.totalPages) return;
+    if (this.currentPage >= this.totalPages) {
+      // Aplicar efecto de vibración
+      const pageInfoElement = this.pageInfo.nativeElement;
+      pageInfoElement.classList.add('shake-animation');
+      if (this.cdr) {
+        this.cdr.detectChanges();
+      }
+      
+      // Remover la clase después de que termine la animación
+      setTimeout(() => {
+        pageInfoElement.classList.remove('shake-animation');
+        if (this.cdr) {
+          this.cdr.detectChanges();
+        }
+      }, 500); // 500ms es la duración de la animación
+      
+      return;
+    }
+    
     this.currentPage++;
 
     if (this.cdr) {
@@ -186,7 +221,25 @@ export class PdfContentComponent implements OnInit, AfterViewInit {
   }
 
   async lastPage(detonationManual: boolean = true): Promise<void> {
-    if (this.currentPage === this.totalPages) return;
+    if (this.currentPage === this.totalPages) {
+      // Aplicar efecto de vibración
+      const pageInfoElement = this.pageInfo.nativeElement;
+      pageInfoElement.classList.add('shake-animation');
+      if (this.cdr) {
+        this.cdr.detectChanges();
+      }
+      
+      // Remover la clase después de que termine la animación
+      setTimeout(() => {
+        pageInfoElement.classList.remove('shake-animation');
+        if (this.cdr) {
+          this.cdr.detectChanges();
+        }
+      }, 500); // 500ms es la duración de la animación
+      
+      return;
+    }
+    
     this.currentPage = this.totalPages;
 
     if (this.cdr) {
@@ -211,7 +264,7 @@ export class PdfContentComponent implements OnInit, AfterViewInit {
         if (this.cdr) {
           this.cdr.detectChanges();
         }
-      }, 1000); // 500ms es la duración de la animación
+      }, 500); // 500ms es la duración de la animación
       
       return;
     }

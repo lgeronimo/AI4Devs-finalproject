@@ -106,7 +106,7 @@
 }
 
 .page-info {
-  font-size: 16px;
+  font-size: 19px;
   font-weight: 600;
   color: #6366F1;
   padding: 8px 16px;
@@ -193,16 +193,26 @@
 }
 
 @keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  10%, 30%, 50%, 70%, 90% { transform: translateX(-2px); }
-  20%, 40%, 60%, 80% { transform: translateX(2px); }
-  
+  0%, 100% { 
+    transform: rotate(0) scale(1);
+  }
+  15%, 45% { 
+    transform: rotate(-4deg) scale(1.1);
+  }
+  30%, 60% { 
+    transform: rotate(4deg) scale(1.1);
+  }
+  75% {
+    transform: rotate(-2deg) scale(1.05);
+  }
+  85% {
+    transform: rotate(2deg) scale(1.1);
+  }
 }
 
 .shake-animation {
-  background-color: rgba(99, 102, 241, 0.8);
-  color: #EFF6FF;
-  animation: shake 1s cubic-bezier(.36,.07,.19,.97) both;
-  box-shadow: 0 0 15px rgba(99, 102, 241, 0.3);
-  backdrop-filter: blur(7px);
+  transform-origin: center;
+  animation: shake 0.4s ease-in-out;
+  color: #DC2626;
+  display: inline-block;
 }
