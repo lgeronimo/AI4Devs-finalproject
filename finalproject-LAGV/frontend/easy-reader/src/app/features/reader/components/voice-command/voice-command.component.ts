@@ -139,8 +139,7 @@ export class VoiceCommandComponent implements OnInit, OnDestroy {
           if (transcript && event.results[i].isFinal) {
             finalTranscript += transcript;
             if (this.commands.has(transcript)) {
-              this.handleCommand(transcript);
-              this.updateFeedbackState('success', transcript);
+              this.updateFeedbackState('success', transcript, true);
             } else {
               this.updateFeedbackState('fail', transcript);
             }
@@ -217,6 +216,9 @@ export class VoiceCommandComponent implements OnInit, OnDestroy {
   }
 
   private updateFeedbackState(state: string, message: string, handleCommand: boolean = false): void {
+    if (handleCommand) {
+        this.handleCommand(message);
+    }
     setTimeout(() => {
       this.feedbackState = this.getFeedbackState(state, message);
       this.cdr.detectChanges();
