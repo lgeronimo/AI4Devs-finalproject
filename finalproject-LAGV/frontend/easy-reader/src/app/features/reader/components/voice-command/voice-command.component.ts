@@ -34,10 +34,10 @@ interface LanguageCommands {
 
 const commandsByLanguage: LanguageCommands = {
     'es-MX': {
-        next: new Set(['adelante', 'siguiente', 'siguiente página', 'avanza', 'continúa', 'prosigue']),
-        previous: new Set(['atrás', 'regresa', 'anterior', 'vuelve', 'regresa']),
-        first: new Set(['primero', 'primera', 'primera página']),
-        last: new Set(['último', 'última', 'última página']),
+        next: new Set(['adelante', 'siguiente', 'siguiente página', 'avanza', 'continúa', 'prosigue', 'continuar', 'avanzar']),
+        previous: new Set(['atrás', 'regresa', 'anterior', 'vuelve', 'regresa', 'volver', 'regresar']),
+        first: new Set(['primero', 'primera', 'primera página', 'inicio']),
+        last: new Set(['último', 'última', 'última página', 'fin', 'final']),
         top: new Set(['inicio']),
         bottom: new Set(['fin', 'final']),
         up: new Set(['sube', 'arriba']),
