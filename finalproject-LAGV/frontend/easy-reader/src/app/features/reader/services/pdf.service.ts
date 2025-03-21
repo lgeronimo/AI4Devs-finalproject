@@ -36,6 +36,8 @@ export class PdfService {
   private currentPageTextSubject = new BehaviorSubject<PageText>({text: '', detonationManual: true});
   private nextPageSubject = new Subject<void>();
   private previousPageSubject = new Subject<void>();
+  private lastPageSubject = new Subject<void>();
+  private firstPageSubject = new Subject<void>();
 
 
   
@@ -46,6 +48,8 @@ export class PdfService {
   currentPageText$ = this.currentPageTextSubject.asObservable();
   nextPage$ = this.nextPageSubject.asObservable();
   previousPage$ = this.previousPageSubject.asObservable();
+  lastPage$ = this.lastPageSubject.asObservable();
+  firstPage$ = this.firstPageSubject.asObservable();
 
   constructor() {}
 
@@ -193,5 +197,13 @@ export class PdfService {
 
   requestPreviousPage(): void {
     this.previousPageSubject.next();
+  }
+
+  requestLastPage(): void {
+    this.lastPageSubject.next();
+  }
+
+  requestFirstPage(): void {
+    this.firstPageSubject.next();
   }
 } 

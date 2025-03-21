@@ -69,6 +69,26 @@ export class PdfContentComponent implements OnInit, AfterViewInit {
         this.previousPage(false);
       }
     });
+
+    // Suscribirse a las solicitudes de ir a la última página
+    this.pdfService.lastPage$.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(() => {
+      console.log('lastPage Automatic');
+      if (this.readingMode === 'voiceCommands') {
+        this.lastPage(false);
+      }
+    });
+
+    // Suscribirse a las solicitudes de ir a la primera página
+    this.pdfService.firstPage$.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(() => {
+      console.log('firstPage Automatic');
+      if (this.readingMode === 'voiceCommands') {
+        this.firstPage(false);
+      }
+    });
   }
 
   ngAfterViewInit(): void {
@@ -156,6 +176,28 @@ export class PdfContentComponent implements OnInit, AfterViewInit {
   async nextPage(detonationManual: boolean = true): Promise<void> {
     if (this.currentPage >= this.totalPages) return;
     this.currentPage++;
+
+    if (this.cdr) {
+      this.cdr.detectChanges();
+    }
+
+    await this.queueRenderPage(this.currentPage, detonationManual);
+  }
+
+  async lastPage(detonationManual: boolean = true): Promise<void> {
+    if (this.currentPage === this.totalPages) return;
+    this.currentPage = this.totalPages;
+
+    if (this.cdr) {
+      this.cdr.detectChanges();
+    }
+
+    await this.queueRenderPage(this.currentPage, detonationManual);
+  }
+
+  async firstPage(detonationManual: boolean = true): Promise<void> {
+    if (this.currentPage === 1) return;
+    this.currentPage = 1;
 
     if (this.cdr) {
       this.cdr.detectChanges();

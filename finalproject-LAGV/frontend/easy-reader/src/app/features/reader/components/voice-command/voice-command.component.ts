@@ -20,6 +20,8 @@ interface FeedbackState {
 interface CommandGroups {
     next: Set<string>;
     previous: Set<string>;
+    first: Set<string>;
+    last: Set<string>;
     top: Set<string>;
     bottom: Set<string>;
     up: Set<string>;
@@ -32,20 +34,24 @@ interface LanguageCommands {
 
 const commandsByLanguage: LanguageCommands = {
     'es-MX': {
-        next: new Set(['adelante', 'siguiente']),
-        previous: new Set(['atrás', 'regresa']),
+        next: new Set(['adelante', 'siguiente', 'siguiente página', 'avanza', 'continúa', 'prosigue']),
+        previous: new Set(['atrás', 'regresa', 'anterior', 'vuelve', 'regresa']),
+        first: new Set(['primero', 'primera', 'primera página']),
+        last: new Set(['último', 'última', 'última página']),
         top: new Set(['inicio']),
         bottom: new Set(['fin', 'final']),
         up: new Set(['sube', 'arriba']),
-        down: new Set(['baja', 'abajo'])
+        down: new Set(['baja', 'abajo']),
     },
     'en-US': {
         next: new Set(['next', 'forward']),
         previous: new Set(['previous', 'back']),
+        first: new Set(['first', 'first page']),
+        last: new Set(['last', 'last page']),
         top: new Set(['top']),
         bottom: new Set(['bottom']),
         up: new Set(['up']),
-        down: new Set(['down'])
+        down: new Set(['down']),
     }
 };
 
@@ -128,7 +134,8 @@ export class VoiceCommandComponent implements OnInit, OnDestroy {
     up: () => { /* Lógica para subir */ },
     down: () => { /* Lógica para bajar */ },
     top: () => { /* Lógica para ir al inicio */ },
-    bottom: () => { /* Lógica para ir al final */ }
+    last: () => this.pdfService.requestLastPage(),
+    first: () => this.pdfService.requestFirstPage()
   };
 
   ngOnInit(): void {
