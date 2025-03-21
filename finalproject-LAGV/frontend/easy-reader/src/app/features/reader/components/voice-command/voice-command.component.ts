@@ -132,12 +132,10 @@ export class VoiceCommandComponent implements OnInit, OnDestroy {
         }
       };
       this.recognition.onresult = (event: any) => {
-        let finalTranscript = '';
         console.log('onresult');
         for (let i = event.resultIndex; i < event.results.length; i++) {
           const transcript = event.results[i][0].transcript.trim().toLowerCase();
           if (transcript && event.results[i].isFinal) {
-            finalTranscript += transcript;
             if (this.commands.has(transcript)) {
               this.updateFeedbackState('success', transcript, true);
             } else {
