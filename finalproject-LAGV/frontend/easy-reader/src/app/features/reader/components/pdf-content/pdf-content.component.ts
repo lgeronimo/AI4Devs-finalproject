@@ -35,14 +35,11 @@ export class PdfContentComponent implements OnInit, AfterViewInit {
     // pdfjsLib.GlobalWorkerOptions.workerSrc = 'assets/pdf.worker.mjs';
 
     this.pdfService.viewerState$.pipe(
-      takeUntil(this.destroy$),
-      map(state => state.config.readingMode)
-    ).subscribe(mode => this.readingMode = mode);
-
-    this.pdfService.viewerState$.pipe(
-      takeUntil(this.destroy$),
-      map(state => state.title)
-    ).subscribe(title => this.documentTitle = title);
+      takeUntil(this.destroy$)
+    ).subscribe(state => {
+      this.readingMode = state.config.readingMode;
+      this.documentTitle = state.title;
+    });
   }
 
   ngOnInit(): void {
@@ -60,6 +57,16 @@ export class PdfContentComponent implements OnInit, AfterViewInit {
         this.nextPage(false);
       } else if (this.readingMode === 'voiceCommands') {
         this.nextPage(false);
+      }
+    });
+
+    // Suscribirse a las solicitudes de página anterior
+    this.pdfService.previousPage$.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(() => {
+      console.log('previousPage Automatic');
+      if (this.readingMode === 'voiceCommands' && this.currentPage > 1) {
+        this.previousPage(false);
       }
     });
   }
@@ -134,11 +141,16 @@ export class PdfContentComponent implements OnInit, AfterViewInit {
     }
   }
 
-  async previousPage(): Promise<void> {
+  async previousPage(detonationManual: boolean = true): Promise<void> {
     if (this.currentPage <= 1) return;
     
     this.currentPage--;
-    await this.queueRenderPage(this.currentPage);
+
+    if (this.cdr) {
+      this.cdr.detectChanges();
+    }
+
+    await this.queueRenderPage(this.currentPage, detonationManual);
   }
 
   async nextPage(detonationManual: boolean = true): Promise<void> {

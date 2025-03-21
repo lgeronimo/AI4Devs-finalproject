@@ -35,6 +35,7 @@ export class PdfService {
 
   private currentPageTextSubject = new BehaviorSubject<PageText>({text: '', detonationManual: true});
   private nextPageSubject = new Subject<void>();
+  private previousPageSubject = new Subject<void>();
 
 
   
@@ -44,6 +45,7 @@ export class PdfService {
   pdfUrl$ = this.pdfUrlSubject.asObservable();
   currentPageText$ = this.currentPageTextSubject.asObservable();
   nextPage$ = this.nextPageSubject.asObservable();
+  previousPage$ = this.previousPageSubject.asObservable();
 
   constructor() {}
 
@@ -187,5 +189,9 @@ export class PdfService {
 
   requestNextPage(): void {
     this.nextPageSubject.next();
+  }
+
+  requestPreviousPage(): void {
+    this.previousPageSubject.next();
   }
 } 

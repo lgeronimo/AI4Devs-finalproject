@@ -139,20 +139,10 @@ export class VoiceCommandComponent implements OnInit, OnDestroy {
           if (transcript && event.results[i].isFinal) {
             finalTranscript += transcript;
             if (this.commands.has(transcript)) {
-              this.feedbackState = this.getFeedbackState('success', transcript);
               this.handleCommand(transcript);
-              // Limpiar el mensaje después de 2 segundos
-              setTimeout(() => {
-                this.feedbackState = this.getFeedbackState('default');
-                this.cdr.detectChanges();
-              }, 2000);
+              this.updateFeedbackState('success', transcript);
             } else {
-              this.feedbackState = this.getFeedbackState('fail', transcript);
-              // Limpiar el mensaje de error después de 2 segundos
-              setTimeout(() => {
-                this.feedbackState = this.getFeedbackState('default');
-                this.cdr.detectChanges();
-              }, 2000);
+              this.updateFeedbackState('fail', transcript);
             }
           }
         }
@@ -194,7 +184,7 @@ export class VoiceCommandComponent implements OnInit, OnDestroy {
         this.pdfService.requestNextPage();
         break;
       case 'atrás':
-        console.log('down');
+        this.pdfService.requestPreviousPage();
         break;
       case 'up':
         console.log('up');
@@ -216,12 +206,25 @@ export class VoiceCommandComponent implements OnInit, OnDestroy {
     this.cdr.detectChanges();
   }
 
+
   getFeedbackState(state: string, message?: string): FeedbackState {
     const feedbackState = this.feedbackStates[state];
+    console.log('feedbackState:' + state)
     return {
       ...feedbackState,
       message: message
     };
+  }
+
+  private updateFeedbackState(state: string, message: string, handleCommand: boolean = false): void {
+    setTimeout(() => {
+      this.feedbackState = this.getFeedbackState(state, message);
+      this.cdr.detectChanges();
+    }, 250);
+    setTimeout(() => {
+      this.feedbackState = this.getFeedbackState('default');
+      this.cdr.detectChanges();
+    }, 1800);
   }
 
   ngOnDestroy(): void {
