@@ -34,12 +34,12 @@ interface LanguageCommands {
 
 const commandsByLanguage: LanguageCommands = {
     'es-MX': {
-        next: new Set(['adelante', 'siguiente', 'siguiente página', 'avanza', 'continúa', 'prosigue', 'continuar', 'avanzar']),
-        previous: new Set(['atrás', 'regresa', 'anterior', 'vuelve', 'regresa', 'volver', 'regresar']),
-        first: new Set(['primero', 'primera', 'primera página', 'inicio']),
-        last: new Set(['último', 'última', 'última página', 'fin', 'final']),
-        top: new Set(['inicio']),
-        bottom: new Set(['fin', 'final']),
+        next: new Set(['adelante', 'siguiente', 'siguiente página', 'avanza', 'continúa', 'prosigue', 'continuar', 'avanzar', 'cambia de página', 'cambia de página a la siguiente']),
+        previous: new Set(['atrás', 'regresa', 'anterior', 'vuelve', 'regresa', 'volver', 'regresar', 'cambia de página a la anterior']),
+        first: new Set(['primero', 'primera', 'primera página']),
+        last: new Set(['último', 'última', 'última página']),
+        bottom: new Set(['baja al pie', 'pie de página', 've al pie', 've al final', 'ir al final', 'final', 'fin de página']),
+        top: new Set(['inicio de página', 've al inicio', 've al principio']),
         up: new Set(['sube', 'arriba']),
         down: new Set(['baja', 'abajo']),
     },
@@ -131,11 +131,12 @@ export class VoiceCommandComponent implements OnInit, OnDestroy {
   private readonly commandActions = {
     next: () => this.pdfService.requestNextPage(),
     previous: () => this.pdfService.requestPreviousPage(),
+    last: () => this.pdfService.requestLastPage(),
+    first: () => this.pdfService.requestFirstPage(),
+    bottom: () => this.pdfService.requestBottomPage(),
+    top: () => this.pdfService.requestTopPage(),
     up: () => { /* Lógica para subir */ },
     down: () => { /* Lógica para bajar */ },
-    top: () => { /* Lógica para ir al inicio */ },
-    last: () => this.pdfService.requestLastPage(),
-    first: () => this.pdfService.requestFirstPage()
   };
 
   ngOnInit(): void {

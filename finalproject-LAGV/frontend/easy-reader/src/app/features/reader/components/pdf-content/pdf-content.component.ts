@@ -90,6 +90,27 @@ export class PdfContentComponent implements OnInit, AfterViewInit {
         this.firstPage(false);
       }
     });
+
+    // Agregar nueva suscripción para bottom
+    this.pdfService.bottomPage$.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(() => {
+      console.log('bottomPage Automatic');
+      if (this.readingMode === 'voiceCommands') {
+        debugger;
+        this.scrollToBottom();
+      }
+    });
+
+    // Agregar nueva suscripción para top
+    this.pdfService.topPage$.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(() => {
+      console.log('topPage Automatic');
+      if (this.readingMode === 'voiceCommands') {
+        this.scrollToTop();
+      }
+    });
   }
 
   ngAfterViewInit(): void {
@@ -242,5 +263,24 @@ export class PdfContentComponent implements OnInit, AfterViewInit {
     this.pdfService.clearPdf();
     // Navegar de regreso a la página de inicio
     this.router.navigate(['/reader']);
+  }
+
+  // Agregar nuevo método para scroll
+  private scrollToBottom(): void {
+    debugger;
+    const container = this.containerRef.nativeElement;
+    container.scrollTo({
+      top: container.scrollHeight,
+      behavior: 'smooth'
+    });
+  }
+
+  // Agregar nuevo método para scroll hacia arriba
+  private scrollToTop(): void {
+    const container = this.containerRef.nativeElement;
+    container.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
   }
 }
