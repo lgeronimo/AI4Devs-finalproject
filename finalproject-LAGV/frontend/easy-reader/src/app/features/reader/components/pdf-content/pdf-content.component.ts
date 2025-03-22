@@ -111,6 +111,26 @@ export class PdfContentComponent implements OnInit, AfterViewInit {
         this.scrollToTop();
       }
     });
+
+    // Agregar nueva suscripción para up
+    this.pdfService.upPage$.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(() => {
+      console.log('upPage Automatic');
+      if (this.readingMode === 'voiceCommands') {
+        this.scrollUp();
+      }
+    });
+
+    // Agregar nueva suscripción para down
+    this.pdfService.downPage$.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(() => {
+      console.log('downPage Automatic');
+      if (this.readingMode === 'voiceCommands') {
+        this.scrollDown();
+      }
+    });
   }
 
   ngAfterViewInit(): void {
@@ -280,6 +300,25 @@ export class PdfContentComponent implements OnInit, AfterViewInit {
     const container = this.containerRef.nativeElement;
     container.scrollTo({
       top: 0,
+      behavior: 'smooth'
+    });
+  }
+
+  // Agregar nuevos métodos para scroll incremental
+  private scrollUp(): void {
+    const container = this.containerRef.nativeElement;
+    const scrollAmount = container.clientHeight * 0.25; // Scroll del 25% de la altura visible
+    container.scrollBy({
+      top: -scrollAmount,
+      behavior: 'smooth'
+    });
+  }
+
+  private scrollDown(): void {
+    const container = this.containerRef.nativeElement;
+    const scrollAmount = container.clientHeight * 0.25; // Scroll del 25% de la altura visible
+    container.scrollBy({
+      top: scrollAmount,
       behavior: 'smooth'
     });
   }

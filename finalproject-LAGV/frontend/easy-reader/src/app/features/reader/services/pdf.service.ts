@@ -40,6 +40,8 @@ export class PdfService {
   private firstPageSubject = new Subject<void>();
   private bottomPageSubject = new Subject<void>();
   private topPageSubject = new Subject<void>();
+  private upPageSubject = new Subject<void>();
+  private downPageSubject = new Subject<void>();
 
 
   
@@ -54,6 +56,8 @@ export class PdfService {
   firstPage$ = this.firstPageSubject.asObservable();
   bottomPage$ = this.bottomPageSubject.asObservable();
   topPage$ = this.topPageSubject.asObservable();
+  upPage$ = this.upPageSubject.asObservable();
+  downPage$ = this.downPageSubject.asObservable();
 
   constructor() {}
 
@@ -217,5 +221,13 @@ export class PdfService {
 
   requestTopPage(): void {
     this.topPageSubject.next();
+  }
+
+  requestUpPage(): void {
+    this.upPageSubject.next();
+  }
+
+  requestDownPage(): void {
+    this.downPageSubject.next();
   }
 } 

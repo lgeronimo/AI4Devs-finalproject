@@ -40,9 +40,9 @@ const commandsByLanguage: LanguageCommands = {
         last: new Set(['último', 'última', 'última página']),
         bottom: new Set(['baja al pie', 'pie de página', 've al pie', 've al final', 'ir al final', 'final', 'fin de página']),
         top: new Set(['inicio de página', 've al inicio', 've al principio']),
-        up: new Set(['sube', 'arriba']),
-        down: new Set(['baja', 'abajo']),
-    },
+        up: new Set(['sube', 'sube un poco', 'arriba', 'arriba un poco', 'sube más' , 'sube más arriba un poco']),
+        down: new Set(['baja', 'baja un poco', 'abajo', 'abajo un poco', 'baja más', 'baja más abajo un poco']),
+    },  
     'en-US': {
         next: new Set(['next', 'forward']),
         previous: new Set(['previous', 'back']),
@@ -135,8 +135,8 @@ export class VoiceCommandComponent implements OnInit, OnDestroy {
     first: () => this.pdfService.requestFirstPage(),
     bottom: () => this.pdfService.requestBottomPage(),
     top: () => this.pdfService.requestTopPage(),
-    up: () => { /* Lógica para subir */ },
-    down: () => { /* Lógica para bajar */ },
+    up: () => this.pdfService.requestUpPage(),
+    down: () => this.pdfService.requestDownPage(),
   };
 
   ngOnInit(): void {
