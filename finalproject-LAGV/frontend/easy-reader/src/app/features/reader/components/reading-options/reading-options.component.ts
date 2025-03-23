@@ -48,6 +48,7 @@ export class ReadingOptionsComponent implements OnInit {
   }
 
   onContinue(): void {
+    this.readingModeSelected.emit(this.selectedMode);
 
     if (this.readerModeService.getMode() === 'pdf') {
       this.pdfService.setReadingMode(this.selectedMode);
