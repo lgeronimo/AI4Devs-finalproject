@@ -380,6 +380,12 @@ El proyecto utiliza Firebase para el despliegue de la aplicación. La configurac
 
 Esta configuración asegura que solo los archivos necesarios para la ejecución de la aplicación se incluyan en el despliegue, optimizando así el rendimiento y la seguridad del entorno de producción.
 
+## Comandos:
+
+1. ng build --configuration=production
+2. firebase deploy 
+
+
 ### **2.5. Seguridad**
 
 Para generar la sección de **Seguridad** en el documento `template.md`, podemos basarnos en las prácticas de seguridad que se suelen implementar en proyectos web, especialmente aquellos que utilizan tecnologías como Angular y Firebase. Aquí te propongo un borrador para esta sección:

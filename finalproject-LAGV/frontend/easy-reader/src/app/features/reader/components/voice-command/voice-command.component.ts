@@ -74,7 +74,7 @@ const commandsByLanguage: LanguageCommands = {
 export class VoiceCommandComponent implements OnInit, OnDestroy {
   @ViewChild('instructionsModal') instructionsModal!: TemplateRef<any>;
   @ViewChild('commandsListModal') commandsListModal!: TemplateRef<any>;
-  private recognition: any;
+  public recognition: any;
   private speechGrammarList: any;
   isListening: boolean = false;
   private commands: Set<string> = new Set();
@@ -84,8 +84,8 @@ export class VoiceCommandComponent implements OnInit, OnDestroy {
   private hasError: boolean = false;
   private lastAction: 'up' | 'down' | null = null;
   showInstructions: boolean = false;
-  private overlayRef: OverlayRef | null = null;
-  private commandsListOverlayRef: OverlayRef | null = null;
+  public overlayRef: OverlayRef | null = null;
+  public commandsListOverlayRef: OverlayRef | null = null;
 
   micState: MicState = {
     message: 'Please authorize microphone access to proceed',
@@ -446,5 +446,9 @@ export class VoiceCommandComponent implements OnInit, OnDestroy {
   getCommandsArray(action: keyof CommandGroups): string[] {
     const commands = commandsByLanguage[this.recognition.lang][action];
     return Array.from(commands).reverse();
+  }
+
+  public isCommandsListOverlayOpen(): boolean {
+    return this.commandsListOverlayRef !== null;
   }
 } 
