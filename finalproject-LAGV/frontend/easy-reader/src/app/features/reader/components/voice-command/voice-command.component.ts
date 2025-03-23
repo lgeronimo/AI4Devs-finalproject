@@ -1,7 +1,10 @@
-import { Component, OnInit, OnDestroy, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, ChangeDetectorRef, ViewChild, TemplateRef, ViewContainerRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PdfService } from '../../services/pdf.service';
 import { Subject } from 'rxjs';
+import { Overlay, OverlayRef } from '@angular/cdk/overlay';
+import { TemplatePortal } from '@angular/cdk/portal';
+import { OverlayModule } from '@angular/cdk/overlay';
 
 interface MicState {
   message: string;
@@ -64,11 +67,12 @@ const commandsByLanguage: LanguageCommands = {
 @Component({
   selector: 'app-voice-command',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, OverlayModule],
   templateUrl: './voice-command.component.html',
   styleUrls: ['./voice-command.component.scss']
 })
 export class VoiceCommandComponent implements OnInit, OnDestroy {
+  @ViewChild('instructionsModal') instructionsModal!: TemplateRef<any>;
   private recognition: any;
   private speechGrammarList: any;
   isListening: boolean = false;
@@ -78,6 +82,8 @@ export class VoiceCommandComponent implements OnInit, OnDestroy {
   private cdr = inject(ChangeDetectorRef);
   private hasError: boolean = false;
   private lastAction: 'up' | 'down' | null = null;
+  showInstructions: boolean = false;
+  private overlayRef: OverlayRef | null = null;
 
   micState: MicState = {
     message: 'Please authorize microphone access to proceed',
@@ -165,8 +171,14 @@ export class VoiceCommandComponent implements OnInit, OnDestroy {
     }
   };
 
+  constructor(
+    private overlay: Overlay,
+    private viewContainerRef: ViewContainerRef
+  ) {}
+
   ngOnInit(): void {
     if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
+
       const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
       const SpeechGrammarList = (window as any).SpeechGrammarList || (window as any).webkitSpeechGrammarList;
       this.recognition = new SpeechRecognition();
@@ -243,12 +255,20 @@ export class VoiceCommandComponent implements OnInit, OnDestroy {
     }
   }
 
+  ngAfterViewInit(): void {
+    if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
+      setTimeout(() => {
+        this.openInstructions();
+      }, 1000);
+    }
+  }
+
   startListening(): void {
     if (this.recognition && !this.isListening) {
       this.updateMicState('warmingUp');
       setTimeout(() => {
         this.recognition.start();
-      }, 1000);
+      }, 0);
     }
   }
 
@@ -340,6 +360,47 @@ export class VoiceCommandComponent implements OnInit, OnDestroy {
     } else {
       this.updateFeedbackState('fail', transcript);
       this.cdr.detectChanges();
+    }
+  }
+
+  toggleInstructions(): void {
+    if (this.overlayRef) {
+      this.closeInstructions();
+    } else {
+      this.openInstructions();
+    }
+  }
+
+  openInstructions(): void {
+    if (this.isListening) {
+      this.abortListening();
+    }
+
+    const positionStrategy = this.overlay.position()
+      .global()
+      .centerHorizontally()
+      .centerVertically();
+    
+    this.overlayRef = this.overlay.create({
+      positionStrategy,
+      hasBackdrop: true,
+      backdropClass: 'cdk-overlay-dark-backdrop',
+      scrollStrategy: this.overlay.scrollStrategies.block()
+    });
+    
+    const portal = new TemplatePortal(
+      this.instructionsModal,
+      this.viewContainerRef
+    );
+    
+    this.overlayRef.attach(portal);
+  }
+
+  closeInstructions(): void {
+    if (this.overlayRef) {
+      this.overlayRef.detach();
+      this.overlayRef.dispose();
+      this.overlayRef = null;
     }
   }
 } 

@@ -19,9 +19,53 @@
   </div>
   <div class="help-section">
     <div>
-      <button class="control-button help-button">
-        <i class="fas fa-question"></i>
+      <button class="control-button help-button" (click)="toggleInstructions()">
+        <i class="fas fa-list"></i>
       </button>
     </div>
   </div>
 </div>
+
+<!-- Modal para instrucciones usando ng-template -->
+<ng-template #instructionsModal>
+  <div class="voice-settings-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Basic Voice Commands</h3>
+        <button class="close-button" (click)="closeInstructions()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="instructions-content">
+          <p>To use voice commands:</p>
+          <ol>
+            <li>Click the microphone button</li>
+            <li>When the microphone turns green, say any of these commands:</li>
+          </ol>
+          <div class="commands-list">
+            <div class="command-item">
+              <span class="command">"Siguiente" o "Siguiente página"</span>
+              <span class="description">Go to the next page</span>
+            </div>
+            <div class="command-item">
+              <span class="command">"Anterior" o "Atrás"</span>
+              <span class="description">Go back to the previous page</span>
+            </div>
+            <div class="command-item">
+              <span class="command">"Arriba" o "Abajo"</span>
+              <span class="description">Scroll the page</span>
+            </div>
+          </div>
+          <p class="info-text">
+             Puedes ver todos los comandos disponibles presionando el botón de ayuda   <i class="fas fa-list"></i>
+          </p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="primary-button" (click)="closeInstructions()">Understood</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+

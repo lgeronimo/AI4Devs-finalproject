@@ -121,6 +121,209 @@
   }
 }
 
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-instructions {
+  background-color: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  max-width: 90%;
+  width: 400px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+  h3 {
+    color: #4B5563;
+    margin-bottom: 1rem;
+    text-align: center;
+    font-size: 1.25rem;
+  }
+
+  .instructions-content {
+    margin-bottom: 1.5rem;
+
+    ol {
+      margin: 1rem 0;
+      padding-left: 1.5rem;
+      color: #6B7280;
+    }
+
+    .commands-list {
+      margin-top: 1rem;
+      
+      .command-item {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 0.75rem;
+        padding: 0.5rem;
+        background-color: #F3F4F6;
+        border-radius: 4px;
+
+        .command {
+          color: #4F46E5;
+          font-weight: 500;
+          margin-bottom: 0.25rem;
+        }
+
+        .description {
+          color: #6B7280;
+          font-size: 0.9rem;
+        }
+      }
+    }
+  }
+
+  .close-modal {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #6366F1;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: #4F46E5;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-instructions {
+    width: 320px;
+    padding: 1rem;
+    margin: 0 1rem;
+  }
+}
+
+.voice-settings-modal {
+
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1001;
+  background-color: rgba(0, 0, 0, 0.85);
+
+  .modal-content {
+    background-color: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+
+      h3 {
+        margin: 0;
+        color: #4B5563;
+        font-size: 1.25rem;
+      }
+
+      .close-button {
+        color: #6B7280;
+        font-weight: bold;
+        font-size: 25px;
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+        &:hover {
+          background-color: #E5E7EB;
+        }
+        
+        &:hover {
+          color: #374151;
+        }
+      }
+    }
+
+    .modal-body {
+      .instructions-content {
+        color: #6B7280;
+
+        ol {
+          margin: 1rem 0;
+          padding-left: 1.5rem;
+        }
+
+        .commands-list {
+          .command-item {
+            background-color: #F3F4F6;
+            border-radius: 6px;
+            padding: 0.75rem;
+            margin-bottom: 0.75rem;
+
+            .command {
+              color: #4F46E5;
+              font-weight: 500;
+              display: block;
+              margin-bottom: 0.25rem;
+            }
+
+            .description {
+              color: #6B7280;
+              font-size: 0.9rem;
+            }
+          }
+        }
+        .info-text {
+          background-color: #F3F4F6;
+          border-radius: 6px;
+          padding: 0.75rem;
+
+          font-size: 0.9rem;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+          background: #10b981;
+          color: #ffffff;
+          font-size: 15px;
+          font-weight: 600;
+        }
+      }
+    }
+
+    .modal-footer {
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: flex-end;
+
+      .primary-button {
+        background-color: #6366F1;
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 500;
+        width: 100%;
+
+        &:hover {
+          background-color: #4F46E5;
+        }
+      }
+    }
+  }
+}
+
+
+
 
 
 
