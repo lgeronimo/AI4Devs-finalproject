@@ -108,7 +108,7 @@
   }
   
   @media (max-width: 480px) {
-    padding: 24px;
+    padding: 10px;
   }
   
   .option-icon {
@@ -128,7 +128,7 @@
     @media (max-width: 480px) {
       width: 56px;
       height: 56px;
-      
+      margin: 0 auto 5px;
       i {
         font-size: 28px;
       }
@@ -156,4 +156,19 @@
       font-size: 14px;
     }
   }
+}
+
+.header {
+  display: flex;
+  justify-content: flex-end;
+  padding: 16px 24px;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 10;
+}
+
+.user-bar {
+  margin-left: auto;
 } 

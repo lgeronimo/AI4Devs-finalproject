@@ -2,11 +2,12 @@ import { Component, inject, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ReaderModeService } from '@shared/services/reader-mode.service';
-import { ReaderMode } from '@shared/types/reading.types';
+import { UserBarComponent } from '@shared/components/user-bar/user-bar.component';
+
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, UserBarComponent],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
