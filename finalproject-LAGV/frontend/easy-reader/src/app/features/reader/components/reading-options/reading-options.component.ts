@@ -38,6 +38,9 @@ export class ReadingOptionsComponent implements OnInit {
     this.hasAccelerometer = 'DeviceMotionEvent' in window;
   }
 
+  get showTextToSpeechOption(): boolean {
+    return this.readerModeService.getMode() === 'pdf';
+  }
 
   get showAccelerometerOption(): boolean {
     return this.isMobileDevice && this.hasAccelerometer;
