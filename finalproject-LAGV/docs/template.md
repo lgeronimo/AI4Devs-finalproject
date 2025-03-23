@@ -167,38 +167,69 @@ La arquitectura de Easy Reader sigue un modelo centrado en el cliente-servidor c
 
 ### **2.2. Descripción de componentes principales:**
 
-1. **Frontend (Angular) - Implementación Actual**
-   - **Módulo Reader**
-     - PdfContentComponent: Visualización y control de PDF
-     - ReaderControlComponent: Control principal de lectura
-     - ReadingOptionsComponent: Selección de modo de lectura
-   
-   - **Módulo Voice**
-     - VoiceCommandComponent: 
-       - Control por comandos de voz
-       - Gestión de estados del micrófono
-       - Feedback visual de comandos
-       - Modal de instrucciones y comandos disponibles
-     - VoiceReaderComponent:
-       - Síntesis de voz
-       - Selección de voces
-       - Control de velocidad
-       - Controles de reproducción
+### **2.2. Descripción de componentes principales:**
 
-   - **Módulo Shared**
-     - Componentes de UI comunes
-     - Servicios compartidos
-     - Tipos y modelos de datos
-     - Utilidades de feedback visual
+1. **Frontend (Angular) - Implementación Actual**
+   
+   - **Módulo Features/Reader**
+     - **PdfContentComponent**
+       - Visualización de documentos PDF
+       - Control de zoom y ajuste de página
+       - Manejo de eventos de scroll
+       - Integración con PDF.js
+     
+     - **ReaderControlComponent**
+       - Barra de control principal
+       - Gestión de modos de lectura
+       - Interfaz adaptativa (colapsable/expandible)
+       - Integración con controles de voz
+     
+     - **ReadingOptionsComponent**
+       - Selección inicial de modo de lectura
+       - Validación de capacidades del dispositivo
+       - Configuración inicial de lectura
+     
+     - **VoiceCommandComponent**
+       - Sistema de reconocimiento de voz
+       - Gestión de estados del micrófono
+       - Modal de instrucciones de comandos
+       - Modal de lista de comandos disponibles
+       - Feedback visual de estados y comandos
+       - Soporte multilenguaje (en desarrollo)
+     
+     - **VoiceReaderComponent**
+       - Sistema de síntesis de voz
+       - Selección y gestión de voces
+       - Control de velocidad de lectura
+       - Controles de reproducción
+       - Modal de configuración de voz
+       - Indicadores de estado de lectura
+
+
+ 
 
 2. **APIs del Navegador - Implementación Actual**
    - **Web Speech API**
-     - SpeechRecognition para comandos de voz
-     - SpeechSynthesis para lectura de texto
+     - SpeechRecognition
+       - Reconocimiento continuo de voz
+       - Gramática de comandos en español
+       - Manejo de estados y eventos
+     
+     - SpeechSynthesis
+       - Síntesis de texto a voz
+       - Gestión de voces disponibles
+       - Control de reproducción
+   
+   - **File API**
+     - Carga de archivos PDF
+     - Validación de tipos de archivo
+     - Almacenamiento local
+   
    - **PDF.js**
-     - Renderizado de documentos
-     - Control de navegación
+     - Renderizado de documentos PDF
+     - Navegación entre páginas
      - Extracción de texto
+     - Control de zoom y vista
 
 3. **Backend (Node.js) - Implementación Futura**
    - **API REST**
@@ -265,16 +296,18 @@ easy-reader/
 │   │   │   │   │   │   ├── pdf-viewer/
 │   │   │   │   │   │   └── web-viewer/
 │   │   │   │   │   ├── components/
-│   │   │   │   │   │   ├── acelerometer-detection/
-│   │   │   │   │   │   │   ├── acelerometer-detection.component.ts
-│   │   │   │   │   │   ├── face-detection/
-│   │   │   │   │   │   │   ├── face-detection.component.ts
-│   │   │   │   │   │   └── reader-settings/
-│   │   │   │   │   │   │   ├── reader-settings.component.ts
+│   │   │   │   │   │   ├── voice-command/
+│   │   │   │   │   │   ├── voice-reader/
+│   │   │   │   │   │   ├── reader-control/
+│   │   │   │   │   │   ├── pdf-content/
+│   │   │   │   │   │   ├── url-reader/
+│   │   │   │   │   │   ├── url-viewer/
+│   │   │   │   │   │   ├── reading-options/
+│   │   │   │   │   │   └── pdf-uploader/
 │   │   │   │   │   ├── services/
 │   │   │   │   │   └── models/
 │   │   │   │   │
-│   │   │   │   ├── dashboard/  # Módulo de dashboard
+│   │   │   │   └── dashboard/  # Módulo de dashboard
 │   │   │   │   │   ├── pages/
 │   │   │   │   │   │   ├── document-list/
 │   │   │   │   │   │   └── reading-history/
@@ -340,11 +373,36 @@ easy-reader/
 
 ### **2.4. Infraestructura y despliegue**
 
-> Detalla la infraestructura del proyecto, incluyendo un diagrama en el formato que creas conveniente, y explica el proceso de despliegue que se sigue
+El proyecto utiliza Firebase para el despliegue de la aplicación. La configuración de Firebase se encuentra en el archivo `firebase.json`, que especifica los detalles del hosting. A continuación, se describen los aspectos clave de la infraestructura y despliegue:
+
+- **Hosting**: La aplicación se despliega en Firebase Hosting. La carpeta pública para el despliegue es `dist/easy-reader/browser`, que contiene los archivos generados después de compilar el proyecto Angular.
+- **Archivos ignorados**: Durante el despliegue, se ignoran ciertos archivos y directorios, como `firebase.json`, archivos ocultos (`**/.*`), y la carpeta `node_modules`.
+
+Esta configuración asegura que solo los archivos necesarios para la ejecución de la aplicación se incluyan en el despliegue, optimizando así el rendimiento y la seguridad del entorno de producción.
 
 ### **2.5. Seguridad**
 
-> Enumera y describe las prácticas de seguridad principales que se han implementado en el proyecto, añadiendo ejemplos si procede
+Para generar la sección de **Seguridad** en el documento `template.md`, podemos basarnos en las prácticas de seguridad que se suelen implementar en proyectos web, especialmente aquellos que utilizan tecnologías como Angular y Firebase. Aquí te propongo un borrador para esta sección:
+
+### **2.5. Seguridad**
+
+En el proyecto Easy Reader, se han implementado varias prácticas de seguridad para proteger los datos de los usuarios y asegurar la integridad de la aplicación:
+
+- **Autenticación y Autorización**: Aunque actualmente el proyecto no requiere registro, se planea implementar un sistema de autenticación seguro utilizando Firebase Authentication, que proporcionará métodos de inicio de sesión seguros y gestionará las sesiones de usuario.
+
+- **Reglas de Seguridad en Firebase**: Se han configurado reglas de seguridad en Firebase para controlar el acceso a la base de datos y al almacenamiento. Estas reglas aseguran que solo los usuarios autenticados puedan acceder a sus propios datos.
+
+- **CORS (Cross-Origin Resource Sharing)**: La aplicación está configurada para permitir solo solicitudes de orígenes específicos, reduciendo el riesgo de ataques de tipo CSRF (Cross-Site Request Forgery).
+
+- **Protección contra XSS (Cross-Site Scripting)**: Angular proporciona protección contra XSS de forma predeterminada al escapar automáticamente los datos vinculados en las plantillas. Esto ayuda a prevenir la inyección de scripts maliciosos.
+
+- **Uso de HTTPS**: La aplicación se despliega utilizando HTTPS, asegurando que los datos transmitidos entre el cliente y el servidor estén cifrados.
+
+- **Validación de Entradas**: Se implementa la validación de entradas tanto en el cliente como en el servidor para prevenir inyecciones de código y asegurar que los datos sean del tipo esperado.
+
+- **Gestión de Sesiones**: Las sesiones de usuario se gestionan de manera segura, con tokens de acceso que tienen un tiempo de expiración limitado y se renuevan automáticamente.
+
+Si deseas añadir o modificar algún punto específico, házmelo saber.
 
 ### **2.6. Tests**
 
@@ -532,112 +590,78 @@ erDiagram
 
 ## 5. Historias de Usuario
 
-### **Historia de Usuario 1: Lectura Manos Libres con Detección Facial**
+### **Historia de Usuario 1: Lectura con Comandos de Voz**
 
-**Como** usuario con movilidad reducida en las manos  
-**Quiero** poder controlar el desplazamiento de lectura usando los movimientos de mi cabeza  
-**Para** poder leer documentos de forma independiente sin necesidad de usar las manos
+**Como** usuario que desea controlar la lectura de documentos sin usar las manos  
+**Quiero** utilizar comandos de voz para navegar y controlar el contenido  
+**Para** tener una experiencia de lectura más accesible y cómoda
 
 **Criterios de Aceptación:**
-1. **DADO** que estoy en la página de lectura de un documento  
-   **CUANDO** selecciono el modo "Control por detección facial"  
-   **ENTONCES** el sistema debe solicitar permiso para acceder a la cámara
+1. **DADO** que estoy en la aplicación web  
+   **CUANDO** selecciono un archivo PDF o ingreso una URL  
+   **ENTONCES** el sistema debe validar y cargar el documento correctamente
 
-2. **DADO** que he concedido acceso a la cámara  
-   **CUANDO** el sistema detecta mi rostro  
-   **ENTONCES** debe mostrar un indicador visual de que mi rostro está siendo detectado correctamente
+2. **DADO** que el documento está cargado  
+   **CUANDO** selecciono el modo "Comandos de Voz"  
+   **ENTONCES** el sistema debe solicitar permiso para acceder al micrófono y activar el reconocimiento de voz
 
-3. **DADO** que el sistema está detectando mi rostro  
-   **CUANDO** inclino mi cabeza hacia abajo  
-   **ENTONCES** el documento debe desplazarse hacia abajo a una velocidad proporcional a la inclinación
-
-4. **DADO** que el sistema está detectando mi rostro  
-   **CUANDO** mantengo mi cabeza en posición neutral  
-   **ENTONCES** el desplazamiento debe detenerse
-
-5. **DADO** que estoy usando el control facial  
-   **CUANDO** el sistema pierde la detección de mi rostro  
-   **ENTONCES** debe pausar el desplazamiento y mostrar una alerta visual
+3. **DADO** que los comandos de voz están activos  
+   **CUANDO** digo "siguiente página" o "anterior"  
+   **ENTONCES** el sistema debe cambiar de página según el comando
 
 **Notas Técnicas:**
-- Usar WebRTC para acceso a la cámara
-- Implementar TensorFlow.js para detección facial
-- Calibración inicial para determinar la posición neutral
-- Tasa de actualización mínima de 30fps para una experiencia fluida
+- Usar Web Speech API para reconocimiento de voz
+- Implementar feedback visual para comandos reconocidos
 
 **Métricas de Éxito:**
-- Tiempo de respuesta < 100ms entre movimiento y desplazamiento
-- Tasa de falsos positivos en detección facial < 5%
-- Satisfacción del usuario > 4/5 en encuestas
+- Precisión de reconocimiento de voz > 80%
+- Tiempo de respuesta a comandos < 3 segundos
 
-### **Historia de Usuario 2: Sincronización de Progreso de Lectura**
+### **Historia de Usuario 2: Lectura con Síntesis de Voz**
 
-**Como** usuario registrado  
-**Quiero** que mi progreso de lectura se sincronice automáticamente entre dispositivos  
-**Para** poder continuar leyendo desde donde lo dejé en cualquier dispositivo
+**Como** usuario que prefiere escuchar el contenido en lugar de leerlo  
+**Quiero** que el sistema lea el texto en voz alta  
+**Para** poder consumir el contenido sin necesidad de leerlo visualmente
 
 **Criterios de Aceptación:**
-1. **DADO** que soy un usuario registrado  
-   **CUANDO** abro un documento previamente leído  
-   **ENTONCES** el sistema debe posicionarme automáticamente en la última posición leída
+1. **DADO** que estoy visualizando un documento  
+   **CUANDO** activo la función de síntesis de voz  
+   **ENTONCES** el sistema debe comenzar a leer el texto en voz alta
 
-2. **DADO** que estoy leyendo un documento  
-   **CUANDO** cambio de página o avanzo en el documento  
-   **ENTONCES** el sistema debe guardar mi progreso automáticamente
+2. **DADO** que la lectura está en curso  
+   **CUANDO** pauso o reanudo la lectura  
+   **ENTONCES** el sistema debe responder inmediatamente a mis comandos
 
-3. **DADO** que tengo una sesión activa  
-   **CUANDO** pierdo conexión a internet  
-   **ENTONCES** el sistema debe:
-   - Guardar el progreso localmente
-   - Mostrar indicador de "sin conexión"
-   - Sincronizar cuando se restaure la conexión
-
-4. **DADO** que accedo desde un nuevo dispositivo  
-   **CUANDO** inicio sesión en mi cuenta  
-   **ENTONCES** debo ver mi biblioteca con el progreso actualizado de cada documento
+3. **DADO** que estoy usando la síntesis de voz  
+   **CUANDO** ajusto la velocidad de lectura  
+   **ENTONCES** el sistema debe reflejar el cambio inmediatamente
 
 **Notas Técnicas:**
-- Implementar sistema de caché local con IndexedDB
-- Usar timestamps para resolver conflictos de sincronización
-- Comprimir datos de progreso para optimizar almacenamiento
+- Usar Speech Synthesis API para lectura de texto
+- Permitir selección de diferentes voces y velocidades
 
 **Métricas de Éxito:**
-- Tiempo de sincronización < 2 segundos
-- Precisión de posición al reanudar > 99%
-- Uso de datos móviles < 50KB por sincronización
+- Tiempo de inicio de lectura < 3 segundos
+- Satisfacción del usuario > 3/5 en encuestas
 
-### **Historia de Usuario 3: Gestión de Documentos sin Registro**
+### **Historia de Usuario 3: Visualizador de Contenidos**
 
-**Como** usuario sin cuenta  
-**Quiero** poder cargar y leer documentos sin necesidad de registrarme  
-**Para** evaluar la aplicación antes de crear una cuenta
+**Como** usuario que desea acceder a documentos y contenido web de manera eficiente  
+**Quiero** poder cargar y visualizar archivos PDF y URLs de manera fluida  
+**Para** tener una experiencia de lectura optimizada y accesible
 
 **Criterios de Aceptación:**
-1. **DADO** que soy un usuario sin registrar  
-   **CUANDO** accedo a la página principal  
-   **ENTONCES** debo ver opciones claras para:
-   - Cargar PDF
-   - Ingresar URL
-   - Crear cuenta (opcional)
+1. **DADO** que estoy en la aplicación web  
+   **CUANDO** selecciono un archivo PDF o ingreso una URL  
+   **ENTONCES** el sistema debe validar y cargar el contenido correctamente
 
-2. **DADO** que selecciono "Cargar PDF"  
-   **CUANDO** subo un archivo  
-   **ENTONCES** el sistema debe:
-   - Validar que sea un PDF válido
-   - Mostrar vista previa
-   - Almacenar localmente
-   - No enviar al servidor
+2. **DADO** que el contenido está cargado  
+   **CUANDO** navego por las páginas o secciones  
+   **ENTONCES** el sistema debe permitir un desplazamiento suave y rápido
 
-3. **DADO** que ingreso una URL  
-   **CUANDO** confirmo la entrada  
-   **ENTONCES** el sistema debe:
-   - Validar que la URL sea accesible
-   - Extraer el contenido legible
-   - Mostrar en formato optimizado para lectura
-
-4. **DADO** que estoy leyendo un documento como usuario sin registrar  
-   **CUANDO** cierro el navegador y vuelvo más tarde  
-   **ENTONCES** debo poder acceder a mis documentos recientes desde el almacenamiento local
+3. **DADO** que estoy visualizando un documento o contenido web  
+   **CUANDO** cierro la aplicación y vuelvo más tarde  
+   **ENTONCES** el sistema debe recordar mi última posición de lectura
 
 **Notas Técnicas:**
 - Usar File API para manejo de PDFs
@@ -654,193 +678,77 @@ erDiagram
 
 ## 6. Tickets de Trabajo
 
-### **Ticket Frontend #1: Implementar Detector Facial para Control de Lectura**
+### **Ticket Frontend #1: Implementar Control por Comandos de Voz**
 
 **Tipo:** Feature Frontend  
 **Prioridad:** Alta  
-**Estimación:** 13 Story Points  
-**Historia de Usuario:** HU1 - Lectura Manos Libres con Detección Facial
+**Estimación:** 15 Story Points  
+**Historia de Usuario:** HU1 - Lectura con Comandos de Voz
 
 **Descripción:**  
-Implementar el componente de detección facial que controlará el desplazamiento automático del documento durante la lectura.
+Implementar el sistema de control por comandos de voz que permitirá a los usuarios navegar y controlar la lectura de documentos sin usar las manos. Este sistema debe ser capaz de reconocer comandos en múltiples idiomas.
 
 **Tareas:**
-1. Crear componente `FaceDetectionController`:
-   ```typescript
-   interface FaceDetectionConfig {
-     calibrationTimeMs: number;
-     minConfidence: number;
-     updateInterval: number;
-     neutralZoneAngle: number;
-   }
-   ```
-
-2. Implementar detección facial usando TensorFlow.js:
-   - Inicializar modelo de detección facial
-   - Configurar pipeline de procesamiento de video
-   - Implementar detección de ángulos de cabeza
-
-3. Crear servicio de control de desplazamiento:
-   ```typescript
-   interface ScrollControl {
-     speed: number;
-     direction: 'up' | 'down' | 'none';
-     isActive: boolean;
-   }
-   ```
-
-4. Implementar UI de calibración y feedback:
-   - Overlay para guía de calibración
-   - Indicadores visuales de estado
-   - Controles de ajuste de sensibilidad
+1. Integrar Web Speech API para reconocimiento de voz.
+2. Desarrollar interfaz de usuario para activar/desactivar comandos de voz.
+3. Implementar feedback visual para comandos reconocidos.
+4. Configurar gramática de comandos.
+5. Mostar instrucciones de uso.
+6. Permitir ver la lista de comandos aceptados.
+7. Soporte para múltiples idiomas.
 
 **Criterios de Aceptación:**
-- [ ] Detección facial funciona a >30fps en dispositivos móviles
-- [ ] Latencia máxima de 100ms entre movimiento y respuesta
-- [ ] Calibración inicial guiada para el usuario
-- [ ] Indicadores visuales de estado de detección
-- [ ] Manejo gracioso de pérdida de detección
+- [ ] Reconocimiento de voz preciso con latencia < 1 segundo.
+- [ ] Feedback visual claro para cada comando reconocido.
+- [ ] Soporte para comandos de navegación básicos (siguiente, anterior, arriba, abajo).
+- [ ] Soporte para comandos personalizados por el usuario.
 
-**Dependencias:**
-- Backend API para guardar preferencias de usuario
-- Servicio de scroll del visor de documentos
+---
 
-**Consideraciones Técnicas:**
-```typescript
-// Ejemplo de implementación base
-@Component({
-  selector: 'app-face-detection',
-  template: `
-    <div class="face-detection-container">
-      <video #videoElement></video>
-      <canvas #debugCanvas></canvas>
-      <div class="status-indicator" [class.active]="isTracking">
-        <!-- Indicadores de estado -->
-      </div>
-    </div>
-  `
-})
-export class FaceDetectionComponent implements OnInit, OnDestroy {
-  @ViewChild('videoElement') videoElement: ElementRef<HTMLVideoElement>;
-  private detector: FaceDetector;
-  private calibrationData: CalibrationData;
+### **Ticket Frontend #2: Implementar Síntesis de Voz**
 
-  async initializeDetector() {
-    // Implementación
-  }
-
-  calculateScrollSpeed(faceAngle: number): number {
-    // Implementación
-  }
-}
-```
-
-### **Ticket Backend #1: API para Gestión de Progreso de Lectura**
-
-**Tipo:** Feature Backend  
+**Tipo:** Feature Frontend  
 **Prioridad:** Alta  
-**Estimación:** 8 Story Points  
-**Historia de Usuario:** HU2 - Sincronización de Progreso de Lectura
+**Estimación:** 12 Story Points  
+**Historia de Usuario:** HU2 - Lectura con Síntesis de Voz
 
 **Descripción:**  
-Implementar endpoints REST para sincronización de progreso de lectura entre dispositivos.
+Desarrollar la funcionalidad de síntesis de voz que permitirá a los usuarios escuchar el contenido de los documentos. La funcionalidad debe incluir opciones avanzadas de personalización de voz y velocidad, así como un sistema de feedback auditivo.
 
 **Tareas:**
-1. Crear controlador de progreso de lectura:
-   ```typescript
-   interface ReadingProgress {
-     userId: number;
-     documentId: number;
-     position: number;
-     readingMode: string;
-     timestamp: Date;
-   }
-   ```
-
-2. Implementar endpoints:
-   - GET /api/reading-progress/:documentId
-   - POST /api/reading-progress
-   - PUT /api/reading-progress/:id
-
-3. Implementar servicio de sincronización:
-   - Manejo de conflictos por timestamp
-   - Validación de datos
-   - Caché de últimas posiciones
+1. Integrar Speech Synthesis API para lectura de texto.
+2. Permitir selección de diferentes voces y velocidades.
+3. Desarrollar controles de reproducción (play/pause).
+4. Implementar indicadores visuales del estado de lectura.
+5. Integrar sistema de personalización de voces basado en preferencias del usuario.
 
 **Criterios de Aceptación:**
-- [ ] Endpoints documentados con OpenAPI
-- [ ] Tests unitarios con >90% cobertura
-- [ ] Validación de datos y manejo de errores
-- [ ] Respuesta máxima de 200ms
-- [ ] Logging de operaciones críticas
+- [ ] Inicio de lectura en < 3 segundos.
+- [ ] Controles de reproducción funcionales.
+- [ ] Personalización de voz y velocidad según preferencias del usuario.
 
-**SQL y Migraciones:**
-```sql
--- Ejemplo de queries principales
-CREATE INDEX idx_reading_progress_user_doc 
-ON reading_progress(user_id, document_id);
+---
 
--- Query de último progreso
-SELECT rp.* FROM reading_progress rp
-WHERE rp.user_id = ? AND rp.document_id = ?
-ORDER BY rp.timestamp DESC LIMIT 1;
-```
+### **Ticket Frontend #3: Desarrollar Visualizador de Contenidos**
 
-### **Ticket Database #1: Optimización de Queries de Lectura**
-
-**Tipo:** Database Optimization  
-**Prioridad:** Alta  
-**Estimación:** 5 Story Points  
-**Historia de Usuario:** HU2 - Sincronización de Progreso de Lectura
+**Tipo:** Feature Frontend  
+**Prioridad:** Media  
+**Estimación:** 10 Story Points  
+**Historia de Usuario:** HU3 - Visualización de Contenidos
 
 **Descripción:**  
-Optimizar el esquema y queries de la base de datos para mejorar el rendimiento de las operaciones de lectura y sincronización.
+Desarrollar un visualizador de contenidos que permita a los usuarios cargar y visualizar documentos PDF y contenido web de manera eficiente. El visualizador debe ser capaz de manejar documentos de gran tamaño y ofrecer una experiencia de usuario fluida.
 
 **Tareas:**
-1. Crear índices optimizados:
-```sql
--- Índices para búsqueda rápida de progreso
-CREATE INDEX idx_reading_progress_composite 
-ON reading_progress(user_id, document_id, timestamp);
-
--- Índice para documentos recientes
-CREATE INDEX idx_documents_recent 
-ON documents(user_id, updated_at);
-```
-
-2. Implementar particionamiento de tabla reading_progress:
-```sql
--- Particionar por rango de fechas
-CREATE TABLE reading_progress (
-    id SERIAL,
-    user_id INT,
-    document_id INT,
-    position INT,
-    timestamp TIMESTAMP
-) PARTITION BY RANGE (timestamp);
-
--- Crear particiones
-CREATE TABLE reading_progress_current PARTITION OF reading_progress
-FOR VALUES FROM ('2024-01-01') TO ('2024-12-31');
-```
-
-3. Optimizar queries frecuentes:
-   - Análisis de plan de ejecución
-   - Implementación de vistas materializadas
-   - Configuración de caché de queries
+1. Implementar visualizador de PDF utilizando PDF.js.
+2. Desarrollar interfaz de usuario intuitiva para navegación de documentos.
+3. Optimizar rendimiento para documentos de gran tamaño.
+4. Soporte para visualización de contenido web.
 
 **Criterios de Aceptación:**
-- [ ] Tiempo de respuesta <50ms para queries frecuentes
-- [ ] Plan de ejecución optimizado verificado
-- [ ] Scripts de mantenimiento automatizados
-- [ ] Documentación de índices y particiones
-- [ ] Plan de backup para nuevas estructuras
-
-**Consideraciones Técnicas:**
-- Mantener estadísticas actualizadas
-- Monitorear tamaño de índices
-- Verificar impacto en escrituras
-- Plan de purga de datos antiguos
+- [ ] Carga de documentos en < 3 segundos.
+- [ ] Interfaz de usuario intuitiva y fácil de usar.
+- [ ] Soporte para documentos de gran tamaño sin pérdida de rendimiento.
 
 ---
 
@@ -878,12 +786,12 @@ Este PR representa la primera versión de Easy Reader, una aplicación web dise�
 
 ---
 
-# Easy Reader - Comandos de Voz y Mejoras de Accesibilidad
+### Easy Reader - Comandos de Voz y Mejoras de Accesibilidad
 
-## Descripción General
+#### Descripción General
 Este PR añade funcionalidades avanzadas de control por voz a Easy Reader, mejorando significativamente la accesibilidad y la experiencia de usuario. Se implementa un sistema completo de comandos de voz que permite la navegación y control del documento sin necesidad de interacción física.
 
-## Características Principales
+#### Características Principales
 - Sistema de comandos de voz
 - Interfaz modal para visualización de comandos disponibles
 - Feedback visual en tiempo real de los comandos reconocidos
@@ -891,25 +799,25 @@ Este PR añade funcionalidades avanzadas de control por voz a Easy Reader, mejor
 - Control de desplazamiento mediante comandos
 - Soporte para múltiples variantes de comandos en español
 
-## Implementación Técnica
-### Componentes Nuevos
+#### Implementación Técnica
+##### Componentes Nuevos
 - VoiceCommandComponent para gestión de comandos de voz
 - Sistema de modales para instrucciones y lista de comandos
 - Integración con Web Speech API
 - Manejo de estados del micrófono y feedback visual
 
-### Mejoras
+##### Mejoras
 - Diseño responsivo para los nuevos componentes
 - Sistema de overlay para modales
 - Estructura organizada de comandos por idioma
 - Feedback visual mejorado para interacciones de usuario
 
-## Documentación
+#### Documentación
 - Documentación de comandos de voz disponibles
 - Guía de uso del sistema de voz
 - Instrucciones de implementación
 
-## Próximos Pasos
+#### Próximos Pasos
 - Mejoras en el reconocimiento de voz
 - Personalización de comandos
 - Expansión a otros idiomas
