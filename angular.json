@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "easy-reader": {
+      "architect": {
+        "build": {
+          "options": {
+            "outputPath": "dist/easy-reader/browser",
+            "index": "src/index.html",
+            "main": "src/main.ts"
+          }
+        }
+      }
+    }
+  }
+} 
