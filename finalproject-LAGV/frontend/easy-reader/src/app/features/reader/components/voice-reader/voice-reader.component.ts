@@ -48,11 +48,11 @@ export class VoiceReaderComponent implements OnInit, OnDestroy {
   currentVoice: SpeechSynthesisVoice | null = null;
   oldVoice: SpeechSynthesisVoice | null = null;
 
-  isModalOpen: boolean = false;
+ 
   voiceSpeed = 1.0;
   
   @ViewChild('voiceSettingsModal') voiceSettingsModal!: TemplateRef<any>;
-  private overlayRef: OverlayRef | null = null;
+  public overlayRef: OverlayRef | null = null;
   
   availableLanguages = [
     { code: 'en-US', name: 'English (US)' },
