@@ -16,6 +16,10 @@
 
   &.hidden {
     transform: translateY(57%);
+    
+    @media (max-width: 768px) {
+      transform: translateY(0);
+    }
   }
 
   &::before {
