@@ -1,135 +1,225 @@
 # Easy Reader - Product Requirements Document (PRD)
 
 ## 1. Objetivo del Producto
-Easy Reader es una aplicación web diseñada para mejorar la experiencia de lectura en dispositivos móviles. Permite a los usuarios cargar archivos PDF o ingresar enlaces a páginas web para visualizar contenido con desplazamiento automático. Los usuarios podrán elegir entre diferentes modos de lectura que facilitan la navegación sin necesidad de interacción manual, mejorando la accesibilidad y comodidad.
+Easy Reader es una aplicación web diseñada para transformar la experiencia de lectura digital. La aplicación permite a los usuarios visualizar documentos PDF y contenido web de una manera más accesible e intuitiva. A través de diferentes modos de lectura automatizados, los usuarios pueden navegar por el contenido sin necesidad de interacción manual, lo que mejora significativamente la accesibilidad y comodidad durante la lectura.
 
 ## 2. Alcance del Producto
-Easy Reader está dirigido a un público general, con especial énfasis en mejorar la accesibilidad para personas con discapacidades motoras o visuales. La aplicación ofrecerá:
-- Carga de archivos PDF y lectura de enlaces web.
-- Modos de lectura con desplazamiento automático:
-  - **Acelerómetro**: Control del scroll mediante la inclinación del dispositivo.
-  - **Detección de rostro**: Identificación de patrones de movimiento del rostro para desplazamiento.
-- Uso sin registro con almacenamiento local y opción de registro para guardar PDFs y enlaces.
+Easy Reader está dirigido a un público general, con especial énfasis en mejorar la accesibilidad para personas con discapacidades motoras o visuales. La aplicación ofrece:
+- Carga de archivos PDF y lectura de enlaces web
+- Modos de lectura accesible:
+  - **Comandos de voz**: Control de navegación mediante comandos de voz en español
+  - **Síntesis de voz**: Lectura automática del contenido con voces personalizables
+- Uso sin registro con almacenamiento local
+
+### **Funcionalidades actuales**
+1. **Control por voz:**
+   - Navegación entre páginas mediante comandos
+   - Control de desplazamiento (arriba/abajo)
+   - Múltiples variantes de comandos
+   - Feedback visual de comandos reconocidos
+
+2. **Síntesis de voz:**
+   - Selección de voces disponibles
+   - Control de velocidad de lectura
+   - Pausa y continuación de lectura
+   - Indicadores visuales del estado de lectura
 
 ### **Funcionalidades futuras**  
 1. **Modos de lectura con desplazamiento automático:**
-   - **Gestos de manos**: Posible implementación de control por gestos para accesibilidad.
-   - **Acelerómetro**: Posibilidad para configurar la velocidad de desplazamiento.
-1. **Modo oscuro y claro:** El usuario podrá cambiar entre un tema **dark** o **light**.  
-2. **Ajuste de brillo:** Se podrá modificar el brillo de la pantalla para mejorar la experiencia de lectura.  
-3. **Notas y subrayado:**  
-   - Los usuarios podrán **agregar notas** y **subrayar texto** en los documentos.  
-   - Estas notas se **almacenarán localmente** en primera instancia.  
-   - Para usuarios registrados, las notas y subrayados podrán **guardarse en la base de datos** para acceder a ellos en diferentes sesiones y dispositivos.  
+   - **Detección de rostro**: Control mediante movimientos faciales
+   - **Acelerómetro**: Control mediante inclinación del dispositivo
+   - **Gestos de manos**: Control por gestos para accesibilidad
+
+2. **Sistema de usuarios:**
+   - Registro e inicio de sesión
+   - Almacenamiento en la nube
+   - Sincronización entre dispositivos
+
+3. **Personalización avanzada:**
+   - Modo oscuro y claro
+   - Ajuste de brillo
+   - Notas y subrayado
+   - Configuración personalizada de comandos
 
 ## 3. Requisitos del Producto  
 
 ### 3.1. Requisitos Funcionales
-- El usuario podrá subir un archivo **PDF** o ingresar una **URL**.
-- El sistema le pedirá al usuario seleccionar un **modo de lectura automática**. 
-- Dependiendo del modo de lectura automático seleccionado, **el sistema detectará la inclinación del dispositivo o la orientación del rostro para mover el scroll de forma automática**.
-- **Usuarios no registrados:** Solo podrán visualizar archivos de forma local.  
-- **Usuarios registrados:** Podrán guardar y gestionar sus archivos y enlaces. 
-
+- El usuario podrá subir un archivo **PDF** o ingresar una **URL**
+- El sistema le pedirá al usuario seleccionar un **modo de lectura**:
+  - **Comandos de voz**: Para control mediante comandos de voz
+  - **Síntesis de voz**: Para lectura automática del contenido
+  - **Acelerómetro**: Para control mediante inclinación del dispositivo
+  - **Detección de rostro** (Futuro): Para control mediante movimientos faciales
+- Para el modo de **comandos de voz**:
+  - El sistema solicitará permiso de micrófono
+  - Reconocerá comandos para navegación
+  - Proporcionará feedback visual de los comandos reconocidos
+- Para el modo de **síntesis de voz**:
+  - El usuario podrá seleccionar entre las voces disponibles
+  - Podrá controlar la velocidad de lectura
+  - Podrá pausar y reanudar la lectura en cualquier momento
+- Para el modo de **acelerómetro**:
+  - El sistema solicitará permiso de sensores
+  - Detectará inclinación del dispositivo
+  - Ajustará velocidad según grado de inclinación
+- Para el modo de **detección de rostro** (Futuro):
+  - El sistema solicitará permiso de cámara
+  - Detectará movimientos faciales para control
+  - Proporcionará feedback visual de movimientos detectados
+- **Usuarios:** Todos los usuarios podrán utilizar la aplicación sin registro, con almacenamiento local
 
 ### 3.2. Requisitos No Funcionales
-- **Responsividad:** La aplicación debe funcionar en distintos tamaños de pantalla.  
-- **Compatibilidad:** Soporte para navegadores modernos (Chrome, Firefox, Safari, Edge).  
-- **Privacidad:** Los archivos de usuarios no registrados no se almacenarán en el servidor.  
-- **Escalabilidad:** Arquitectura preparada para una futura conversión a **PWA**.  
-
-
-
+- **Responsividad:** La aplicación debe funcionar en distintos tamaños de pantalla
+- **Compatibilidad:** 
+  - Soporte para navegadores modernos (Chrome, Safari, Edge)
+  - Compatibilidad con Web Speech API para comandos y síntesis de voz
+  - Compatibilidad futura con APIs de cámara y sensores
+- **Rendimiento:**
+  - Reconocimiento de voz con latencia menor a 3 segundos
+  - Feedback visual inmediato de comandos reconocidos
+  - Respuesta inmediata al acelerómetro (futuro)
+  - Detección facial en tiempo real (futuro)
+- **Privacidad:** 
+  - Los archivos de usuarios se mantienen en almacenamiento local
+  - No se almacena ningún dato en servidores externos
+  - No se guardan imágenes de rostros ni datos de sensores
+- **Accesibilidad:**
+  - Interfaz clara y fácil de usar
+  - Feedback visual para todas las acciones
+  - Soporte para múltiples variantes de comandos
+  - Múltiples opciones de control para diferentes necesidades
 
 ## 4. Casos de Uso Principales  
 
+### Caso de uso 1: Lectura con Comandos de Voz
+**Actor:** Usuario
 
-### Caso de uso 1: Lectura sin registro
-**Actor:** Usuario sin cuenta.
-
-**Descripción:** Proceso de visualización y lectura automatizada de documentos PDF o contenido web mediante los modos de desplazamiento inteligente del sistema.
+**Descripción:** Proceso de visualización y control de documentos PDF o contenido web mediante comandos de voz.
 
 **Precondiciones:** 
 - El usuario tiene acceso a la aplicación web
 - El usuario dispone de un archivo PDF o URL para cargar
+- El dispositivo tiene micrófono funcional
 
 **Flujo principal:**
 1. El usuario abre la aplicación y selecciona la opción "Cargar PDF" o "Ingresar URL"
 2. El sistema valida el formato del archivo o accesibilidad de la URL
-3. El sistema solicita al usuario seleccionar un modo de lectura automática:
-   - Detección de rostro
-   - Acelerómetro 
-4. El usuario selecciona el modo deseado
-5. El sistema solicita los permisos necesarios según el modo elegido:
-   - Permiso de cámara (modo detección de rostro)
-   - Permiso de acelerómetro (modo acelerómetro)
-6. El sistema inicia el desplazamiento automático según:
-   - La inclinación del dispositivo (modo acelerómetro)
-   - La dirección de la mirada (modo detección de rostro)
+3. El usuario selecciona el modo de "Comandos de Voz"
+4. El sistema solicita permiso para acceder al micrófono
+5. Una vez concedido el permiso:
+   - El sistema muestra instrucciones de uso
+   - Activa el reconocimiento de voz
+   - Muestra feedback visual del estado del micrófono
+6. El usuario puede navegar usando comandos como:
+   - "Siguiente página" o "Anterior"
+   - "Arriba" o "Abajo" para desplazamiento
+   - "Inicio" o "Final" de página
 
 **Flujos alternativos:**
-1. Si el archivo no es un PDF válido o la URL no es accesible:
+1. Si el archivo no es válido o la URL no es accesible:
    - El sistema muestra un mensaje de error
    - Permite al usuario intentar nuevamente
-2. Si los permisos son denegados:
-   - El sistema notifica al usuario que no podrá usar ese modo
-   - Solicita seleccionar un modo alternativo
+2. Si el permiso del micrófono es denegado:
+   - El sistema notifica al usuario
 3. Durante la lectura:
-   - El usuario puede pausar el desplazamiento automático
-   - El usuario puede ajustar la velocidad de desplazamiento
-   - El usuario puede cambiar entre modos de lectura
+   - El usuario puede ver la lista de comandos disponibles
+   - El usuario puede detener/reactivar el reconocimiento de voz
 
 **Postcondiciones:**
-- El documento o página web se visualiza correctamente
-- El desplazamiento automático funciona según el modo seleccionado
-- Los datos de lectura se mantienen solo en la sesión actual (session storage)
+- El documento se visualiza correctamente
+- Los comandos de voz funcionan según lo esperado
+- El sistema muestra feedback visual de los comandos reconocidos
 
-### Caso de uso 2: Lectura con cuenta registrada
-**Actor:** Usuario registrado
 
-**Descripción:** Proceso de lectura con funcionalidades adicionales para usuarios registrados, incluyendo guardado y gestión de documentos.
+### Caso de uso 2: Lectura con Síntesis de Voz
+
+**Actor:** Usuario
+
+**Descripción:** Proceso de lectura automática del contenido mediante síntesis de voz.
 
 **Precondiciones:**
-- El usuario tiene una cuenta registrada
-- El usuario ha iniciado sesión en la aplicación
+- El usuario tiene acceso a la aplicación web
+- El usuario dispone de un archivo PDF o URL para cargar
+- El dispositivo tiene soporte para síntesis de voz
 
 **Flujo principal:**
-1. El usuario inicia sesión en la aplicación
-2. El sistema muestra el dashboard con documentos guardados
-3. El usuario puede:
-
-   a. Seleccionar un documento guardado previamente
-
-   b. Cargar un nuevo PDF o ingresar URL
-
-4. El sistema procede con el flujo de lectura (similar al caso 1)
-5. La aplicación guarda automáticamente el progreso de lectura
+1. El usuario carga un documento o URL
+2. El usuario selecciona el modo "Síntesis de Voz"
+3. El sistema muestra las opciones de configuración:
+   - Selección de voz
+   - Control de velocidad
+   - Controles de reproducción
+4. El usuario configura las preferencias de voz
+5. El sistema comienza la lectura automática del contenido
 
 **Flujos alternativos:**
-1. Gestión de documentos:
-   - El usuario puede editar el nombre del documento
-   - El usuario puede eliminar documentos guardados
-   - El usuario puede compartir documentos (futuro)
-2. Gestión de cuenta:
-   - El usuario puede actualizar sus datos de perfil
-   - El usuario puede configurar preferencias de lectura
-3. Durante la lectura:
-   - El usuario puede agregar marcadores (futuro)
-   - El usuario puede hacer anotaciones (futuro)
-   - El sistema va guardando el progreso de lectura
+1. Control durante la lectura:
+   - El usuario puede pausar/reanudar la lectura
+   - El usuario puede ajustar la velocidad
+   - El usuario puede cambiar la voz
+2. Si no hay voces disponibles:
+   - El sistema muestra un mensaje informativo
 
 **Postcondiciones:**
-- Los documentos y configuraciones se guardan en la base de datos
-- El progreso de lectura se mantiene entre sesiones
-- Las preferencias del usuario se aplican automáticamente en futuras lecturas
+- El contenido se lee correctamente
+- El usuario puede controlar la lectura en cualquier momento
+
+
+### Caso de uso 3: Login y Registro
+
+**Actor:** Usuario no autenticado
+
+**Descripción:** Proceso de autenticación y registro de usuarios en la aplicación.
+
+**Precondiciones:**
+- El usuario tiene acceso a la aplicación web
+- El usuario tiene una cuenta de correo electrónico válida
+
+**Flujo principal:**
+1. El usuario accede a la página de inicio
+2. El usuario selecciona "Iniciar sesión" o "Registrarse"
+3. Para inicio de sesión:
+   - Ingresa correo y contraseña
+   - El sistema valida las credenciales
+   - Accede a su cuenta personal
+4. Para registro:
+   - Ingresa datos requeridos (nombre, correo, contraseña)
+   - El sistema valida el formato de los datos
+   - Se crea la cuenta y se inicia sesión automáticamente
+
+**Flujos alternativos:**
+1. Si las credenciales son inválidas:
+   - El sistema muestra mensaje de error
+   - Permite reintentar o recuperar contraseña
+2. Si el correo ya está registrado:
+   - El sistema notifica al usuario
+   - Sugiere iniciar sesión o recuperar contraseña
+
+**Postcondiciones:**
+- El usuario queda autenticado en el sistema
+- Accede a funcionalidades premium
+- Sus datos y preferencias se sincronizan
 
 ## 6. Tecnologías y Arquitectura Inicial
-- **Frontend:** Angular.
-- **Backend:** Node.js con Prisma ORM.
-- **Base de datos:** PostgreSQL (para usuarios registrados).
-- **Almacenamiento de PDFs:** Local en el cliente en modo libre; almacenamiento en la nube para usuarios registrados.
+- **Frontend:** 
+  - Angular (standalone components)
 
----
+- **APIs del Navegador:**
+  - SpeechRecognition para comandos de voz
+  - SpeechSynthesis para lectura de texto
+  - PDFjs para manejo de PDFs
 
-Este documento servirá como base para el desarrollo de **Easy Reader**, guiando la creación de modelos de datos, arquitectura y desarrollo de funcionalidades.
+- **Características Técnicas:**
+  - Arquitectura modular por features
+  - Componentes independientes y reutilizables
+  - Manejo de estados para feedback visual
+  - Sin dependencia de backend
+
+- **Futuras Implementaciones:**
+  - Backend con Node.js y Prisma ORM
+  - Base de datos PostgreSQL para usuarios
+  - Almacenamiento en la nube
+  - APIs para detección facial y acelerómetro
+
+
 
