@@ -5,7 +5,7 @@
     <div class="control-section-message" *ngIf="micState !== micStates['onstart']">
       {{ micState.message }}
     </div>
-    <div class="control-section-message" *ngIf="isListening">
+    <div class="control-section-message" *ngIf="isListening && micState === micStates['onstart']">
       {{ feedbackState.message ? '' : micState.message }}
       <span [style.color]="feedbackState.colorMessageLabel">{{ feedbackState.messageLabel }}</span> <span [style.color]="feedbackState.colorMessage">{{ feedbackState.message | uppercase }}</span>
     </div>

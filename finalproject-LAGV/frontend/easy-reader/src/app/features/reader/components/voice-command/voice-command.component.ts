@@ -26,6 +26,8 @@ interface CommandGroups {
     bottom: Set<string>;
     up: Set<string>;
     down: Set<string>;
+    goTo: Set<string>;
+    more: Set<string>;
 }
 
 interface LanguageCommands {
@@ -34,15 +36,17 @@ interface LanguageCommands {
 
 const commandsByLanguage: LanguageCommands = {
     'es-MX': {
-        next: new Set(['adelante', 'siguiente', 'siguiente página', 'avanza', 'continúa', 'prosigue', 'continuar', 'avanzar', 'cambia de página', 'cambia de página a la siguiente']),
-        previous: new Set(['atrás', 'regresa', 'anterior', 'vuelve', 'regresa', 'volver', 'regresar', 'cambia de página a la anterior']),
-        first: new Set(['primero', 'primera', 'primera página']),
-        last: new Set(['último', 'última', 'última página']),
-        bottom: new Set(['baja al pie', 'pie de página', 've al pie', 've al final', 'ir al final', 'final', 'fin de página']),
-        top: new Set(['inicio de página', 've al inicio', 've al principio']),
-        up: new Set(['sube', 'sube un poco', 'arriba', 'arriba un poco', 'sube más' , 'sube más arriba un poco']),
-        down: new Set(['baja', 'baja un poco', 'abajo', 'abajo un poco', 'baja más', 'baja más abajo un poco']),
-    },  
+        next: new Set(['cambia de página a la siguiente', 'ir a la página siguiente', 'siguiente página', 'cambia de página', 'siguiente', 'continuar', 'prosigue', 'continúa', 'avanzar', 'avanza', 'adelante']),
+        previous: new Set(['cambia de página a la anterior', 'ir a la página anterior', 'anterior', 'regresar', 'regresa', 'volver', 'vuelve', 'atrás']),
+        first: new Set(['primera página', 'primera', 'primero']),
+        last: new Set(['última página', 'último', 'última']),
+        bottom: new Set(['bajar al final de la página', 'baja al pie de página', 'bajar al final', 'bajar al pie', 'pie de página', 've al final', 'ir al final', 'baja al pie', 've al pie', 'baja todo', 'fin de página', 'final']),
+        top: new Set(['inicio de página', 've al principio', 'sube todo', 've al inicio']),
+        up: new Set(['sube un poco mas', 'arriba un poco', 'sube un poco', 'sube más', 'arriba', 'sube']),
+        down: new Set(['baja un poco mas', 'abajo un poco', 'baja un poco', 'baja más', 'abajo', 'baja']),
+        goTo: new Set(['ir a la página siguiente', 've a la página', 'ir a la página', 'ir a página', 'ir a la', 'ir a', 'página']),
+        more: new Set(['un poco más', 'más']),
+    },    
     'en-US': {
         next: new Set(['next', 'forward']),
         previous: new Set(['previous', 'back']),
@@ -52,6 +56,8 @@ const commandsByLanguage: LanguageCommands = {
         bottom: new Set(['bottom']),
         up: new Set(['up']),
         down: new Set(['down']),
+        goTo: new Set(['go to']),
+        more: new Set(['more']),
     }
 };
 
@@ -71,7 +77,7 @@ export class VoiceCommandComponent implements OnInit, OnDestroy {
   private pdfService = inject(PdfService);
   private cdr = inject(ChangeDetectorRef);
   private hasError: boolean = false;
-  ; // Estado inicial
+  private lastAction: 'up' | 'down' | null = null;
 
   micState: MicState = {
     message: 'Please authorize microphone access to proceed',
@@ -105,6 +111,12 @@ export class VoiceCommandComponent implements OnInit, OnDestroy {
       iconClass: 'fa-microphone-slash',
       iconColor: 'white',
       iconBackgroundColor: '#EF4444'
+    },
+    network: {
+      message: 'Connection error. Please check your internet connection and try again.',
+      iconClass: 'fa-microphone-slash',
+      iconColor: 'white',
+      iconBackgroundColor: '#EF4444'
     }
   };
 
@@ -135,8 +147,22 @@ export class VoiceCommandComponent implements OnInit, OnDestroy {
     first: () => this.pdfService.requestFirstPage(),
     bottom: () => this.pdfService.requestBottomPage(),
     top: () => this.pdfService.requestTopPage(),
-    up: () => this.pdfService.requestUpPage(),
-    down: () => this.pdfService.requestDownPage(),
+    up: () => {
+      this.lastAction = 'up';
+      this.pdfService.requestUpPage();
+    },
+    down: () => {
+      this.lastAction = 'down';
+      this.pdfService.requestDownPage();
+    },
+    goTo: (transcript: string) => this.handleGoToPage(transcript),
+    more: () => {
+      if (this.lastAction === 'up') {
+        this.pdfService.requestUpPage();
+      } else if (this.lastAction === 'down') {
+        this.pdfService.requestDownPage();
+      }
+    }
   };
 
   ngOnInit(): void {
@@ -187,8 +213,9 @@ export class VoiceCommandComponent implements OnInit, OnDestroy {
         for (let i = event.resultIndex; i < event.results.length; i++) {
           const transcript = event.results[i][0].transcript.trim().toLowerCase();
           if (transcript && event.results[i].isFinal) {
-            if (this.commands.has(transcript)) {
-              this.updateFeedbackState('success', transcript, true);
+            const foundCommand = [...this.commands].find(command => transcript.includes(command));
+            if (foundCommand) {
+              this.updateFeedbackState('success', foundCommand, true, transcript);
             } else {
               this.updateFeedbackState('fail', transcript);
             }
@@ -203,7 +230,12 @@ export class VoiceCommandComponent implements OnInit, OnDestroy {
           this.hasError = true;
           this.recognition.abort();
           this.updateMicState('onerror');
+        } else if  (event.error === 'network') {
+          this.hasError = true;
+          this.recognition.abort();
+          this.updateMicState('network');
         }
+
       };
     } else {
       console.log('event: no-speech');
@@ -222,17 +254,26 @@ export class VoiceCommandComponent implements OnInit, OnDestroy {
 
   abortListening(): void {
     if (this.recognition && this.isListening) {
+      this.isListening = false;
       this.recognition.abort();
     }
   }
 
-  handleCommand(command: string): void {
+  handleCommand(command: string, transcript: string): void {
     const languageCommands = commandsByLanguage[this.recognition.lang];
     const actionType = Object.entries(languageCommands).find(([_, commands]) => commands.has(command))?.[0] as keyof typeof this.commandActions;
+    
     if (actionType && this.commandActions[actionType]) {
+      if (!['up', 'down', 'more'].includes(actionType)) {
+        this.lastAction = null;
+      }
+      if (actionType === 'goTo') {
+        this.commandActions[actionType](transcript);
+      } else {
         this.commandActions[actionType]();
+      }
     } else {
-        console.log(`Comando no reconocido: ${command}`);
+      console.log(`Comando no reconocido: ${command}`);
     }
   }
 
@@ -252,10 +293,10 @@ export class VoiceCommandComponent implements OnInit, OnDestroy {
     };
   }
 
-  private updateFeedbackState(state: string, message: string, handleCommand: boolean = false): void {
-    if (handleCommand) {
-        this.handleCommand(message);
-    }
+  private updateFeedbackState(state: string, message: string, handleCommand: boolean = false, transcript?: string): void {
+    
+    console.log('updateFeedbackState', state, message, handleCommand, transcript);
+
     setTimeout(() => {
       this.feedbackState = this.getFeedbackState(state, message);
       this.cdr.detectChanges();
@@ -264,6 +305,9 @@ export class VoiceCommandComponent implements OnInit, OnDestroy {
       this.feedbackState = this.getFeedbackState('default');
       this.cdr.detectChanges();
     }, 1800);
+    if (handleCommand) {
+      this.handleCommand(message, transcript || message);
+    }
   }
 
   ngOnDestroy(): void {
@@ -286,5 +330,16 @@ export class VoiceCommandComponent implements OnInit, OnDestroy {
     const commands = new Set<string>(allCommands);
     const grammar = `#JSGF V1.0; grammar commands; public <command> = ${allCommands.join(' | ')} ;`;
     return { grammar, commands };
+  }
+
+  private handleGoToPage(transcript: string): void {
+    const numberMatch = transcript.match(/\d+/);
+    if (numberMatch) {
+      const pageNumber = parseInt(numberMatch[0], 10);
+      this.pdfService.requestGoToPage(pageNumber);
+    } else {
+      this.updateFeedbackState('fail', transcript);
+      this.cdr.detectChanges();
+    }
   }
 } 

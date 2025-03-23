@@ -131,6 +131,16 @@ export class PdfContentComponent implements OnInit, AfterViewInit {
         this.scrollDown();
       }
     });
+
+    // Agregar nueva suscripción para goToPage
+    this.pdfService.goToPage$.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe((pageNumber) => {
+      console.log('goToPage Automatic', pageNumber);
+      if (this.readingMode === 'voiceCommands') {
+        this.goToPage(pageNumber, false);
+      }
+    });
   }
 
   ngAfterViewInit(): void {
@@ -321,5 +331,21 @@ export class PdfContentComponent implements OnInit, AfterViewInit {
       top: scrollAmount,
       behavior: 'smooth'
     });
+  }
+
+  // Agregar nuevo método
+  async goToPage(pageNumber: number, detonationManual: boolean = true): Promise<void> {
+    if (pageNumber < 1 || pageNumber > this.totalPages) {
+      this.applyShakeEffect();
+      return;
+    }
+    
+    this.currentPage = pageNumber;
+
+    if (this.cdr) {
+      this.cdr.detectChanges();
+    }
+
+    await this.queueRenderPage(this.currentPage, detonationManual);
   }
 }
