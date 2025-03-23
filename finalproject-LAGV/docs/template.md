@@ -18,7 +18,7 @@
 ### **0.2. Nombre del proyecto:** Easy Reader
 
 ### **0.3. Descripción breve del proyecto:** 
-Easy Reader es una aplicación web que mejora la experiencia de lectura en dispositivos móviles mediante desplazamiento automático inteligente. Permite a los usuarios cargar PDFs o URLs y controlar la navegación a través del acelerómetro del dispositivo o detección facial, haciendo la lectura más accesible y cómoda, especialmente para personas con discapacidades motoras.
+Easy Reader es una aplicación web diseñada para transformar la experiencia de lectura digital. La aplicación permite a los usuarios visualizar documentos PDF y contenido web de una manera más accesible e intuitiva. A través de diferentes modos de lectura automatizados, los usuarios pueden navegar por el contenido sin necesidad de interacción manual, lo que mejora significativamente la accesibilidad y comodidad durante la lectura.
 
 ### **0.4. URL del proyecto:**
 
@@ -31,7 +31,7 @@ https://easy-reader-58d6c.web.app
 ## 1. Descripción general del producto
 
 ### **1.1. Objetivo:**
-Easy Reader busca revolucionar la forma en que las personas leen contenido digital en dispositivos móviles. El producto está diseñado para:
+Easy Reader busca revolucionar la forma en que las personas leen contenido digital en la web. El producto está diseñado para:
 
 - Eliminar la necesidad de interacción manual constante durante la lectura
 - Mejorar la accesibilidad para personas con discapacidades motoras o visuales
@@ -40,36 +40,59 @@ Easy Reader busca revolucionar la forma en que las personas leen contenido digit
 
 ### **1.2. Características y funcionalidades principales:**
 
-1. **Carga de contenido flexible**
-   - Subida de archivos PDF
-   - Ingreso de URLs para lectura de contenido web
-   - Almacenamiento local para usuarios sin registro
-   - Guardado en la nube para usuarios registrados
+1. **Carga y visualización de documentos**
+   - Carga de archivos PDF
+   - Visualización optimizada de documentos
+   - Navegación por páginas
+   - Desplazamiento vertical del contenido
 
-2. **Modos de lectura inteligente**
-   - Control mediante acelerómetro del dispositivo
-   - Control mediante detección facial
-   - Ajuste de velocidad de desplazamiento
-   - Capacidad de pausa/continuación
 
-3. **Sistema de usuarios**
-   - Modo sin registro con funcionalidades básicas
-   - Modo registrado con características adicionales:
-     - Guardado de documentos
-     - Sincronización entre dispositivos
-     - Progreso de lectura guardado
+2. **Control por comandos de voz**
+   - Navegación entre páginas mediante comandos en español
+   - Control de desplazamiento (arriba/abajo)
+   - Comandos para ir al inicio o final de página
+   - Múltiples variantes de comandos para mayor accesibilidad
+   - Feedback visual del estado del micrófono
+   - Indicadores visuales de comandos reconocidos
+   - Lista de comandos disponibles
 
-4. **Características de accesibilidad**
-   - Interfaz responsiva
+3. **Síntesis de voz**
+   - Lectura automática del contenido
+   - Selección de voces disponibles
+   - Control de velocidad de lectura
+   - Controles de reproducción (play/pause)
+   - Indicadores visuales del estado de lectura
+   - Configuración de preferencias de voz
+
+4. **Interfaz accesible**
+   - Diseño responsivo para diferentes dispositivos
+   - Controles intuitivos y bien organizados
+   - Feedback visual para todas las acciones
+   - Instrucciones claras de uso
+   - Modales informativos y de ayuda
    - Compatibilidad con navegadores modernos
-   - Diseño centrado en la accesibilidad
 
 ### **1.3. Diseño y experiencia de usuario:**
 
 > Proporciona imágenes y/o videotutorial mostrando la experiencia del usuario desde que aterriza en la aplicación, pasando por todas las funcionalidades principales.
 
 ### **1.4. Instrucciones de instalación:**
-> Documenta de manera precisa las instrucciones para instalar y poner en marcha el proyecto en local (librerías, backend, frontend, servidor, base de datos, migraciones y semillas de datos, etc.)
+Para instalar y ejecutar el proyecto localmente, sigue estos pasos:
+
+1. **Frontend (Angular)**
+   ```bash
+   
+   cd frontend/easy-reader
+
+   # Instalar dependencias
+   npm install
+
+   # Iniciar el servidor de desarrollo
+   npm start
+   ```
+   El frontend estará disponible en `https://localhost:4200`
+
+
 
 ---
 
@@ -84,39 +107,38 @@ graph TB
         B --> C[Angular Frontend]
         C --> D[Local Storage]
         
-        subgraph Características del Cliente
-            E[Acelerómetro API]
-            F[Cámara API]
-            G[File API]
+        subgraph Features
+            H[PDF Viewer]
+            I[Voice Commands]
+            J[Text to Speech]
+        end
+
+        subgraph APIs del Navegador
+            E[Web Speech API]
+            F[File API]
+            G[PDF.js]
         end
     end
 
-    subgraph Servidor
-        H[Node.js Backend] --> I[Prisma ORM]
-        I --> J[(PostgreSQL)]
-        
-        subgraph Servicios
-            K[Autenticación]
-            L[Gestión de PDFs]
-            M[Gestión de URLs]
-        end
-    end
-
-    C <--> H
-    C --> E
-    C --> F
-    C --> G
+    C --> H
+    C --> I
+    C --> J
+    I --> E
+    J --> E
+    H --> F
+    H --> G
 ```
 
-La arquitectura de Easy Reader sigue un patrón cliente-servidor con las siguientes características y justificaciones:
+La arquitectura de Easy Reader sigue un modelo centrado en el cliente-servidor con las siguientes características y justificaciones:
 
 **Frontend (Cliente)**
-- **Angular**: Elegido por su robustez en aplicaciones empresariales y su arquitectura modular
+- **Angular**: 
+  - Uso de standalone components para mejor modularidad
+  - Arquitectura por features para mejor organización
+  - Sistema de routing para navegación
 - **APIs del navegador**:
-  - WebRTC para acceso a la cámara
-  - DeviceOrientation API para el acelerómetro
-  - File API para manejo de PDFs
-- **Local Storage**: Para almacenamiento sin registro
+  - Web Speech API para comandos de voz y síntesis
+   - DeviceOrientation API para el acelerómetro
 
 **Backend (Servidor)**
 - **Node.js**: Seleccionado por su eficiencia en operaciones I/O y gran ecosistema
@@ -128,63 +150,92 @@ La arquitectura de Easy Reader sigue un patrón cliente-servidor con las siguien
 2. **Rendimiento**: Procesamiento en cliente para funciones en tiempo real
 3. **Mantenibilidad**: Stack tecnológico moderno y bien documentado
 4. **Seguridad**: Separación clara entre cliente y servidor
+5. **Simplicidad**: Arquitectura centrada en el cliente
+6. **Accesibilidad**: Uso directo de APIs nativas del navegador
 
 **Sacrificios/Limitaciones:**
-1. Complejidad inicial en la configuración
-2. Requisitos de hardware para funciones de detección facial
-3. Dependencia de APIs modernas del navegador
+1. Sin persistencia de datos entre sesiones
+2. Limitado al almacenamiento local del navegador
+3. Sin sincronización entre dispositivos
+4. Dependencia de APIs modernas del navegador
+
+**Futuras Expansiones:**
+1. Implementación de backend para usuarios registrados
+2. Sistema de almacenamiento en la nube
+3. Sincronización entre dispositivos
+4. APIs adicionales para nuevos modos de control
 
 ### **2.2. Descripción de componentes principales:**
 
-1. **Frontend (Angular)**
-   - **Módulo de Lectura**
-     - Componente de visualización de PDF
-     - Componente de visualización de contenido web
+1. **Frontend (Angular) - Implementación Actual**
+   - **Módulo Reader**
+     - PdfContentComponent: Visualización y control de PDF
+     - ReaderControlComponent: Control principal de lectura
+     - ReadingOptionsComponent: Selección de modo de lectura
    
-   - **Módulo de Control de Movimiento**
-     - Servicio de detección facial
-     - Servicio de acelerómetro
-     - Controlador de velocidad de desplazamiento
-   
-   - **Módulo de Usuario**
-     - Componentes de autenticación
-     - Gestión de perfil
-     - Dashboard de documentos
+   - **Módulo Voice**
+     - VoiceCommandComponent: 
+       - Control por comandos de voz
+       - Gestión de estados del micrófono
+       - Feedback visual de comandos
+       - Modal de instrucciones y comandos disponibles
+     - VoiceReaderComponent:
+       - Síntesis de voz
+       - Selección de voces
+       - Control de velocidad
+       - Controles de reproducción
 
-2. **Backend (Node.js)**
+   - **Módulo Shared**
+     - Componentes de UI comunes
+     - Servicios compartidos
+     - Tipos y modelos de datos
+     - Utilidades de feedback visual
+
+2. **APIs del Navegador - Implementación Actual**
+   - **Web Speech API**
+     - SpeechRecognition para comandos de voz
+     - SpeechSynthesis para lectura de texto
+   - **PDF.js**
+     - Renderizado de documentos
+     - Control de navegación
+     - Extracción de texto
+
+3. **Backend (Node.js) - Implementación Futura**
    - **API REST**
-     - Endpoints de autenticación y autorización
-     - Gestión de documentos
-     - Sincronización de progreso de lectura
+     - Sistema de autenticación de usuarios
+     - Gestión de documentos en la nube
+     - Sincronización de preferencias
    
    - **Servicios Core**
-     - Servicio de gestión de usuarios
-     - Servicio de almacenamiento de documentos
-     - Servicio de almacenamiento de URLs
-   
-   - **Capa de Datos (Prisma)**
-     - Modelos de datos
-     - Migraciones
-     - Queries optimizadas
+     - Gestión de usuarios y perfiles
+     - Almacenamiento de documentos
+     - Sistema de respaldo
 
-3. **Base de Datos (PostgreSQL)**
-   - Almacenamiento de datos de usuarios
-   - Gestión de documentos y URLs
-   - Registro de progreso de lectura
-   - Sistema de respaldo y recuperación
+4. **Base de Datos (PostgreSQL) - Implementación Futura**
+   - **Gestión de Usuarios**
+     - Perfiles de usuario
+     - Preferencias personalizadas
+     - Historial de lectura
+   
+   - **Gestión de Documentos**
+     - Biblioteca personal
+     - Marcadores y anotaciones
+     - Progreso de lectura
+   
+   - **Características Adicionales**
+     - Sincronización entre dispositivos
+     - Sistema de respaldo
+     - Estadísticas de uso
 
-4. **APIs del Navegador**
-   - **WebRTC**
-     - Acceso a la cámara
-     - Procesamiento de video en tiempo real
+5. **APIs Adicionales - Implementación Futura**
+   - **Acelerómetro**
+     - Control por inclinación
+     - Ajuste de sensibilidad
+   - **Detección Facial**
+     - Control mediante movimientos
+     - Tracking en tiempo real
    
-   - **DeviceOrientation API**
-     - Detección de inclinación del dispositivo
-     - Cálculo de velocidad de desplazamiento
    
-   - **File API**
-     - Carga y procesamiento de PDFs
-     - Almacenamiento local
 
 ### **2.3. Descripción de alto nivel del proyecto y estructura de ficheros**
 
@@ -797,29 +848,29 @@ FOR VALUES FROM ('2024-01-01') TO ('2024-12-31');
 
 
 
-# Easy Reader - Primera Versión
+### Easy Reader - Primera Versión
 
-## Descripción General
+#### Descripción General
 Este PR representa la primera versión de Easy Reader, una aplicación web diseñada para mejorar la experiencia de lectura digital. El proyecto se enfoca en hacer la lectura más accesible y personalizable para todos los usuarios.
 
-## Características Principales
+#### Características Principales
 - Interfaz de usuario intuitiva y moderna
 - Lector de voz integrado con controles personalizables
 - Diseño totalmente responsivo
 
-## Implementación Técnica
-### Frontend
+#### Implementación Técnica
+##### Frontend
 - Desarrollo en Angular
 - Arquitectura modular y escalable
 - Componentes reutilizables
 - Estilos SCSS personalizados
 - Integración con APIs de síntesis de voz
 
-## Documentación
+#### Documentación
 - Documentación técnica del proyecto (PRD)
 - Pantilla (@template.md) con el formato esperado.
 
-## Próximos Pasos
+#### Próximos Pasos
 - Implementación de características adicionales
 - Optimizaciones de rendimiento
 - Mejoras en la accesibilidad
