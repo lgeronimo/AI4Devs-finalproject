@@ -388,10 +388,6 @@ Esta configuración asegura que solo los archivos necesarios para la ejecución 
 
 ### **2.5. Seguridad**
 
-Para generar la sección de **Seguridad** en el documento `template.md`, podemos basarnos en las prácticas de seguridad que se suelen implementar en proyectos web, especialmente aquellos que utilizan tecnologías como Angular y Firebase. Aquí te propongo un borrador para esta sección:
-
-### **2.5. Seguridad**
-
 En el proyecto Easy Reader, se han implementado varias prácticas de seguridad para proteger los datos de los usuarios y asegurar la integridad de la aplicación:
 
 - **Autenticación y Autorización**: Aunque actualmente el proyecto no requiere registro, se planea implementar un sistema de autenticación seguro utilizando Firebase Authentication, que proporcionará métodos de inicio de sesión seguros y gestionará las sesiones de usuario.
@@ -412,9 +408,31 @@ Si deseas añadir o modificar algún punto específico, házmelo saber.
 
 ### **2.6. Tests**
 
-> Describe brevemente algunos de los tests realizados
+En este proyecto, se han implementado pruebas unitarias para asegurar la funcionalidad y estabilidad de los componentes principales. A continuación, se describen algunos de los tests realizados:
 
----
+- **PdfUploaderComponent:**
+  - **Carga de Archivos:** Se verifica que el componente pueda manejar la carga de archivos PDF correctamente, actualizando el estado del archivo actual.
+  - **Eliminación de Archivos:** Se asegura que el componente pueda eliminar el archivo cargado y restablecer el estado.
+
+- **PdfContentComponent:**
+  - **Renderizado de Páginas:** Se comprueba que el componente pueda cargar y renderizar páginas de un documento PDF, manejando la navegación entre páginas.
+
+- **ReaderControlComponent:**
+  - **Gestión de Modo de Lectura:** Se verifica que el componente pueda gestionar y cambiar entre diferentes modos de lectura, interactuando con los servicios de contenido PDF y web.
+
+- **ReadingOptionsComponent:**
+  - **Detección de Dispositivo:** Se comprueba que el componente pueda detectar si el dispositivo es móvil y si tiene un acelerómetro.
+  - **Selección de Modo de Lectura:** Se asegura que el componente emita correctamente el modo de lectura seleccionado y que inicialice el visor correspondiente.
+
+- **VoiceReaderComponent:**
+  - **Inicio y Pausa de Lectura:** Se verifica que el componente pueda iniciar y pausar la lectura correctamente.
+  - **Configuración de Voz:** Se comprueba que el componente pueda abrir y cerrar el modal de configuración de voz.
+
+- **VoiceCommandComponent:**
+  - **Inicio y Detención de Escucha:** Se asegura que el componente pueda iniciar y detener la escucha de comandos de voz.
+  - **Manejo de Comandos:** Se valida que el componente maneje correctamente los comandos de voz, como "siguiente página".
+  - **Estado del Micrófono:** Se comprueba que el estado del micrófono se actualice correctamente durante la escucha.
+
 
 ## 3. Modelo de Datos
 
@@ -759,8 +777,6 @@ Desarrollar un visualizador de contenidos que permita a los usuarios cargar y vi
 ---
 
 ## 7. Pull Requests
-
-
 
 ### Easy Reader - Primera Versión
 
