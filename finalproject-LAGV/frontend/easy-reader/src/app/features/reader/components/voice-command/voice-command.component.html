@@ -9,20 +9,27 @@
       {{ feedbackState.message ? '' : micState.message }}
       <span [style.color]="feedbackState.colorMessageLabel">{{ feedbackState.messageLabel }}</span> <span [style.color]="feedbackState.colorMessage">{{ feedbackState.message | uppercase }}</span>
     </div>
-    <button 
-      class="control-button" 
-      [ngClass]="{'default-state': micState === micStates['default'], 'onstart-state': micState === micStates['onstart']}" 
-      [style.backgroundColor]="micState.iconBackgroundColor" 
-      (click)="isListening ? abortListening() : startListening()">
-      <i [ngClass]="'fas ' + micState.iconClass" [style.color]="micState.iconColor"></i>
-    </button>
+    <div class="control-section-voice-command-buttons">
+      <div>
+        <button class="control-button help-button" (click)="toggleInstructions()">
+          <i class="fas fa-cog"></i>
+        </button>
+      </div>
+      <button 
+        class="control-button" 
+        [ngClass]="{'default-state': micState === micStates['default'], 'onstart-state': micState === micStates['onstart']}" 
+        [style.backgroundColor]="micState.iconBackgroundColor" 
+        (click)="isListening ? abortListening() : startListening()">
+        <i [ngClass]="'fas ' + micState.iconClass" [style.color]="micState.iconColor"></i>
+      </button>
+      <div>
+        <button class="control-button help-button" (click)="toggleInstructions()">
+          <i class="fas fa-list"></i>
+        </button>
+      </div>
+    </div>
   </div>
   <div class="help-section">
-    <div>
-      <button class="control-button help-button" (click)="toggleInstructions()">
-        <i class="fas fa-list"></i>
-      </button>
-    </div>
   </div>
 </div>
 
@@ -58,7 +65,7 @@
             </div>
           </div>
           <p class="info-text">
-             Puedes ver todos los comandos disponibles presionando el botón de ayuda   <i class="fas fa-list"></i>
+             Puedes ver todos los comandos disponibles presionando el botón   <i class="fas fa-list"></i>
           </p>
         </div>
       </div>

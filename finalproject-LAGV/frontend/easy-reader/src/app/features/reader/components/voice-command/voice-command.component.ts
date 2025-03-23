@@ -259,7 +259,7 @@ export class VoiceCommandComponent implements OnInit, OnDestroy {
     if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
       setTimeout(() => {
         this.openInstructions();
-      }, 1000);
+      }, 0);
     }
   }
 
