@@ -51,6 +51,16 @@
           }
         }
       }
+      .config-button {
+        width: 40px;
+        height: 40px;
+        opacity: 0.5;
+        transition: transform 0.3s ease, opacity 0.3s ease;
+        margin: 0px 20px;
+        background-color: transparent;
+        color: transparent;
+        cursor: default;
+      }
     }
   }
 
@@ -71,6 +81,13 @@
         &:hover {
           transform: scale(1);
         }
+      }
+      .config-button {
+        width: 35px;
+        height: 35px;
+        opacity: 0;
+        color: transparent;
+        
       }
     }
   }

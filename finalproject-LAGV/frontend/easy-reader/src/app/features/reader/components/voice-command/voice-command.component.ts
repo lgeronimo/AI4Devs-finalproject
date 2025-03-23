@@ -366,6 +366,7 @@ export class VoiceCommandComponent implements OnInit, OnDestroy {
   }
 
   toggleInstructions(): void {
+    return;;
     if (this.overlayRef) {
       this.closeInstructions();
     } else {
