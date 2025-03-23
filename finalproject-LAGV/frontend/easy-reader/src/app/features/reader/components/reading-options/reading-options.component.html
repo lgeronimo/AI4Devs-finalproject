@@ -26,28 +26,29 @@
       </div>
     </label>
 
-    <label class="option">
-      <input type="radio" 
-             name="readingMode" 
-             value="faceDetection"
-             [(ngModel)]="selectedMode">
-      <div class="option-content">
-        <span class="radio-label">Face Detection</span>
-        <span class="description">Auto-scroll based on face position</span>
-      </div>
-    </label>
-
-    <label class="option" *ngIf="showAccelerometerOption">
+    <label class="option disabled-option" *ngIf="showAccelerometerOption">
       <input type="radio" 
              name="readingMode" 
              value="accelerometer"
-             [(ngModel)]="selectedMode">
+             [(ngModel)]="selectedMode"
+             disabled>
       <div class="option-content">
-        <span class="radio-label">Accelerometer</span>
+        <span class="radio-label">Accelerometer - IN DEVELOPMENT</span>
         <span class="description">Control with device movement</span>
       </div>
     </label>
-
+    
+    <label class="option disabled-option">
+      <input type="radio" 
+             name="readingMode" 
+             value="faceDetection"
+             [(ngModel)]="selectedMode"
+             disabled>
+      <div class="option-content">
+        <span class="radio-label">Face Detection - FUTURE FEATURE</span>
+        <span class="description">Auto-scroll based on face position</span>
+      </div>
+    </label>
     <div class="unsupported-message" *ngIf="showUnsupportedMessage">
       <p>Accelerometer control is not available on this device</p>
     </div>

@@ -81,6 +81,16 @@
   }
 }
 
+.disabled-option {
+  opacity: 0.7;
+  cursor: not-allowed;
+
+  .radio-label,
+  .description {
+    color: #999;
+  }
+}
+
 .unsupported-message {
   padding: 12px;
   background-color: #FEF3F2;
