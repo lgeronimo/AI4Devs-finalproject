@@ -22,11 +22,8 @@ Easy Reader es una aplicación web que mejora la experiencia de lectura en dispo
 
 ### **0.4. URL del proyecto:**
 
-> Puede ser pública o privada, en cuyo caso deberás compartir los accesos de manera segura. Puedes enviarlos a [alvaro@lidr.co](mailto:alvaro@lidr.co) usando algún servicio como [onetimesecret](https://onetimesecret.com/).
+https://easy-reader-58d6c.web.app
 
-### 0.5. URL o archivo comprimido del repositorio
-
-> Puedes tenerlo alojado en público o en privado, en cuyo caso deberás compartir los accesos de manera segura. Puedes enviarlos a [alvaro@lidr.co](mailto:alvaro@lidr.co) usando algún servicio como [onetimesecret](https://onetimesecret.com/). También puedes compartir por correo un archivo zip con el contenido
 
 
 ---
@@ -798,11 +795,73 @@ FOR VALUES FROM ('2024-01-01') TO ('2024-12-31');
 
 ## 7. Pull Requests
 
-> Documenta 3 de las Pull Requests realizadas durante la ejecución del proyecto
 
-**Pull Request 1**
 
-**Pull Request 2**
+# Easy Reader - Primera Versión
+
+## Descripción General
+Este PR representa la primera versión de Easy Reader, una aplicación web diseñada para mejorar la experiencia de lectura digital. El proyecto se enfoca en hacer la lectura más accesible y personalizable para todos los usuarios.
+
+## Características Principales
+- Interfaz de usuario intuitiva y moderna
+- Lector de voz integrado con controles personalizables
+- Diseño totalmente responsivo
+
+## Implementación Técnica
+### Frontend
+- Desarrollo en Angular
+- Arquitectura modular y escalable
+- Componentes reutilizables
+- Estilos SCSS personalizados
+- Integración con APIs de síntesis de voz
+
+## Documentación
+- Documentación técnica del proyecto (PRD)
+- Pantilla (@template.md) con el formato esperado.
+
+## Próximos Pasos
+- Implementación de características adicionales
+- Optimizaciones de rendimiento
+- Mejoras en la accesibilidad
+- Expansión de opciones de personalización
+
+---
+
+# Easy Reader - Comandos de Voz y Mejoras de Accesibilidad
+
+## Descripción General
+Este PR añade funcionalidades avanzadas de control por voz a Easy Reader, mejorando significativamente la accesibilidad y la experiencia de usuario. Se implementa un sistema completo de comandos de voz que permite la navegación y control del documento sin necesidad de interacción física.
+
+## Características Principales
+- Sistema de comandos de voz
+- Interfaz modal para visualización de comandos disponibles
+- Feedback visual en tiempo real de los comandos reconocidos
+- Navegación por voz del documento (siguiente, anterior, arriba, abajo)
+- Control de desplazamiento mediante comandos
+- Soporte para múltiples variantes de comandos en español
+
+## Implementación Técnica
+### Componentes Nuevos
+- VoiceCommandComponent para gestión de comandos de voz
+- Sistema de modales para instrucciones y lista de comandos
+- Integración con Web Speech API
+- Manejo de estados del micrófono y feedback visual
+
+### Mejoras
+- Diseño responsivo para los nuevos componentes
+- Sistema de overlay para modales
+- Estructura organizada de comandos por idioma
+- Feedback visual mejorado para interacciones de usuario
+
+## Documentación
+- Documentación de comandos de voz disponibles
+- Guía de uso del sistema de voz
+- Instrucciones de implementación
+
+## Próximos Pasos
+- Mejoras en el reconocimiento de voz
+- Personalización de comandos
+- Expansión a otros idiomas
 
 **Pull Request 3**
 
