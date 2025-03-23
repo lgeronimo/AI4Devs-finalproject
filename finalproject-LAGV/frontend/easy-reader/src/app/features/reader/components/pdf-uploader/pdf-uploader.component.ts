@@ -2,7 +2,7 @@ import { Component, DestroyRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { PdfService } from '../../services/pdf.service';
-import { UploadFile } from '@shared/types/reading.types';
+import { UploadFile, UploadStatus } from '@shared/types/reading.types';
 import { ReadingOptionsComponent } from '../reading-options/reading-options.component';
 
 @Component({
@@ -74,6 +74,7 @@ export class PdfUploaderComponent {
 
   removeFile(): void {
     this.pdfService.removeFile();
+    this.currentFile = null;
   }
 
   private handleFile(file: File): void {
@@ -87,6 +88,13 @@ export class PdfUploaderComponent {
       return;
     }
 
+    this.currentFile = {
+      name: file.name,
+      size: file.size.toString(),
+      progress: 0,
+      status: 'uploading' as UploadStatus,
+      file
+    };
     this.pdfService.uploadFile(file);
   }
 } 
