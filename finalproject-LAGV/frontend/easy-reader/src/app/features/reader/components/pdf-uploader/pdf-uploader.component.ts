@@ -4,7 +4,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { PdfService } from '../../services/pdf.service';
 import { UploadFile, UploadStatus } from '@shared/types/reading.types';
 import { ReadingOptionsComponent } from '../reading-options/reading-options.component';
-
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-pdf-uploader',
   standalone: true,
@@ -20,7 +20,7 @@ export class PdfUploaderComponent {
   isDragging = false;
   currentFile: UploadFile | null = null;
 
-  constructor() {
+  constructor(private router: Router) {
     this.pdfService.currentFile$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(file => {
@@ -97,4 +97,11 @@ export class PdfUploaderComponent {
     };
     this.pdfService.uploadFile(file);
   }
+
+  closeComponent() {
+    // Navegar de regreso a la página de inicio
+    this.pdfService.clearPdf();
+    this.router.navigate(['/reader']);
+  }
+
 } 
