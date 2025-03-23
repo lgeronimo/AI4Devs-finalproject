@@ -151,6 +151,8 @@
     border-radius: 8px;
     padding: 1.5rem;
     margin: 1.5rem;
+    max-height: 80vh;
+    overflow-y: auto;
 
     .modal-header {
       display: flex;
@@ -225,10 +227,12 @@
         }
 
       }
+      max-height: calc(80vh - 120px);
+      overflow-y: auto;
     }
 
     .modal-footer {
-      margin-top: 1.5rem;
+      margin-top: 1rem;
       display: flex;
       justify-content: flex-end;
 

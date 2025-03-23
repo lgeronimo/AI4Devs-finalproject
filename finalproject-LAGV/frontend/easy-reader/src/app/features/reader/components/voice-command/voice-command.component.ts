@@ -39,15 +39,15 @@ interface LanguageCommands {
 
 const commandsByLanguage: LanguageCommands = {
     'es-MX': {
-        next: new Set(['cambia de página a la siguiente', 'ir a la página siguiente', 'siguiente página', 'cambia de página', 'siguiente', 'continuar', 'prosigue', 'continúa', 'avanzar', 'avanza', 'adelante']),
-        previous: new Set(['cambia de página a la anterior', 'ir a la página anterior', 'anterior', 'regresar', 'regresa', 'volver', 'vuelve', 'atrás']),
-        first: new Set(['primera página', 'primera', 'primero']),
-        last: new Set(['última página', 'último', 'última']),
-        bottom: new Set(['bajar al final de la página', 'baja al pie de página', 'bajar al final', 'bajar al pie', 'pie de página', 've al final', 'ir al final', 'baja al pie', 've al pie', 'baja todo', 'fin de página', 'final']),
+        next: new Set(['ir a la página siguiente', 'cambia de página', 'siguiente página', 'adelante', 'prosigue', 'continúa', 'avanzar', 'avanza', 'continuar', 'siguiente']),
+        previous: new Set(['ir a la página anterior', 'anterior', 'regresar', 'regresa', 'volver', 'vuelve', 'atrás']),
+        first: new Set(['primera página', 'primera']),
+        last: new Set(['última página', 'última']),
+        bottom: new Set(['bajar al final', 'pie de página', 've al final', 'ir al final', 'baja todo', 'fin de página']),
         top: new Set(['inicio de página', 've al principio', 'sube todo', 've al inicio']),
         up: new Set(['sube un poco mas', 'arriba un poco', 'sube un poco', 'sube más', 'arriba', 'sube']),
         down: new Set(['baja un poco mas', 'abajo un poco', 'baja un poco', 'baja más', 'abajo', 'baja']),
-        goTo: new Set(['ir a la página siguiente', 've a la página', 'ir a la página', 'ir a página', 'ir a la', 'ir a', 'página']),
+        goTo: new Set(['ve a la página', 'ir a la página', 'ir a página', 'ir a la', 'ir a', 'página']),
         more: new Set(['un poco más', 'más']),
     },    
     'en-US': {
@@ -73,6 +73,7 @@ const commandsByLanguage: LanguageCommands = {
 })
 export class VoiceCommandComponent implements OnInit, OnDestroy {
   @ViewChild('instructionsModal') instructionsModal!: TemplateRef<any>;
+  @ViewChild('commandsListModal') commandsListModal!: TemplateRef<any>;
   private recognition: any;
   private speechGrammarList: any;
   isListening: boolean = false;
@@ -84,6 +85,7 @@ export class VoiceCommandComponent implements OnInit, OnDestroy {
   private lastAction: 'up' | 'down' | null = null;
   showInstructions: boolean = false;
   private overlayRef: OverlayRef | null = null;
+  private commandsListOverlayRef: OverlayRef | null = null;
 
   micState: MicState = {
     message: 'Please authorize microphone access to proceed',
@@ -402,5 +404,47 @@ export class VoiceCommandComponent implements OnInit, OnDestroy {
       this.overlayRef.dispose();
       this.overlayRef = null;
     }
+  }
+
+  toggleCommandsList(): void {
+    if (this.commandsListOverlayRef) {
+      this.closeCommandsList();
+    } else {
+      this.openCommandsList();
+    }
+  }
+
+  openCommandsList(): void {
+    const positionStrategy = this.overlay.position()
+      .global()
+      .centerHorizontally()
+      .centerVertically();
+
+    this.commandsListOverlayRef = this.overlay.create({
+      positionStrategy,
+      hasBackdrop: true,
+      backdropClass: 'dark-backdrop',
+      scrollStrategy: this.overlay.scrollStrategies.block()
+    });
+
+    const commandsPortal = new TemplatePortal(
+      this.commandsListModal,
+      this.viewContainerRef
+    );
+
+    this.commandsListOverlayRef.attach(commandsPortal);
+    this.commandsListOverlayRef.backdropClick().subscribe(() => this.closeCommandsList());
+  }
+
+  closeCommandsList(): void {
+    if (this.commandsListOverlayRef) {
+      this.commandsListOverlayRef.dispose();
+      this.commandsListOverlayRef = null;
+    }
+  }
+
+  getCommandsArray(action: keyof CommandGroups): string[] {
+    const commands = commandsByLanguage[this.recognition.lang][action];
+    return Array.from(commands).reverse();
   }
 } 
