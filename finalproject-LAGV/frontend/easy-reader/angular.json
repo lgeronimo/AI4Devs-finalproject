@@ -82,7 +82,11 @@
                   "maximumError": "40kB"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "index": {
+                  "input": "src/index.html",
+                  "output": "index.html"
+              }
             },
             "development": {
               "optimization": false,
