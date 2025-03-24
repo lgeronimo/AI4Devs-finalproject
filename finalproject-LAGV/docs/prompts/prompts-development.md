@@ -204,3 +204,159 @@ Vamos a crear el componente voice-command dentro de @reader/components/voice-com
    - Diseño responsivo
 
 Vamos a ir paso a paso, conforme te lo vaya indicando.
+
+## Prompt 12
+Salieron errores, vamos a solicionarlos usando siempre buenas práctivas de programación. Recuerda la arquitectura que estamos usando y apégate a ella.
+
+## Prompt 13
+Vamos a implementar la navegación a "primera" y "última" página por comandos de voz.
+
+Hazme las preguntas que necesites para la mejor solución.
+
+## Prompt 14
+Vamos a implementar un efecto "shake" o similar a cuando llega una notificacion y la campana hace ese efecto de "vibración", esto para avisar de manera visual que la página solicitada no existe.
+
+Aplciará cuando:
+
+1. Estés en la última página y digas siguiente
+2. Estes en la primera página y digas atrás
+
+## Prompt 15
+Necesitamos agregar soporte multilenguaje a la aplicación. Por ahora iniciemos con español e inglés. ¿Qué información necesitas para empezar con la implementación?
+
+## Prompt 16
+El micrófono necesita mejor feedback visual.
+
+Lo que buscamos es:
+1. Indicador claro de estado
+2. Animaciones sutiles
+3. Feedback al detectar comandos aceptados y comandos inválidos.
+
+## Prompt 17
+Necesitamos agregar un botón de información que muestre los comandos disponibles al usuario. Debe ser accesible desde cualquier vista.
+
+## Prompt 18
+Vamos a crear una página de autenticación simple, básate en la imagen que te adjunte para el diseño y apégate a ella.
+
+Para nuestro caso las opciones disponibles serán:
+
+   1. Login con cuenta de google
+   2. Uso de aplicación sin necesidad de cuenta registrada
+
+Porterior al diseño vamos a hacer la inegración con firebase para poder hacer el login.
+
+Vamos paso a paso con esta implementación, por ahora solamente es el diseño.
+
+Hazme las preguntas que consideres necesarias para una correcta implementación.
+
+## Prompt 19
+Hay que implementar un sistema para deshabilitar las opciones de lectura que no apliquen según el tipo de contenido (web o PDF). ¿Por dónde sugieres que empecemos?
+
+## Prompt 20
+Necesitamos agregar un botón de cierre al componente de carga de PDF. Debe ser intuitivo y consistente con nuestro diseño actual.
+
+## Prompt 21
+Vamos a mejorar la detección de comandos con la siguientes consideracones:
+
+En lugar de hacer un equals, vamos a ver si la cadena transcript contiene alguno de los comandos.
+
+## Prompt 22
+Vamos a implementar que la página haga scroll hacia arriba automáticamente cuando el usuario navega entre páginas. Esto par que cada que cambie de página pueda iniciar la lectura sin necesidad de interacción manual.
+
+## Prompt 23
+Vamos a implementar el scroll automático durante la lectura por voz. El texto debe seguir la lectura de manera fluida. ¿Qué información necesitas para empezar?
+
+## Prompt 24
+Vamos a crear pruebas unitarias, estas son las que considero importantes:
+
+Comandos de voz:
+1. Reconocimiento de comandos
+2. Estados del micrófono
+3. Navegación por voz
+4. Manejo de errores
+
+Lector de voz:
+1. Reproducción de texto
+2. Controles básicos
+3. Cambio de voces
+4. Soporte de idiomas
+
+PDF
+1. Manejo de erroes
+2. carga correcta de archvos
+3. Vusualización correcta del PDF
+
+Igual dame otras opciones de pruebas que consideres críticas para garantizar la calidad del proyecto.
+
+
+## Prompt 26
+Vamos a implementar pruebas para las opciones de lectura. Necesitamos asegurar que todas las configuraciones funcionen correctamente.
+
+## Prompt 27
+Vamos a ir agrenndo nuevos comandos de voz y llenando el diccionario para que soporte muchos más comandos.
+
+## Prompt 28
+Vamos a implementar las funcionalidades de "scroll down" y "scroll up" en la deteccón de comando de voz.
+
+## Prompt 29
+El estado del micrófono necesita un nuevo estilo visual.
+
+Necesitamos:
+1. Indicador de estado activo/inactivo
+2. Animaciones de transición
+3. Feedback visual claro al detectar comandos
+
+¿Qué información necesitas para comenzar?
+
+## Prompt 30
+Vamos a crear la funcionalidad de selección y guardado de voces para el lector.
+
+Requerimientos:
+1. Lista de voces disponibles
+2. Configuración de preferencias
+3. Persistencia de selección
+4. Vista previa de voces
+
+Vamos paso a paso con esta implementación.
+
+## Prompt 31
+El contenido PDF necesita un nuevo estilo visual. Debe ser más limpio y fácil de leer.
+
+## Prompt 32
+Vamos a darle otro estilo al encabezado para el contenido PDF.
+
+Elementos a incluir:
+1. Título del documento
+2. Controles de navegación
+4. Indicador de página actual
+
+Y debe ser simple y en colores grises. 
+
+## Prompt 34
+Necesitamos implementar la funcionalidad de lectura de URLs.
+
+Aspectos importantes:
+1. Validación de URLs
+2. Carga segura de contenido
+3. Manejo de errores
+4. Compatibilidad con diferentes sitios
+
+Vamos paso a paso con esta característica.
+
+## Prompt 35
+Los estilos en móvil necesitan ajustes. Hay que asegurar que todo sea completamente responsivo y fácil de usar en pantallas pequeñas. ¿Qué ajustes sugieres que hagamos?
+
+
+
+## Prompt 35
+
+Vamos a crear la funcionalidad para poder cambiarnos de modos de lectura en tiempo real.
+
+Vamos a tomar en cuanta las siguientes consideraciones:
+
+   1. Diseño consistente con lo que ya se tiene
+   2. Gantizar que ambos modos de lectura sigan funcionando de la misma manera en que ya se tiene.
+   3. Darle un diseño diferente a ese botón para que resalte.
+   4. Cuando se cambie entre modos, este no debe reiniciar el PDF, debe funcionar desde la página en la que estaba. 
+
+Hazme todas las preguntas que necesites antes de iniciar.
