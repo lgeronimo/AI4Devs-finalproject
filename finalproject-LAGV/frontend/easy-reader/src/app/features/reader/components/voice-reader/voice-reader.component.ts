@@ -259,6 +259,7 @@ export class VoiceReaderComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
 
+
     // Verificar que la API esté disponible en el navegador
     if (!('speechSynthesis' in window)) {
       console.error('La API de síntesis de voz no está disponible en este navegador');
@@ -269,9 +270,7 @@ export class VoiceReaderComponent implements OnInit, OnDestroy {
     this.subscription.add(
       this.pdfService.currentPageText$.subscribe(pageText => {
         this.text = pageText.text;
-
         if (this.speechSynthesis) {
-          // Cancelar la síntesis de voz actual
           this.speechSynthesis.cancel();
         }
 
@@ -520,7 +519,6 @@ export class VoiceReaderComponent implements OnInit, OnDestroy {
       this.isReading = false;
       this.isPaused = false;
       
-      console.log('Lectura detenida manualmente');
       
       // Opcional: notificar que se detuvo la lectura
       if (this.onReadingStopped) {
@@ -543,9 +541,6 @@ export class VoiceReaderComponent implements OnInit, OnDestroy {
       }
       
       this.oldVoice = this.currentVoice;
-
-      console.log('Idioma actual:', this.currentLanguage);
-      console.log('Voz seleccionada:', this.currentVoice?.name);
       
       // Forzar la detección de cambios
       this.cdr.detectChanges();
@@ -681,7 +676,6 @@ export class VoiceReaderComponent implements OnInit, OnDestroy {
       const scrollHeight = pdfContainer.scrollHeight - pdfContainer.clientHeight;
       const newScrollPosition = Math.min(scrollHeight * progress, scrollHeight);
       
-      console.log(`Scroll progress: ${progress.toFixed(2)}, Position: ${newScrollPosition.toFixed(0)}/${scrollHeight}`);
       
       // Aplicar el scroll suave
       pdfContainer.scrollTo({
@@ -691,6 +685,11 @@ export class VoiceReaderComponent implements OnInit, OnDestroy {
     } else {
       console.warn('No se encontró el contenedor PDF para realizar scroll automático');
     }
+  }
+
+  changeReadingMode() {
+    this.stopReading();
+    this.pdfService.setReadingMode('voiceCommands');
   }
 
 } 

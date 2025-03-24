@@ -40,10 +40,10 @@
       .help-button {
         width: 40px;
         height: 40px;
-        opacity: 0.5;
+        font-size: 20px;
         transition: transform 0.3s ease, opacity 0.3s ease;
         margin: 0px 20px;
-        background-color: #6b7280;
+        background-color: #4F46E5;
         @media not all and (max-width: 480px) {
           &:hover {
             transform: scale(1.05);
@@ -55,11 +55,27 @@
         width: 40px;
         height: 40px;
         opacity: 0.5;
+        font-size: 20px;
         transition: transform 0.3s ease, opacity 0.3s ease;
         margin: 0px 20px;
         background-color: transparent;
         color: transparent;
         cursor: default;
+      }
+      .change-reading-mode-button {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+        opacity: 1;
+        margin: 0px 20px;
+        transition: transform 0.3s ease, opacity 0.3s ease;
+        background-color: #ef4444;
+        color: white;
+        
+        &:hover:not(:disabled) {
+          background-color: #ef4444;
+          transform: scale(1.05);
+        }
       }
     }
   }
@@ -74,10 +90,8 @@
       right: 20px;
 
       .help-button {
-        width: 35px;
-        height: 35px;
-        opacity: 1;
-
+        width: 40px;
+        height: 40px;
         &:hover {
           transform: scale(1);
         }
@@ -87,7 +101,19 @@
         height: 35px;
         opacity: 0;
         color: transparent;
+      }
+
+      .change-reading-mode-button {
+        width: 40px;
+        height: 40px;
+        opacity: 1;
+        background-color: #ef4444;
+        color: white;
         
+        &:hover:not(:disabled) {
+          background-color: #ef4444;
+          transform: scale(1.1);
+        }
       }
     }
   }
@@ -123,6 +149,7 @@
   &.onstart-state {
     animation: listening-pulse 1s infinite;
   }
+
 }
 
 
@@ -272,3 +299,4 @@
     }
   }
 }
+

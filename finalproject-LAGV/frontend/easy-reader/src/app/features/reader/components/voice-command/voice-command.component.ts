@@ -452,4 +452,8 @@ export class VoiceCommandComponent implements OnInit, OnDestroy {
   public isCommandsListOverlayOpen(): boolean {
     return this.commandsListOverlayRef !== null;
   }
+
+  changeReadingMode() {
+    this.pdfService.setReadingMode('textToSpeech');
+  }
 } 

@@ -182,7 +182,8 @@ export class PdfContentComponent implements OnInit, AfterViewInit {
       await renderTask.promise;
       
 
-      if (this.readingMode === 'textToSpeech') {
+
+      if (this.readingMode === 'textToSpeech' || this.readingMode === 'voiceCommands') {
         // Extraer el texto de la página actual
         const textContent = await page.getTextContent();
         this.currentPageText = textContent.items

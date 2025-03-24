@@ -19,7 +19,6 @@ export class ReaderControlComponent implements OnInit {
 
   private readergModeService = inject(ReaderModeService);
   private pdfService = inject(PdfService);
-  private webContentService = inject(WebContentService);
 
   readerMode: ReaderMode;
   readingMode: ReadingMode | null = null;
@@ -33,11 +32,8 @@ export class ReaderControlComponent implements OnInit {
       this.pdfService.viewerState$.pipe(
         map(state => state.config.readingMode)
       ).subscribe(mode => this.readingMode = mode);
-    } else {
-      this.webContentService.viewerState$.pipe(
-        map(state => state.config.readingMode)
-      ).subscribe(mode => this.readingMode = mode);
-    }
+    } 
+    
   }
 
   get isHidden(): boolean {

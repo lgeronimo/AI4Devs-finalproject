@@ -60,7 +60,9 @@
     background-color: #EEF2FF;
     color: #6366F1;
   }
+
 }
+
 
 .play-pause-button {
   &.active {
@@ -71,6 +73,16 @@
     i {
       color: #6366F1 !important;
     }
+  }
+}
+
+.change-reading-mode-button {
+  background-color: #ef4444;
+  color: white;
+  
+  &:hover:not(:disabled) {
+    background-color: #ef4444;
+    transform: scale(1.1);
   }
 }
 
@@ -387,3 +399,4 @@
   background-color: #F3F4F6;
   border-radius: 4px;
 } 
+

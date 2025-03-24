@@ -11,8 +11,11 @@
     </div>
     <div class="control-section-voice-command-buttons">
       <div>
-        <button class="control-button config-button" (click)="toggleInstructions()">
+        <!--button class="control-button config-button" (click)="toggleInstructions()">
           <i class="fas fa-cog"></i>
+        </button-->
+        <button class="control-button help-button" (click)="toggleCommandsList()">
+          <i class="fas fa-list"></i>
         </button>
       </div>
       <button 
@@ -23,8 +26,8 @@
         <i [ngClass]="'fas ' + micState.iconClass" [style.color]="micState.iconColor"></i>
       </button>
       <div>
-        <button class="control-button help-button" (click)="toggleCommandsList()">
-          <i class="fas fa-list"></i>
+        <button class="control-button change-reading-mode-button" (click)="changeReadingMode()">
+          <i class="fas fa-exchange-alt"></i>
         </button>
       </div>
     </div>
