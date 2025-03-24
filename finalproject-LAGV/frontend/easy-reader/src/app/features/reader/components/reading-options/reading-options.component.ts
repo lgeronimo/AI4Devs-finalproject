@@ -20,7 +20,7 @@ export class ReadingOptionsComponent implements OnInit {
   private readerModeService = inject(ReaderModeService);
   selectedMode: ReadingMode = 'voiceCommands';
   isMobileDevice = false;
-  hasAccelerometer = false;
+  hasAccelerometer = true;
 
   ngOnInit() {
     this.checkDeviceType();
