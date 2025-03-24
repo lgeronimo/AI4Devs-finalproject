@@ -7,11 +7,11 @@ import { WebContentService } from '../../services/web-content.service';
 import { map } from 'rxjs/operators';
 import { VoiceReaderComponent } from '../voice-reader/voice-reader.component';
 import { VoiceCommandComponent } from '../voice-command/voice-command.component';
-
+import { VoiceCommandIframeComponent } from '../voice-commnad-iframe/voice-command-iframe.component';   
 @Component({
   selector: 'app-reader-control',
   standalone: true,
-  imports: [CommonModule, VoiceReaderComponent, VoiceCommandComponent],
+  imports: [CommonModule, VoiceReaderComponent, VoiceCommandComponent, VoiceCommandIframeComponent],
   templateUrl: './reader-control.component.html',
   styleUrls: ['./reader-control.component.scss']
 })

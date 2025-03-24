@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { ReadingMode, WebViewerState, WebConfig } from '../../../shared/types/reading.types';
 
 
@@ -21,10 +21,22 @@ const INITIAL_STATE: WebViewerState = {
 export class WebContentService {
   private urlSubject = new BehaviorSubject<string>('');
   private viewerState = new BehaviorSubject<WebViewerState>(INITIAL_STATE);
+  
+  // Nuevos Subjects para comandos de desplazamiento
+  private upPageSubject = new Subject<void>();
+  private downPageSubject = new Subject<void>();
+  private topPageSubject = new Subject<void>();
+  private bottomPageSubject = new Subject<void>();
 
   // Observables públicos
   url$ = this.urlSubject.asObservable();
   viewerState$ = this.viewerState.asObservable();
+  
+  // Nuevos observables para comandos de desplazamiento
+  upPage$ = this.upPageSubject.asObservable();
+  downPage$ = this.downPageSubject.asObservable();
+  topPage$ = this.topPageSubject.asObservable();
+  bottomPage$ = this.bottomPageSubject.asObservable();
 
   constructor(private http: HttpClient) { }
 
@@ -110,4 +122,41 @@ export class WebContentService {
       throw new Error('URL no accesible');
     }
   }
-} 
+  
+  // Nuevos métodos para comandos de desplazamiento
+  /**
+   * Solicita desplazamiento hacia arriba
+   */
+  requestUpPage(): void {
+    this.upPageSubject.next();
+  }
+
+  /**
+   * Solicita desplazamiento hacia abajo
+   */
+  requestDownPage(): void {
+    this.downPageSubject.next();
+  }
+
+  /**
+   * Solicita desplazamiento al inicio de la página
+   */
+  requestTopPage(): void {
+    this.topPageSubject.next();
+  }
+
+  /**
+   * Solicita desplazamiento al final de la página
+   */
+  requestBottomPage(): void {
+    this.bottomPageSubject.next();
+  }
+
+  /**
+   * Limpia el estado del visor
+   */
+  clearViewerState(): void {
+    this.viewerState.next(INITIAL_STATE);
+    this.urlSubject.next('');
+  }
+}
