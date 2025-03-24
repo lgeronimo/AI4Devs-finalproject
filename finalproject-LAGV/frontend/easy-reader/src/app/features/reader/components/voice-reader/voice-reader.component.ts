@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input, inject, ChangeDetectorRef, ViewChild, TemplateRef, ViewContainerRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, inject, ChangeDetectorRef, ViewChild, TemplateRef, ViewContainerRef, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PdfService } from '../../services/pdf.service';
 import { Subscription } from 'rxjs';
@@ -269,7 +269,6 @@ export class VoiceReaderComponent implements OnInit, OnDestroy {
     this.subscription.add(
       this.pdfService.currentPageText$.subscribe(pageText => {
         this.text = pageText.text;
-        console.log('text', this.text);
 
         if (this.speechSynthesis) {
           // Cancelar la síntesis de voz actual
@@ -329,10 +328,20 @@ export class VoiceReaderComponent implements OnInit, OnDestroy {
       this.speechSynthesis.cancel();
     }
     
+    // Limpiar el temporizador de desplazamiento
+    this.clearScrollTimer();
+    
     this.isReading = false;
     this.isPaused = false;
     this.closeModal();
   }
+
+  // Variables para el seguimiento del progreso de lectura
+  private wordCount: number = 0;
+  private totalWords: number = 0;
+  private scrollTimer: any = null;
+  private scrollProgress: number = 0;
+  private estimatedReadingTime: number = 0;
 
   startReading() {
     // Cancelar cualquier lectura previa si existe
@@ -346,17 +355,32 @@ export class VoiceReaderComponent implements OnInit, OnDestroy {
       this.speechSynthesis.cancel();
     }
     
+    // Detener cualquier temporizador existente
+    this.clearScrollTimer();
+    
+    let activeAutomaticScroll = true;
     // Verificar si hay texto para leer
     if (!this.text || this.text.trim() === '') {
       this.text= 'La página no tiene texto para leer';
+      activeAutomaticScroll = false;
     }
+    
+    // Inicializar variables de seguimiento para el scroll
+    this.wordCount = 0;
+    this.totalWords = this.countWords(this.text);
+    this.scrollProgress = 0;
+    
+    // Calcular tiempo estimado de lectura en milisegundos
+    // Una persona promedio lee ~200 palabras por minuto, ajustado por la velocidad de lectura
+    const wordsPerMinute = 200 * this.voiceSpeed;
+    this.estimatedReadingTime = (this.totalWords / wordsPerMinute) * 60 * 1000;
     
     // Crear una nueva instancia de SpeechSynthesisUtterance
     this.speechUtterance = new SpeechSynthesisUtterance(this.text);
     
     // Configurar propiedades de la voz
     this.speechUtterance.lang = 'es-ES'; // Idioma español
-    this.speechUtterance.rate = this.rate || 1; // Velocidad de lectura
+    this.speechUtterance.rate = this.voiceSpeed; // Velocidad de lectura
     this.speechUtterance.pitch = this.pitch || 1; // Tono de voz
     this.speechUtterance.volume = this.volume || 1; // Volumen
     
@@ -373,12 +397,25 @@ export class VoiceReaderComponent implements OnInit, OnDestroy {
       if (this.onReadingStarted) {
         this.onReadingStarted();
       }
+      
+      // Iniciar el temporizador para el desplazamiento gradual
+      if (activeAutomaticScroll) {
+        this.startScrollTimer();
+      }
+    };
+    
+    // Mantenemos onboundary como respaldo, pero no dependemos exclusivamente de él
+    this.speechUtterance.onboundary = (event) => {
+      this.wordCount++;
     };
     
     this.speechUtterance.onend = () => {
       // Las funciones flecha mantienen el contexto 'this'
       this.isReading = false;
       this.isPaused = false;
+      
+      // Detener el temporizador de desplazamiento
+      this.clearScrollTimer();
       
       // Opcional: notificar que terminó la lectura
       console.log('Terminó la lectura: ', this.text);
@@ -431,6 +468,10 @@ export class VoiceReaderComponent implements OnInit, OnDestroy {
       // Pausar la síntesis de voz
       if (this.speechSynthesis) {
         this.speechSynthesis.pause();
+        
+        // Detener el temporizador de desplazamiento mientras está pausado
+        this.clearScrollTimer();
+        
         console.log('Lectura pausada');
         
         // Opcional: notificar que se pausó la lectura
@@ -445,6 +486,10 @@ export class VoiceReaderComponent implements OnInit, OnDestroy {
       // Reanudar la síntesis de voz
       if (this.speechSynthesis) {
         this.speechSynthesis.resume();
+        
+        // Reanudar el temporizador de desplazamiento
+        this.startScrollTimer();
+        
         console.log('Lectura reanudada');
         
         // Opcional: notificar que se reanudó la lectura
@@ -467,6 +512,9 @@ export class VoiceReaderComponent implements OnInit, OnDestroy {
     if (this.speechSynthesis) {
       // Cancelar la síntesis de voz actual
       this.speechSynthesis.cancel();
+      
+      // Detener el temporizador de desplazamiento
+      this.clearScrollTimer();
       
       // Actualizar estados
       this.isReading = false;
@@ -555,23 +603,94 @@ export class VoiceReaderComponent implements OnInit, OnDestroy {
   }
   
   applyVoiceSettings() {
+
+
   
     this.oldLanguage = this.currentLanguage;
     this.oldVoice = this.currentVoice;
+    
+    // Si está leyendo, actualizar la velocidad
+    if (this.speechUtterance) {
+      this.speechUtterance.rate = this.voiceSpeed;
+      
+      // Recalcular tiempo estimado si estamos leyendo
+      if (this.isReading && !this.isPaused) {
+        const wordsPerMinute = 200 * this.voiceSpeed;
+        const remainingWords = this.totalWords - this.wordCount;
+        this.estimatedReadingTime = (remainingWords / wordsPerMinute) * 60 * 1000;
+        
+        // Reiniciar el temporizador con la nueva velocidad
+        this.startScrollTimer();
+      }
+    }
   
-    //this.currentLanguage =  this.currentLanguage;
     console.log('Aplicando configuración:', {
       language: this.currentLanguage,
       voice: this.currentVoice?.name,
       speed: this.voiceSpeed
     });
 
-       // Asegúrate de que this.speechUtterance no sea null antes de asignar la voz
+    // Asegúrate de que this.speechUtterance no sea null antes de asignar la voz
     if (this.speechUtterance && this.currentVoice) {
         this.speechUtterance.voice = this.currentVoice;
     }
 
     this.closeModal();
+  }
+
+  // Función para contar palabras
+  private countWords(text: string): number {
+    return text.split(/\s+/).filter(word => word.length > 0).length;
+  }
+
+  // Iniciar temporizador para desplazamiento automático
+  private startScrollTimer(): void {
+    // Limpiar cualquier temporizador existente
+    this.clearScrollTimer();
+    
+    // Calcular el intervalo para actualizar el scroll (actualizar ~20 veces durante la lectura)
+    const updateInterval = Math.max(this.estimatedReadingTime / 15, 500);
+    
+    // Crear nuevo temporizador
+    this.scrollTimer = setInterval(() => {
+      if (this.isReading && !this.isPaused) {
+        this.scrollProgress += 1 / 20; // Incrementar en aproximadamente 5% por actualización
+        this.updateScrollPosition();
+      }
+    }, updateInterval);
+  }
+  
+  // Limpiar temporizador
+  private clearScrollTimer(): void {
+    if (this.scrollTimer) {
+      clearInterval(this.scrollTimer);
+      this.scrollTimer = null;
+    }
+  }
+
+  // Función para actualizar la posición del scroll
+  private updateScrollPosition(): void {
+    // Calcular la posición relativa en el texto (0 a 1)
+    const progress = Math.min(this.scrollProgress, 1.0);
+    
+    // Obtener el contenedor del PDF usando el selector adecuado
+    const pdfContainer = document.querySelector('.pdf-container') as HTMLElement;
+    
+    if (pdfContainer) {
+      // Calcular la posición del scroll
+      const scrollHeight = pdfContainer.scrollHeight - pdfContainer.clientHeight;
+      const newScrollPosition = Math.min(scrollHeight * progress, scrollHeight);
+      
+      console.log(`Scroll progress: ${progress.toFixed(2)}, Position: ${newScrollPosition.toFixed(0)}/${scrollHeight}`);
+      
+      // Aplicar el scroll suave
+      pdfContainer.scrollTo({
+        top: newScrollPosition,
+        behavior: 'smooth'
+      });
+    } else {
+      console.warn('No se encontró el contenedor PDF para realizar scroll automático');
+    }
   }
 
 } 
