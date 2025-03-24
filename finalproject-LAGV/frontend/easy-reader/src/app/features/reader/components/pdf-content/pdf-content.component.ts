@@ -239,7 +239,7 @@ export class PdfContentComponent implements OnInit, AfterViewInit {
     if (this.cdr) {
       this.cdr.detectChanges();
     }
-
+    this.scrollToTop();
     await this.queueRenderPage(this.currentPage, detonationManual);
   }
 
@@ -255,6 +255,7 @@ export class PdfContentComponent implements OnInit, AfterViewInit {
       this.cdr.detectChanges();
     }
 
+    this.scrollToTop();
     await this.queueRenderPage(this.currentPage, detonationManual);
   }
 
@@ -269,7 +270,7 @@ export class PdfContentComponent implements OnInit, AfterViewInit {
     if (this.cdr) {
       this.cdr.detectChanges();
     }
-
+    this.scrollToTop();
     await this.queueRenderPage(this.currentPage, detonationManual);
   }
 
@@ -284,7 +285,7 @@ export class PdfContentComponent implements OnInit, AfterViewInit {
     if (this.cdr) {
       this.cdr.detectChanges();
     }
-
+    this.scrollToTop();
     await this.queueRenderPage(this.currentPage, detonationManual);
   }
 
@@ -297,7 +298,6 @@ export class PdfContentComponent implements OnInit, AfterViewInit {
 
   // Agregar nuevo método para scroll
   private scrollToBottom(): void {
-    debugger;
     const container = this.containerRef.nativeElement;
     container.scrollTo({
       top: container.scrollHeight,
@@ -345,7 +345,7 @@ export class PdfContentComponent implements OnInit, AfterViewInit {
     if (this.cdr) {
       this.cdr.detectChanges();
     }
-
+    this.scrollToTop();
     await this.queueRenderPage(this.currentPage, detonationManual);
   }
 }
