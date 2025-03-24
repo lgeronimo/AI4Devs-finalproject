@@ -20,11 +20,7 @@
 ### **0.3. Descripción breve del proyecto:** 
 Easy Reader es una aplicación web diseñada para transformar la experiencia de lectura digital. La aplicación permite a los usuarios visualizar documentos PDF y contenido web de una manera más accesible e intuitiva. A través de diferentes modos de lectura automatizados, los usuarios pueden navegar por el contenido sin necesidad de interacción manual, lo que mejora significativamente la accesibilidad y comodidad durante la lectura.
 
-### **0.4. URL del proyecto:**
-
-https://easy-reader-58d6c.web.app
-
-
+### **0.4. URL del proyecto:**  https://easy-reader-58d6c.web.app
 
 ---
 
@@ -74,7 +70,13 @@ Easy Reader busca revolucionar la forma en que las personas leen contenido digit
 
 ### **1.3. Diseño y experiencia de usuario:**
 
-> Proporciona imágenes y/o videotutorial mostrando la experiencia del usuario desde que aterriza en la aplicación, pasando por todas las funcionalidades principales.
+Los siguientes enlaces son videos almacenadas en Google Drive que muestran el diseño y le funcionamiento de la aplicación. Si no puedes acceder a ellos, por favor contáctame.
+
+- **Desktop**
+   -  https://drive.google.com/file/d/1AX1nVv3U3d6O9b7Py-pt0KZaEH-3BbSK/view?usp=sharing
+
+- **Mobile**
+   - https://drive.google.com/file/d/1UmmPXpWdg0F0wG4jRlntbBNS7eQj_asA/view?usp=drive_link
 
 ### **1.4. Instrucciones de instalación:**
 Para instalar y ejecutar el proyecto localmente, sigue estos pasos:
