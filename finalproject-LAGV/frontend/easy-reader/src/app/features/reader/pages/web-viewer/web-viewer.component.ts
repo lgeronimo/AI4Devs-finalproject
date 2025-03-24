@@ -7,6 +7,7 @@ import { UrlReaderComponent } from '../../components/url-reader/url-reader.compo
 import { UrlViewerComponent } from '../../components/url-viewer/url-viewer.component';
 import { ReaderControlComponent } from '../../components/reader-control/reader-control.component';
 import { ReaderModeService } from '@shared/services/reader-mode.service';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-web-viewer',
   standalone: true,
@@ -23,6 +24,7 @@ export class WebViewerComponent {
   private webContentService = inject(WebContentService);
   private readerModeService = inject(ReaderModeService);
   private destroyRef = inject(DestroyRef);
+  private router = inject(Router);
 
   isReading = false;
   scrollSpeed = 1;
@@ -49,5 +51,10 @@ export class WebViewerComponent {
   onScrollSpeedChange(event: Event): void {
     const input = event.target as HTMLInputElement;
     this.scrollSpeed = +input.value;
+  }
+
+  closeComponent(): void {
+    this.webContentService.clearViewer();
+    this.router.navigate(['/reader']);
   }
 } 

@@ -5,9 +5,17 @@
         </app-url-reader>
     </div>
     
-  <app-reader-control *ngIf="viewerState?.isLoaded"></app-reader-control>
   <!-- Sección del visor de contenido web -->
   <div class="web-viewer-content" *ngIf="viewerState?.isLoaded">
     <app-url-viewer></app-url-viewer>
+    <div class="web-viewer-close-button">
+      <button 
+        class="control-button" 
+        (click)="closeComponent()">
+        <i class="fas fa-xmark"></i>
+      </button>
+    </div>
   </div>
+
+  
 </div> 

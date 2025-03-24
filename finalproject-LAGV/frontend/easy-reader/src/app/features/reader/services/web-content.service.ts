@@ -110,4 +110,8 @@ export class WebContentService {
       throw new Error('URL no accesible');
     }
   }
+
+  clearViewer(): void {
+    this.resetViewer();
+  }
 } 

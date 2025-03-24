@@ -25,6 +25,9 @@ export class ReadingOptionsComponent implements OnInit {
   ngOnInit() {
     this.checkDeviceType();
     this.checkDeviceCapabilities();
+    if (this.showManualOption) {
+      this.selectedMode = 'manual';
+    }
   }
 
   private checkDeviceType(): void {

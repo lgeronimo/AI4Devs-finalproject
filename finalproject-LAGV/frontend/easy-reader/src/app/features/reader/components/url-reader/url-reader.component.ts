@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { WebContentService } from '../../services/web-content.service';
 import { ReadingOptionsComponent } from '../reading-options/reading-options.component';
-
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-url-reader',
   standalone: true,
@@ -26,13 +26,15 @@ export class UrlReaderComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private webContentService: WebContentService
+    private webContentService: WebContentService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
     this.urlForm = this.fb.group({
       url: ['https://es.wikipedia.org/wiki', [Validators.required, Validators.pattern('(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})[/\\w .-]*/?')]]
     });
+    this.onInputChange();
   }
 
 
@@ -58,5 +60,9 @@ export class UrlReaderComponent implements OnInit {
     if (this.validatedUrl) {
       this.urlValidated.emit(this.validatedUrl);
     }
+  }
+
+  closeComponent(): void {
+    this.router.navigate(['/reader']);
   }
 } 

@@ -5,8 +5,9 @@
     <label class="option" *ngIf="showManualOption">
       <input type="radio" 
              name="readingMode" 
-             value="accelerometer"
-             [(ngModel)]="selectedMode">
+             value="manual"
+             [(ngModel)]="selectedMode"
+             checked>
       <div class="option-content">
         <span class="radio-label">Manual (Beta) - <span class="future-feature">Problems with CORS</span></span>
         <span class="description">Manual scrolling control</span>
