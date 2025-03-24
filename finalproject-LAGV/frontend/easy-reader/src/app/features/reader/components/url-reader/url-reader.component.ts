@@ -33,6 +33,7 @@ export class UrlReaderComponent implements OnInit {
     this.urlForm = this.fb.group({
       url: ['https://es.wikipedia.org/wiki', [Validators.required, Validators.pattern('(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})[/\\w .-]*/?')]]
     });
+    this.onInputChange();
   }
 
 
