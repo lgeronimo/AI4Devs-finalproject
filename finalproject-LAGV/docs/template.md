@@ -844,5 +844,35 @@ Este PR añade funcionalidades avanzadas de control por voz a Easy Reader, mejor
 - Personalización de comandos
 - Expansión a otros idiomas
 
-**Pull Request 3**
 
+### Easy Reader - Integración de Autenticación con Google y Mejoras de Diseño
+
+#### Descripción General
+Este PR implementa el sistema de autenticación con Google y realiza importantes mejoras en el diseño general de Easy Reader. Ahora los usuarios pueden acceder de forma segura y rápida utilizando sus cuentas de Google, además de disfrutar de una interfaz más intuitiva y estéticamente mejorada.
+
+#### Características Principales
+- Inicio de sesión con Google mediante Firebase Authentication
+- Perfil de usuario personalizado con foto e información básica
+- Interfaz de usuario rediseñada con enfoque en accesibilidad y estética
+- Transiciones y animaciones suaves para mejorar la experiencia
+
+#### Implementación Técnica
+##### Componentes Nuevos
+- AuthComponent para gestión de la autenticación
+- UserProfileComponent para visualización y gestión del perfil
+- Integración con Firebase Authentication y Google Sign-In
+- Sistema de almacenamiento de preferencias en Firebase
+
+#### Mejoras de Diseño
+- Paleta de colores actualizada y consistente
+- Elementos de interfaz con mayor contraste para accesibilidad
+- Diseño responsivo optimizado para dispositivos móviles y de escritorio
+- Iconografía mejorada y consistente en toda la aplicación
+- Componentes visuales reutilizables con animaciones sutiles
+
+#### Próximos Pasos
+- Integración con google drive
+- Gestion de documentos 
+- Sincronización de documentos entre dispositivos
+- Mejoras adicionales en la personalización de la interfaz de usuario
+- Métricas de uso y analíticas para usuarios identificados
