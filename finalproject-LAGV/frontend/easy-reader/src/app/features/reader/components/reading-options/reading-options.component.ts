@@ -35,15 +35,27 @@ export class ReadingOptionsComponent implements OnInit {
 
   private checkDeviceCapabilities(): void {
     // Simplemente verificamos si el dispositivo tiene la API de DeviceMotion
-    this.hasAccelerometer = 'DeviceMotionEvent' in window;
+    // this.hasAccelerometer = 'DeviceMotionEvent' in window;
   }
 
+  get showManualOption(): boolean {
+    return this.readerModeService.getMode() === 'web';
+  }
+
+  get showVoiceCommandsOption(): boolean {
+    return this.readerModeService.getMode() === 'pdf';
+  }
+  
   get showTextToSpeechOption(): boolean {
     return this.readerModeService.getMode() === 'pdf';
   }
 
   get showAccelerometerOption(): boolean {
     return this.isMobileDevice && this.hasAccelerometer;
+  }
+
+  get showFaceDetectionOption(): boolean {
+    return this.readerModeService.getMode() === 'pdf';
   }
 
   get showUnsupportedMessage(): boolean {

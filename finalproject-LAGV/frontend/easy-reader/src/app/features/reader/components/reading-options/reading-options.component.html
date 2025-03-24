@@ -2,8 +2,18 @@
   <h3>Select Reading Mode</h3>
   <div class="options-container">
 
+    <label class="option" *ngIf="showManualOption">
+      <input type="radio" 
+             name="readingMode" 
+             value="accelerometer"
+             [(ngModel)]="selectedMode">
+      <div class="option-content">
+        <span class="radio-label">Manual (Beta) - <span class="future-feature">Problems with CORS</span></span>
+        <span class="description">Manual scrolling control</span>
+      </div>
+    </label>
 
-    <label class="option">
+    <label class="option" *ngIf="showVoiceCommandsOption">
       <input type="radio" 
              name="readingMode" 
              value="voiceCommands"
@@ -38,7 +48,7 @@
       </div>
     </label>
     
-    <label class="option disabled-option">
+    <label class="option disabled-option" *ngIf="showFaceDetectionOption">
       <input type="radio" 
              name="readingMode" 
              value="faceDetection"
